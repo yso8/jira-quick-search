@@ -97,7 +97,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Afficher les résultats
   function displayResults(issues, jiraUrl) {
     resultsList.innerHTML = '';
-    resultCount.textContent = issues.length;
+
+    // Trier les issues par clé avant l'affichage, plus récents en premier
+    const sortedIssues = sortIssuesByKey(issues);
+
+    resultCount.textContent = sortedIssues.length;
     resultsContainer.style.display = 'block';
 
     issues.forEach(issue => {
@@ -165,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <!-- Assigné -->
             <span style="display: flex; align-items: center; gap: 3px;">
               <i class="material-icons tiny" style="color: #2196F3; font-size: 14px;">person</i>
-              <span>${truncateText(assignee, 15)}</span>
+              <span>${truncateText(assignee, 20)}</span>
             </span>
             
             <!-- Date -->
@@ -275,5 +279,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     html += `</div>`;
     errorMessage.innerHTML = html;
+  }
+
+    // Trier les tickets par numéro (ordre décroissant = plus récent en premier)
+  function sortIssuesByKey(issues) {
+    return issues.sort((a, b) => {
+      // Extraire le numéro du ticket (ex: "PROJ-123" → 123)
+      const numA = parseInt(a.key.split('-')[1]);
+      const numB = parseInt(b.key.split('-')[1]);
+      return numB - numA; // Ordre décroissant (plus récent d'abord)
+    });
   }
 });
