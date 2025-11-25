@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira Quick Search</title>
+  
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="grey lighten-4">
+
+  <!-- Navbar -->
+  <nav class="blue darken-2">
+    <div class="nav-wrapper container">
+      <a href="#" class="brand-logo">
+        <i class="material-icons left">search</i>
+        Jira Quick Search
+      </a>
+      <ul class="right">
+        <li>
+          <a href="options.html" class="waves-effect">
+            <i class="material-icons">settings</i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container" style="margin-top: 40px;">
+    
+    <!-- Search Card -->
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">Rechercher des tickets Jira</span>
+            
+            <!-- Search Input -->
+            <div class="input-field">
+              <i class="material-icons prefix">search</i>
+              <input id="searchInput" type="text" placeholder="Tapez des mots-clés..." autocomplete="off">
+            </div>
+            
+            <!-- Search Button -->
+            <button id="searchBtn" class="btn waves-effect waves-light blue darken-2 btn-large" style="width: 100%;">
+              <i class="material-icons left">search</i>
+              Rechercher
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="center-align" style="display: none; margin: 40px 0;">
+      <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+      <p class="grey-text">Recherche en cours...</p>
+    </div>
+
+    <!-- Results -->
+    <div id="resultsContainer" style="display: none;">
+      <h5>Résultats (<span id="resultCount">0</span>)</h5>
+      <div id="resultsList"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="center-align" style="display: none; margin: 60px 0;">
+      <i class="material-icons large grey-text text-lighten-1">search_off</i>
+      <h5 class="grey-text">Aucun résultat trouvé</h5>
+      <p class="grey-text">Essayez avec d'autres mots-clés</p>
+    </div>
+
+    <!-- Initial State -->
+    <div id="initialState" class="center-align" style="margin: 80px 0;">
+      <i class="material-icons" style="font-size: 100px; color: #0052cc;">search</i>
+      <h5 class="grey-text">Entrez des mots-clés pour commencer</h5>
+      <p class="grey-text">Recherchez des tickets par titre, description, clé ou projet</p>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" style="display: none; margin-top: 20px;"></div>
+
+  </div>
+
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  
+  <!-- Custom JS -->
+  <script src="search.js"></script>
+
+</body>
+</html>
