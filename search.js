@@ -45,17 +45,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
       
-      // Construire la requête JQL
-      const jql = `text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*" ORDER BY updated DESC`;
+      // Construire la requête JQL (EXCLUSION DES EPICS)
+      const jql = `(text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*") AND issuetype != Epic ORDER BY updated DESC`;
       
-      // ✅ NOUVELLE API : /rest/api/3/search/jql
+      // NOUVELLE API : /rest/api/3/search/jql
       const url = `${config.jiraUrl}/rest/api/3/search/jql`;
       
       console.log('🔍 Recherche avec JQL:', jql);
       console.log('📡 URL API:', url);
 
       const response = await fetch(url, {
-        method: 'POST', // ⚠️ POST au lieu de GET
+        method: 'POST',
         headers: {
           'Authorization': 'Basic ' + btoa(`${config.jiraEmail}:${config.jiraToken}`),
           'Accept': 'application/json',
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Créer une carte pour un ticket
+  // Créer une carte pour un ticket (VERSION COMPACTE + HAUTEUR FIXE)
   function createIssueCard(issue, jiraUrl) {
     const col = document.createElement('div');
     col.className = 'col s12 m6 l4';
@@ -116,39 +116,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     const createdDate = new Date(issue.fields.created).toLocaleDateString('fr-FR');
     const assignee = issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné';
     
-    // Informations supplémentaires (si disponibles)
+    // Informations supplémentaires
     const issueType = issue.fields.issuetype ? issue.fields.issuetype.name : 'N/A';
     const priority = issue.fields.priority ? issue.fields.priority.name : 'Aucune';
+    
+    // Couleurs pour les icônes
+    const typeColor = getTypeColor(issueType);
+    const priorityColor = getPriorityColor(priority);
 
     col.innerHTML = `
-      <div class="card hoverable" style="cursor: pointer; height: 100%;" onclick="window.open('${issueUrl}', '_blank')">
-        <div class="card-content">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span class="card-title blue-text text-darken-2" style="font-size: 16px; font-weight: 700;">
+      <div class="card hoverable" style="height: 100%; display: flex; flex-direction: column;">
+        <div class="card-content" style="padding: 12px; flex: 1; display: flex; flex-direction: column;">
+          
+          <!-- En-tête : Clé (CLIQUABLE) + Badge statut -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <a href="${issueUrl}" target="_blank" class="blue-text text-darken-2" 
+              style="font-size: 14px; font-weight: 700; text-decoration: none;"
+              onclick="event.stopPropagation();">
               ${issue.key}
-            </span>
-            <span class="new badge ${statusColor}" data-badge-caption="" style="position: static;">
+            </a>
+            <span class="new badge ${statusColor}" data-badge-caption="" style="position: static; font-size: 10px;">
               ${issue.fields.status.name}
             </span>
           </div>
           
-          <p style="font-weight: 500; margin: 10px 0;">
-            ${truncateText(issue.fields.summary, 80)}
-          </p>
+          <!-- Titre du ticket (CLIQUABLE aussi) avec hauteur fixe -->
+          <a href="${issueUrl}" target="_blank" 
+            style="display: block; font-weight: 500; margin: 0 0 10px 0; font-size: 13px; line-height: 1.3; color: #212121; text-decoration: none; min-height: 34px; overflow: hidden;"
+            onclick="event.stopPropagation();">
+            ${truncateText(issue.fields.summary, 70)}
+          </a>
           
-          <div style="margin-top: 15px; font-size: 12px; color: #757575;">
-            <p class="grey-text" style="margin: 5px 0;">
-              <i class="material-icons tiny">label</i> ${issueType}
-            </p>
-            <p class="grey-text" style="margin: 5px 0;">
-              <i class="material-icons tiny">flag</i> ${priority}
-            </p>
-            <p class="grey-text" style="margin: 5px 0;">
-              <i class="material-icons tiny">person</i> ${assignee}
-            </p>
-            <p class="grey-text" style="margin: 5px 0;">
-              <i class="material-icons tiny">calendar_today</i> ${createdDate}
-            </p>
+          <!-- Informations en ligne (compactes avec icônes colorées) -->
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: #757575; margin-top: auto;">
+            
+            <!-- Type -->
+            <span style="display: flex; align-items: center; gap: 3px;">
+              <i class="material-icons tiny" style="color: ${typeColor}; font-size: 14px;">label</i>
+              <span>${issueType}</span>
+            </span>
+            
+            <!-- Priorité -->
+            <span style="display: flex; align-items: center; gap: 3px;">
+              <i class="material-icons tiny" style="color: ${priorityColor}; font-size: 14px;">flag</i>
+              <span>${priority}</span>
+            </span>
+            
+            <!-- Assigné -->
+            <span style="display: flex; align-items: center; gap: 3px;">
+              <i class="material-icons tiny" style="color: #2196F3; font-size: 14px;">person</i>
+              <span>${truncateText(assignee, 15)}</span>
+            </span>
+            
+            <!-- Date -->
+            <span style="display: flex; align-items: center; gap: 3px;">
+              <i class="material-icons tiny" style="color: #9C27B0; font-size: 14px;">calendar_today</i>
+              <span>${createdDate}</span>
+            </span>
+            
           </div>
         </div>
       </div>
@@ -171,6 +196,42 @@ document.addEventListener('DOMContentLoaded', async () => {
       return 'purple';
     } else {
       return 'grey';
+    }
+  }
+
+  // Couleur de l'icône Type (Bug, Story, Task...)
+  function getTypeColor(type) {
+    const typeLower = type.toLowerCase();
+    
+    if (typeLower.includes('bug')) {
+      return '#F44336'; // Rouge
+    } else if (typeLower.includes('story') || typeLower.includes('récit')) {
+      return '#4CAF50'; // Vert
+    } else if (typeLower.includes('task') || typeLower.includes('tâche')) {
+      return '#2196F3'; // Bleu
+    } else if (typeLower.includes('epic')) {
+      return '#9C27B0'; // Violet
+    } else {
+      return '#757575'; // Gris par défaut
+    }
+  }
+
+  // Couleur de l'icône Priorité
+  function getPriorityColor(priority) {
+    const priorityLower = priority.toLowerCase();
+    
+    if (priorityLower.includes('highest') || priorityLower.includes('critique') || priorityLower.includes('bloquant')) {
+      return '#D32F2F'; // Rouge foncé
+    } else if (priorityLower.includes('high') || priorityLower.includes('haute') || priorityLower.includes('élevée')) {
+      return '#FF5722'; // Orange-rouge
+    } else if (priorityLower.includes('medium') || priorityLower.includes('moyenne') || priorityLower.includes('normal')) {
+      return '#FF9800'; // Orange
+    } else if (priorityLower.includes('low') || priorityLower.includes('basse') || priorityLower.includes('faible')) {
+      return '#FFC107'; // Jaune
+    } else if (priorityLower.includes('lowest') || priorityLower.includes('minimale')) {
+      return '#8BC34A'; // Vert clair
+    } else {
+      return '#9E9E9E'; // Gris par défaut
     }
   }
 
