@@ -48,24 +48,37 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Construire la requête JQL
       const jql = `text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*" ORDER BY updated DESC`;
       
-      // Appel API Jira
-      const url = `${config.jiraUrl}/rest/api/3/search?jql=${encodeURIComponent(jql)}&maxResults=50`;
+      // ✅ NOUVELLE API : /rest/api/3/search/jql
+      const url = `${config.jiraUrl}/rest/api/3/search/jql`;
       
+      console.log('🔍 Recherche avec JQL:', jql);
+      console.log('📡 URL API:', url);
+
       const response = await fetch(url, {
-        method: 'GET',
+        method: 'POST', // ⚠️ POST au lieu de GET
         headers: {
           'Authorization': 'Basic ' + btoa(`${config.jiraEmail}:${config.jiraToken}`),
           'Accept': 'application/json',
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          jql: jql,
+          maxResults: 50,
+          fields: ['summary', 'status', 'assignee', 'created', 'issuetype', 'priority']
+        })
       });
 
+      console.log('📊 Statut réponse:', response.status);
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Erreur API:', errorText);
         throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
-      
+      console.log('✅ Résultats reçus:', data.total || data.issues?.length || 0, 'ticket(s)');
+
       loadingSpinner.style.display = 'none';
 
       if (data.issues && data.issues.length > 0) {
@@ -75,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
     } catch (error) {
-      console.error('Erreur de recherche:', error);
+      console.error('❌ Erreur de recherche:', error);
       loadingSpinner.style.display = 'none';
       showError(`❌ Erreur: ${error.message}`);
     }
@@ -102,6 +115,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const issueUrl = `${jiraUrl}/browse/${issue.key}`;
     const createdDate = new Date(issue.fields.created).toLocaleDateString('fr-FR');
     const assignee = issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné';
+    
+    // Informations supplémentaires (si disponibles)
+    const issueType = issue.fields.issuetype ? issue.fields.issuetype.name : 'N/A';
+    const priority = issue.fields.priority ? issue.fields.priority.name : 'Aucune';
 
     col.innerHTML = `
       <div class="card hoverable" style="cursor: pointer; height: 100%;" onclick="window.open('${issueUrl}', '_blank')">
@@ -119,13 +136,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${truncateText(issue.fields.summary, 80)}
           </p>
           
-          <p class="grey-text" style="font-size: 12px; margin-top: 15px;">
-            <i class="material-icons tiny">person</i> ${assignee}
-          </p>
-          
-          <p class="grey-text" style="font-size: 12px;">
-            <i class="material-icons tiny">calendar_today</i> ${createdDate}
-          </p>
+          <div style="margin-top: 15px; font-size: 12px; color: #757575;">
+            <p class="grey-text" style="margin: 5px 0;">
+              <i class="material-icons tiny">label</i> ${issueType}
+            </p>
+            <p class="grey-text" style="margin: 5px 0;">
+              <i class="material-icons tiny">flag</i> ${priority}
+            </p>
+            <p class="grey-text" style="margin: 5px 0;">
+              <i class="material-icons tiny">person</i> ${assignee}
+            </p>
+            <p class="grey-text" style="margin: 5px 0;">
+              <i class="material-icons tiny">calendar_today</i> ${createdDate}
+            </p>
+          </div>
         </div>
       </div>
     `;
@@ -137,12 +161,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   function getStatusColor(status) {
     const statusLower = status.toLowerCase();
     
-    if (statusLower.includes('done') || statusLower.includes('closed') || statusLower.includes('résolu')) {
+    if (statusLower.includes('done') || statusLower.includes('closed') || statusLower.includes('résolu') || statusLower.includes('terminé')) {
       return 'green';
-    } else if (statusLower.includes('progress') || statusLower.includes('cours')) {
+    } else if (statusLower.includes('progress') || statusLower.includes('cours') || statusLower.includes('en cours')) {
       return 'blue';
-    } else if (statusLower.includes('todo') || statusLower.includes('open') || statusLower.includes('faire')) {
+    } else if (statusLower.includes('todo') || statusLower.includes('open') || statusLower.includes('faire') || statusLower.includes('à faire')) {
       return 'orange';
+    } else if (statusLower.includes('review') || statusLower.includes('test')) {
+      return 'purple';
     } else {
       return 'grey';
     }
@@ -150,6 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Tronquer le texte
   function truncateText(text, maxLength) {
+    if (!text) return 'N/A';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   }
@@ -174,7 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           ${message}
         </span>
     `;
-    
+
     if (withSettingsLink) {
       html += `
         <br><br>
@@ -184,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         </a>
       `;
     }
-    
+
     html += `</div>`;
     errorMessage.innerHTML = html;
   }
