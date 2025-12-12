@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recherche Jira</title>
-  
+
   <!-- Materialize CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
+
 <body style="background: #fafafa;">
 
   <!-- Navbar -->
@@ -27,20 +29,34 @@
 
   <!-- Contenu principal -->
   <div class="container" style="margin-top: 30px;">
-    
+
     <!-- Barre de recherche RÉDUITE -->
     <div class="row">
       <div class="col s12 m8 offset-m2 l6 offset-l3">
         <div class="input-field">
           <i class="material-icons prefix">search</i>
           <input type="text" id="searchInput" placeholder="Rechercher un ticket...">
-          <button id="searchBtn" class="btn blue darken-2 waves-effect waves-light" 
-                  style="position: absolute; right: 0; top: 0;">
+          <button id="searchBtn" class="btn blue darken-2 waves-effect waves-light"
+            style="position: absolute; right: 0; top: 0;">
             Rechercher
           </button>
         </div>
       </div>
     </div>
+
+    <div class="row" style="margin-top: -15px; margin-bottom: 20px;">
+      <div class="col s12 center-align">
+        <label style="margin-right: 15px;">
+          <input type="checkbox" id="filterTasks" checked="checked" />
+          <span>Tâches</span>
+        </label>
+        <label style="margin-right: 15px;">
+          <input type="checkbox" id="filterEpics" />
+          <span>Epics</span>
+        </label>
+      </div>
+    </div>
+
 
     <!-- État initial -->
     <div id="initialState" class="center-align" style="margin-top: 80px;">
@@ -83,7 +99,7 @@
         <i class="material-icons tiny">check_circle</i>
         <span id="resultCount">0</span> résultat(s) trouvé(s)
       </h5>
-      
+
       <div class="row" id="resultsList">
         <!-- Les cartes seront ajoutées ici dynamiquement -->
       </div>
@@ -91,8 +107,20 @@
 
   </div>
 
+  <!-- Bouton d'action flottant (masqué par défaut) -->
+  <div id="fabContainer" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;">
+    <a id="btnOpenSelected" class="btn-floating btn-large blue darken-3 waves-effect waves-light tooltipped"
+      data-position="left" data-tooltip="Ouvrir la sélection">
+      <i class="material-icons">open_in_new</i>
+    </a>
+    <span id="selectedCountBadge" class="new badge red"
+      style="position: absolute; z-index: inherit; top: -5px; right: -5px; min-width: 20px;"
+      data-badge-caption="">0</span>
+  </div>
+
   <!-- Materialize JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="search.js"></script>
 </body>
+
 </html>

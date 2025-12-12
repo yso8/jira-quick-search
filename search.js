@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Vérifier la configuration au démarrage
   const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
-  
+
   if (!config.jiraUrl || !config.jiraEmail || !config.jiraToken) {
     showError('⚠️ Configuration manquante. Veuillez configurer l\'extension.', true);
     return;
@@ -32,9 +32,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Fonction de recherche
   async function performSearch() {
     const query = searchInput.value.trim();
-    
+
+    // Récupération des filtres
+    const showTasks = document.getElementById('filterTasks').checked;
+    const showEpics = document.getElementById('filterEpics').checked;
+
     if (!query) {
-      M.toast({html: '⚠️ Veuillez entrer des mots-clés', classes: 'orange'});
+      M.toast({ html: '⚠️ Veuillez entrer des mots-clés', classes: 'orange' });
       return;
     }
 
@@ -44,13 +48,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
-      
-      // Construire la requête JQL (EXCLUSION DES EPICS)
-      const jql = `(text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*") AND issuetype != Epic ORDER BY updated DESC`;
-      
+
+      // 1. Base de la recherche textuelle
+      let jql = `(text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*")`;
+
+      // 2. Gestion des Types (Tâches vs Epics)
+      if (showTasks && !showEpics) {
+        // Si on veut les tâches mais PAS les Epics (comportement par défaut précédent)
+        jql += ` AND issuetype != Epic`;
+      } else if (!showTasks && showEpics) {
+        // Si on veut JUSTE les Epics
+        jql += ` AND issuetype = Epic`;
+      } else if (!showTasks && !showEpics) {
+        // Si rien n'est coché, on cherche tout sauf les types bizarres, ou on laisse vide
+        // Pour l'UX, si rien n'est coché, on assume qu'on cherche tout.
+      }
+
+      jql += ` ORDER BY updated DESC`;
+
       // NOUVELLE API : /rest/api/3/search/jql
       const url = `${config.jiraUrl}/rest/api/3/search/jql`;
-      
+
       console.log('🔍 Recherche avec JQL:', jql);
       console.log('📡 URL API:', url);
 
@@ -119,67 +137,70 @@ document.addEventListener('DOMContentLoaded', async () => {
     const issueUrl = `${jiraUrl}/browse/${issue.key}`;
     const createdDate = new Date(issue.fields.created).toLocaleDateString('fr-FR');
     const assignee = issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné';
-    
+
     // Informations supplémentaires
     const issueType = issue.fields.issuetype ? issue.fields.issuetype.name : 'N/A';
     const priority = issue.fields.priority ? issue.fields.priority.name : 'Aucune';
-    
+
     // Couleurs pour les icônes
     const typeColor = getTypeColor(issueType);
     const priorityColor = getPriorityColor(priority);
 
     col.innerHTML = `
-      <div class="card hoverable" style="height: 100%; display: flex; flex-direction: column;">
-        <div class="card-content" style="padding: 12px; flex: 1; display: flex; flex-direction: column;">
+      <div class="card hoverable" style="height: 100%; display: flex; flex-direction: column; border: 1px solid #e0e0e0; border-radius: 6px;">
           
-          <!-- En-tête : Clé (CLIQUABLE) + Badge statut -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <a href="${issueUrl}" target="_blank" class="blue-text text-darken-2" 
-              style="font-size: 14px; font-weight: 700; text-decoration: none;"
-              onclick="event.stopPropagation();">
-              ${issue.key}
-            </a>
-            <span class="new badge ${statusColor}" data-badge-caption="" style="position: static; font-size: 10px;">
-              ${issue.fields.status.name}
-            </span>
+          <div class="card-content" style="padding: 12px; flex: 1; display: flex; flex-direction: column;">
+              
+              <!-- LIGNE 1 : Checkbox + Clé + Statut -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  
+                  <!-- Groupe Gauche : Checkbox + Clé -->
+                  <div style="display: flex; align-items: center;">
+                      <label style="margin-right: 12px;">
+                          <input type="checkbox" class="filled-in select-ticket-cb" value="${issueUrl}" />
+                          <span style="padding-left: 25px; height: 20px; line-height: 20px;"></span>
+                      </label>
+                      
+                      <a href="${issueUrl}" target="_blank" class="blue-text text-darken-2" style="font-size: 15px; font-weight: 700; text-decoration: none;">
+                          ${issue.key}
+                      </a>
+                  </div>
+
+                  <!-- Groupe Droite : Badge Statut -->
+                  <span class="new badge ${statusColor}" data-badge-caption="" style="font-weight: 500; font-size: 11px; border-radius: 4px; min-width: auto; padding: 0 8px;">
+                      ${issue.fields.status.name}
+                  </span>
+
+              </div>
+
+              <!-- LIGNE 2 : Titre du ticket (Hauteur fixe pour alignement grille) -->
+              <a href="${issueUrl}" target="_blank" class="grey-text text-darken-4" style="display: block; font-weight: 500; margin-bottom: 12px; font-size: 13px; line-height: 1.4; text-decoration: none; height: 38px; overflow: hidden;">
+                  ${truncateText(issue.fields.summary, 70)}
+              </a>
+
+              <!-- LIGNE 3 : Infos du bas (Type, Prio, Assigné, Date) -->
+              <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #757575; margin-top: auto; padding-top: 8px; border-top: 1px solid #f5f5f5;">
+                  
+                  <!-- Type -->
+                  <span style="display: flex; align-items: center;" title="Type: ${issueType}">
+                      <i class="material-icons tiny" style="color: ${typeColor}; font-size: 14px; margin-right: 4px;">label</i> 
+                      ${issueType}
+                  </span>
+                  
+                  <!-- Priorité -->
+                  <span style="display: flex; align-items: center;" title="Priorité: ${priority}">
+                      <i class="material-icons tiny" style="color: ${priorityColor}; font-size: 14px; margin-right: 4px;">flag</i> 
+                      ${priority}
+                  </span>
+
+                  <!-- Assigné -->
+                  <span style="display: flex; align-items: center;" title="Assigné à: ${assignee}">
+                      <i class="material-icons tiny grey-text" style="font-size: 14px; margin-right: 4px;">person</i> 
+                      ${truncateText(assignee, 15)}
+                  </span>
+              </div>
+
           </div>
-          
-          <!-- Titre du ticket (CLIQUABLE aussi) avec hauteur fixe -->
-          <a href="${issueUrl}" target="_blank" 
-            style="display: block; font-weight: 500; margin: 0 0 10px 0; font-size: 13px; line-height: 1.3; color: #212121; text-decoration: none; min-height: 34px; overflow: hidden;"
-            onclick="event.stopPropagation();">
-            ${truncateText(issue.fields.summary, 70)}
-          </a>
-          
-          <!-- Informations en ligne (compactes avec icônes colorées) -->
-          <div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: #757575; margin-top: auto;">
-            
-            <!-- Type -->
-            <span style="display: flex; align-items: center; gap: 3px;">
-              <i class="material-icons tiny" style="color: ${typeColor}; font-size: 14px;">label</i>
-              <span>${issueType}</span>
-            </span>
-            
-            <!-- Priorité -->
-            <span style="display: flex; align-items: center; gap: 3px;">
-              <i class="material-icons tiny" style="color: ${priorityColor}; font-size: 14px;">flag</i>
-              <span>${priority}</span>
-            </span>
-            
-            <!-- Assigné -->
-            <span style="display: flex; align-items: center; gap: 3px;">
-              <i class="material-icons tiny" style="color: #2196F3; font-size: 14px;">person</i>
-              <span>${truncateText(assignee, 20)}</span>
-            </span>
-            
-            <!-- Date -->
-            <span style="display: flex; align-items: center; gap: 3px;">
-              <i class="material-icons tiny" style="color: #9C27B0; font-size: 14px;">calendar_today</i>
-              <span>${createdDate}</span>
-            </span>
-            
-          </div>
-        </div>
       </div>
     `;
 
@@ -189,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Couleur du badge selon le statut
   function getStatusColor(status) {
     const statusLower = status.toLowerCase();
-    
+
     if (statusLower.includes('done') || statusLower.includes('closed') || statusLower.includes('résolu') || statusLower.includes('terminé')) {
       return 'green';
     } else if (statusLower.includes('progress') || statusLower.includes('cours') || statusLower.includes('en cours')) {
@@ -206,7 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Couleur de l'icône Type (Bug, Story, Task...)
   function getTypeColor(type) {
     const typeLower = type.toLowerCase();
-    
+
     if (typeLower.includes('bug')) {
       return '#F44336'; // Rouge
     } else if (typeLower.includes('story') || typeLower.includes('récit')) {
@@ -223,7 +244,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Couleur de l'icône Priorité
   function getPriorityColor(priority) {
     const priorityLower = priority.toLowerCase();
-    
+
     if (priorityLower.includes('highest') || priorityLower.includes('critique') || priorityLower.includes('bloquant')) {
       return '#D32F2F'; // Rouge foncé
     } else if (priorityLower.includes('high') || priorityLower.includes('haute') || priorityLower.includes('élevée')) {
@@ -259,7 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function showError(message, withSettingsLink = false) {
     hideAllStates();
     errorMessage.style.display = 'block';
-    
+
     let html = `
       <div class="card-panel red lighten-4">
         <span class="red-text text-darken-2">
@@ -281,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     errorMessage.innerHTML = html;
   }
 
-    // Trier les tickets par numéro (ordre décroissant = plus récent en premier)
+  // Trier les tickets par numéro (ordre décroissant = plus récent en premier)
   function sortIssuesByKey(issues) {
     return issues.sort((a, b) => {
       // Extraire le numéro du ticket (ex: "PROJ-123" → 123)
@@ -290,4 +311,36 @@ document.addEventListener('DOMContentLoaded', async () => {
       return numB - numA; // Ordre décroissant (plus récent d'abord)
     });
   }
+});
+
+// 1. Écouter les changements sur les cases à cocher (Event Delegation)
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.classList.contains('select-ticket-cb')) {
+    updateFabState();
+  }
+});
+
+// 2. Mettre à jour l'état du bouton flottant
+function updateFabState() {
+  const checkedBoxes = document.querySelectorAll('.select-ticket-cb:checked');
+  const fabContainer = document.getElementById('fabContainer');
+  const countBadge = document.getElementById('selectedCountBadge');
+
+  if (checkedBoxes.length > 0) {
+    fabContainer.style.display = 'block';
+    countBadge.textContent = checkedBoxes.length;
+  } else {
+    fabContainer.style.display = 'none';
+  }
+}
+
+// 3. Action : Ouvrir les tickets sélectionnés
+document.getElementById('btnOpenSelected').addEventListener('click', function () {
+  const checkedBoxes = document.querySelectorAll('.select-ticket-cb:checked');
+
+  checkedBoxes.forEach(checkbox => {
+    // Ouvre chaque lien dans un nouvel onglet
+    // 'active: false' permet d'ouvrir en arrière-plan sans quitter l'extension immédiatement
+    chrome.tabs.create({ url: checkbox.value, active: false });
+  });
 });
