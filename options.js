@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (response.ok) {
         const user = await response.json();
-        showMessage(`Connexion réussie ! Bienvenue ${user.displayName || ''}`, 'success');
+        showMessage(`Connexion réussie ! Bienvenue.`, 'success');
       } else {
         const errorText = await response.text();
         console.error('Erreur API:', errorText);
