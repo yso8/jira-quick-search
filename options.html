@@ -1,128 +1,263 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configuration - Jira Quick Search</title>
-  
-  <!-- Materialize CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- 1. Tailwind CSS (Base) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 2. Flowbite CSS (Composants) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background-color: #f9fafb;
+      /* gray-50 */
+    }
+  </style>
 </head>
-<body class="grey lighten-4">
+
+<body class="bg-gray-50 min-h-screen">
 
   <!-- Navbar -->
-  <nav class="blue darken-2">
-    <div class="nav-wrapper container">
-      <a href="search.html" class="brand-logo">
-        <i class="material-icons left">settings</i>
-        Configuration
+  <nav class="bg-white border-b border-gray-200 px-4 py-2.5 shadow-sm sticky top-0 z-50">
+    <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+      <a href="#" class="flex items-center">
+        <div class="p-1.5 bg-blue-100 rounded-lg mr-3 text-blue-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+        </div>
+        <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-800">Configuration</span>
       </a>
-      <ul class="right">
-        <li>
-          <a href="search.html" class="waves-effect">
-            <i class="material-icons">arrow_back</i>
-          </a>
-        </li>
-      </ul>
+      <div class="flex items-center lg:order-2">
+        <a href="search.html"
+          class="text-gray-500 hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 mr-2 focus:outline-none flex items-center gap-2 transition-colors">
+          <!-- Icon: Arrow Left -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+            <path fill-rule="evenodd"
+              d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
+              clip-rule="evenodd" />
+          </svg>
+          Retour
+        </a>
+      </div>
     </div>
   </nav>
 
   <!-- Main Container -->
-  <div class="container" style="margin-top: 40px;">
-    
-    <div class="row">
-      <div class="col s12 l8 offset-l2">
-        
-        <!-- Configuration Card -->
-        <div class="card">
-          <div class="card-content">
-            <span class="card-title">Paramètres Jira</span>
-            <p class="grey-text">Configurez vos identifiants Jira Cloud pour utiliser l'extension</p>
-            
-            <form id="configForm" style="margin-top: 30px;">
-              
-              <!-- URL Jira -->
-              <div class="input-field">
-                <i class="material-icons prefix">link</i>
-                <input id="jiraUrl" type="text" class="validate">
-                <label for="jiraUrl">URL Jira Cloud</label>
-                <span class="helper-text">Exemple: https://votre-site.atlassian.net</span>
-              </div>
+  <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
 
-              <!-- Email -->
-              <div class="input-field">
-                <i class="material-icons prefix">email</i>
-                <input id="jiraEmail" type="email" class="validate">
-                <label for="jiraEmail">Email Atlassian</label>
-                <span class="helper-text">Votre adresse email de connexion</span>
-              </div>
+    <!-- Header Section -->
+    <div class="mb-8 text-center">
+      <h2 class="mb-2 text-3xl font-bold text-gray-900">Paramètres Jira</h2>
+      <p class="text-gray-500">Connectez l'extension à votre instance Jira Cloud pour commencer.</p>
+    </div>
 
-              <!-- Token API -->
-              <div class="input-field">
-                <i class="material-icons prefix">vpn_key</i>
-                <input id="jiraToken" type="password" class="validate">
-                <label for="jiraToken">Token API</label>
-                <span class="helper-text">
-                  <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" class="blue-text">
-                    Créer un token API →
-                  </a>
-                </span>
-              </div>
+    <!-- Card Formulaire -->
+    <div class="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+      <form id="configForm">
 
-              <!-- Buttons -->
-              <div style="margin-top: 30px;">
-                <button type="button" id="testBtn" class="btn waves-effect waves-light orange darken-2" style="margin-right: 10px;">
-                  <i class="material-icons left">wifi_tethering</i>
-                  Tester la connexion
-                </button>
-                
-                <button type="submit" class="btn waves-effect waves-light green darken-2">
-                  <i class="material-icons left">save</i>
-                  Sauvegarder
-                </button>
-              </div>
-            </form>
+        <!-- URL Jira -->
+        <div class="mb-6">
+          <label for="jiraUrl" class="block mb-2 text-sm font-medium text-gray-900">URL Jira Cloud</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+              <!-- Icon: Link -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                class="w-5 h-5 text-gray-400">
+                <path
+                  d="M12.232 4.232a2.5 2.5 0 013.536 3.536l-1.225 1.224a.75.75 0 001.061 1.06l1.224-1.224a4 4 0 00-5.656-5.656l-3 3a4 4 0 00.225 5.865.75.75 0 00.977-1.138 2.5 2.5 0 01-.142-3.667l3-3z" />
+                <path
+                  d="M11.603 7.963a.75.75 0 00-.977 1.138 2.5 2.5 0 01.142 3.667l-3 3a2.5 2.5 0 01-3.536-3.536l1.225-1.224a.75.75 0 00-1.061-1.06l-1.224 1.224a4 4 0 105.656 5.656l3-3a4 4 0 00-.225-5.865z" />
+              </svg>
+            </div>
+            <input type="text" id="jiraUrl"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition-colors"
+              placeholder="https://votre-societe.atlassian.net" required>
+          </div>
+          <p class="mt-2 text-xs text-gray-500">L'adresse racine de votre Jira, sans le slash à la fin.</p>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-6">
+          <label for="jiraEmail" class="block mb-2 text-sm font-medium text-gray-900">Email Atlassian</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+              <!-- Icon: At Symbol (@) -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                class="w-5 h-5 text-gray-400">
+                <path fill-rule="evenodd"
+                  d="M5.404 14.596A6.5 6.5 0 1116.5 10a1.25 1.25 0 01-2.5 0 4 4 0 10-.571 2.06A2.75 2.75 0 0018 10a8 8 0 10-2.343 5.657.75.75 0 00-1.06-1.06 6.5 6.5 0 01-9.193 0zM10 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+            <input type="email" id="jiraEmail"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition-colors"
+              placeholder="nom.prenom@entreprise.com" required>
           </div>
         </div>
 
-        <!-- Status Message -->
-        <div id="statusMessage" style="display: none; margin-top: 20px;"></div>
-
-        <!-- Help Card -->
-        <div class="card blue lighten-5">
-          <div class="card-content">
-            <span class="card-title blue-text text-darken-2">
-              <i class="material-icons left">help</i>
-              Aide
-            </span>
-            <ul class="collection" style="border: none; margin-top: 15px;">
-              <li class="collection-item blue lighten-5" style="border: none;">
-                <strong>1. URL Jira :</strong> Votre instance Jira Cloud (sans / à la fin)
-              </li>
-              <li class="collection-item blue lighten-5" style="border: none;">
-                <strong>2. Email :</strong> L'email de votre compte Atlassian
-              </li>
-              <li class="collection-item blue lighten-5" style="border: none;">
-                <strong>3. Token API :</strong> Créez-le sur 
-                <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" class="blue-text">
-                  cette page
-                </a>
-              </li>
-            </ul>
+        <!-- Token -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <label for="jiraToken" class="block text-sm font-medium text-gray-900">Token API</label>
+            <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank"
+              class="text-blue-600 hover:underline text-xs font-medium flex items-center gap-1">
+              Générer un token
+              <!-- Icon: Arrow Top Right On Square -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
+                <path fill-rule="evenodd"
+                  d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                  clip-rule="evenodd" />
+                <path fill-rule="evenodd"
+                  d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                  clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+          <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+              <!-- Icon: Key -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                class="w-5 h-5 text-gray-400">
+                <path fill-rule="evenodd"
+                  d="M8 7a5 5 0 113.61 4.804l-1.903 1.903A1 1 0 019 14H8v1a1 1 0 01-1 1H6v1a1 1 0 01-1 1H3a1 1 0 01-1-1v-2a1 1 0 01.293-.707L8.196 8.39A5.002 5.002 0 018 7zm5-3a.75.75 0 000 1.5A1.5 1.5 0 0114.5 7 .75.75 0 0016 7a3 3 0 00-3-3z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+            <input type="password" id="jiraToken"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition-colors"
+              placeholder="Collez votre token ici" required>
           </div>
         </div>
 
+        <!-- Status Message (Alert Flowbite) -->
+        <div id="statusMessage" class="hidden p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50" role="alert">
+          <div class="flex items-center">
+            <!-- Icon Placeholder (Injecté via JS ou par défaut Info) -->
+            <div id="statusIconContainer" class="mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+            <span class="font-medium" id="msgContent">Info alert!</span>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-end space-x-3 border-t border-gray-100 pt-6 mt-6">
+          <button type="button" id="testBtn"
+            class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 flex items-center gap-2">
+            <!-- Icon: Signal/Wifi -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+              class="w-5 h-5 text-gray-400">
+              <path
+                d="M16.855 7.287a.75.75 0 00-1.07 1.052c.906.921 1.465 2.183 1.465 3.565 0 1.382-.559 2.644-1.465 3.565a.75.75 0 101.07 1.052c1.176-1.196 1.902-2.837 1.902-4.617 0-1.78-.726-3.421-1.902-4.617z" />
+              <path
+                d="M3.145 7.287a.75.75 0 011.07 1.052A5.13 5.13 0 002.75 11.904c0 1.382.559 2.644 1.465 3.565a.75.75 0 11-1.07 1.052C1.969 15.325 1.243 13.684 1.243 11.904c0-1.78.726-3.421 1.902-4.617z" />
+              <path
+                d="M13.654 9.423a.75.75 0 00-1.058 1.062C13.208 11.094 13.568 11.93 13.568 12.82c0 .89-.36 1.726-.972 2.335a.75.75 0 101.058 1.062c.883-.878 1.402-2.083 1.402-3.397 0-1.314-.52-2.52-1.402-3.397z" />
+              <path
+                d="M6.346 9.423a.75.75 0 011.058 1.062A3.29 3.29 0 006.432 12.82c0 .89.36 1.726.972 2.335a.75.75 0 11-1.058 1.062C5.463 15.339 4.944 14.134 4.944 12.82c0-1.314.52-2.52 1.402-3.397z" />
+              <path d="M10 11.5a1.25 1.25 0 100 2.5 1.25 1.25 0 000-2.5z" />
+            </svg>
+            Tester
+          </button>
+          <button type="submit"
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-2 shadow-lg shadow-blue-500/30 transition-all">
+            <!-- Icon: Arrow Down on Square (Save) -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-white">
+              <path
+                d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.965 3.129V2.75z" />
+              <path
+                d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
+            </svg>
+            Sauvegarder
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Help Accordion (Flowbite) -->
+    <div id="accordion-collapse" data-accordion="collapse" class="mt-8">
+      <h2 id="accordion-collapse-heading-1">
+        <button type="button"
+          class="flex items-center justify-between w-full p-4 font-medium rtl:text-right text-gray-500 border border-gray-200 rounded-xl focus:ring-4 focus:ring-gray-200 hover:bg-gray-100 gap-3 bg-white"
+          data-accordion-target="#accordion-collapse-body-1" aria-expanded="false"
+          aria-controls="accordion-collapse-body-1">
+          <span class="flex items-center gap-2">
+            <!-- Icon: Question Mark Circle -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+              class="w-5 h-5 text-blue-600">
+              <path fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                clip-rule="evenodd" />
+            </svg>
+            Besoin d'aide ?
+          </span>
+          <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 5 5 1 1 5" />
+          </svg>
+        </button>
+      </h2>
+      <div id="accordion-collapse-body-1" class="hidden" aria-labelledby="accordion-collapse-heading-1">
+        <div class="p-5 border border-t-0 border-gray-200 bg-white rounded-b-xl">
+          <ul class="space-y-2 text-gray-500 text-sm list-disc list-inside">
+            <li><strong>URL :</strong> Doit impérativement commencer par <code>https://</code>.</li>
+            <li><strong>Email :</strong> Votre identifiant de connexion habituel.</li>
+            <li><strong>Token :</strong> Pour des raisons de sécurité, Jira n'accepte plus les mots de passe. <a
+                href="https://id.atlassian.com/manage-profile/security/api-tokens" class="text-blue-600 hover:underline"
+                target="_blank">Créez un token API ici</a>.</li>
+          </ul>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Materialize JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  
-  <!-- Custom JS -->
+  <!-- Flowbite JS (Nécessaire pour l'accordéon) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
   <script src="options.js"></script>
 
+  <!-- Script de compatibilité pour gérer les alertes Flowbite dynamiquement avec SVGs -->
+  <script>
+    function showStatus(message, type) {
+      const el = document.getElementById('statusMessage');
+      const msgSpan = document.getElementById('msgContent');
+      const iconContainer = document.getElementById('statusIconContainer');
+
+      // Base classes reset
+      el.className = 'p-4 mb-4 text-sm rounded-lg flex items-center';
+
+      // Définitions des SVGs
+      const iconSuccess = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-green-800"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>`;
+      const iconError = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-red-800"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" /></svg>`;
+      const iconInfo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-blue-800"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>`;
+
+      if (type === 'success') {
+        el.classList.add('text-green-800', 'bg-green-50');
+        iconContainer.innerHTML = iconSuccess;
+      } else if (type === 'error') {
+        el.classList.add('text-red-800', 'bg-red-50');
+        iconContainer.innerHTML = iconError;
+      } else {
+        el.classList.add('text-blue-800', 'bg-blue-50');
+        iconContainer.innerHTML = iconInfo;
+      }
+
+      msgSpan.textContent = message;
+      el.classList.remove('hidden');
+    }
+  </script>
 </body>
-</html>
+
+</html

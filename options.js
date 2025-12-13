@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Charger la configuration existante
   try {
     const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
-    
+
     if (config.jiraUrl) {
       jiraUrlInput.value = config.jiraUrl;
     }
@@ -37,13 +37,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = jiraTokenInput.value.trim();
 
     if (!url || !email || !token) {
-      showMessage('⚠️ Veuillez remplir tous les champs', 'orange');
+      showMessage('Veuillez remplir tous les champs', 'orange');
       return;
     }
 
     // Valider l'URL
     if (!url.startsWith('https://') || !url.includes('atlassian.net')) {
-      showMessage('⚠️ L\'URL doit être au format: https://votre-site.atlassian.net', 'orange');
+      showMessage('L\'URL doit être au format: https://votre-site.atlassian.net', 'orange');
       return;
     }
 
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (response.ok) {
         const user = await response.json();
         console.log('Utilisateur:', user);
-        showMessage(`✅ Connexion réussie ! Bienvenue ${user.displayName}`, 'green');
+        showMessage(`Connexion réussie ! Bienvenue`, 'green');
       } else {
         const errorText = await response.text();
         console.error('Erreur API:', errorText);
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
       console.error('Erreur:', error);
-      showMessage(`❌ Erreur: ${error.message}`, 'red');
+      showMessage(`Erreur: ${error.message}`, 'red');
     } finally {
       testBtn.disabled = false;
       testBtn.innerHTML = '<i class="material-icons left">wifi_tethering</i>Tester la connexion';
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const token = jiraTokenInput.value.trim();
 
     if (!url || !email || !token) {
-      showMessage('⚠️ Veuillez remplir tous les champs', 'orange');
+      showMessage('Veuillez remplir tous les champs', 'orange');
       return;
     }
 
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       console.log('Configuration sauvegardée:', { url, email, token: '***' });
 
-      showMessage('✅ Configuration sauvegardée avec succès !', 'green');
+      showMessage('Configuration sauvegardée avec succès !', 'green');
 
       // Rediriger vers la page de recherche après 2s
       setTimeout(() => {
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } catch (error) {
       console.error('Erreur sauvegarde:', error);
-      showMessage(`❌ Erreur de sauvegarde: ${error.message}`, 'red');
+      showMessage(`Erreur de sauvegarde: ${error.message}`, 'red');
     }
   });
 

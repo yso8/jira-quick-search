@@ -5,121 +5,231 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recherche Jira</title>
+  <!-- 1. Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 2. Flowbite CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 
-  <!-- Materialize CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Pour le spinner de chargement */
+    .loader-spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    body {
+      background-color: #f9fafb;
+      /* gray-50 */
+    }
+  </style>
 </head>
 
-<body style="background: #fafafa;">
+<body class="bg-gray-50 min-h-screen flex flex-col">
 
   <!-- Navbar -->
-  <nav class="blue darken-2">
-    <div class="nav-wrapper" style="padding: 0 20px;">
-      <a href="#" class="brand-logo">
-        <i class="material-icons">search</i>
-        Recherche Jira
+  <nav class="bg-white border-b border-gray-200 px-4 py-2.5 shadow-sm sticky top-0 z-50">
+    <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+      <a href="#" class="flex items-center gap-2">
+        <div class="p-1.5 bg-blue-100 rounded-lg text-blue-600">
+          <!-- Icon: Magnifying Glass -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+            class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+        <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-800">Recherche Jira</span>
       </a>
-      <ul class="right">
-        <li><a href="popup.html"><i class="material-icons">home</i></a></li>
-        <li><a href="options.html"><i class="material-icons">settings</i></a></li>
-      </ul>
+      <div class="flex items-center gap-1">
+        <a href="options.html"
+          class="text-gray-500 hover:bg-gray-100 hover:text-blue-600 rounded-lg p-2 transition-colors"
+          title="Paramètres">
+          <!-- Icon: Cog / Settings -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+        </a>
+      </div>
     </div>
   </nav>
 
-  <!-- Contenu principal -->
-  <div class="container" style="margin-top: 30px;">
+  <!-- Main Container -->
+  <div class="flex-grow container mx-auto px-4 py-8 max-w-screen-xl">
 
-    <!-- Barre de recherche RÉDUITE -->
-    <div class="row">
-      <div class="col s12 m8 offset-m2 l6 offset-l3">
-        <div class="input-field">
-          <i class="material-icons prefix">search</i>
-          <input type="text" id="searchInput" placeholder="Rechercher un ticket...">
-          <button id="searchBtn" class="btn blue darken-2 waves-effect waves-light"
-            style="position: absolute; right: 0; top: 0;">
+    <!-- Search Bar & Filters -->
+    <div class="max-w-5xl mx-auto mb-8">
+      <form id="searchForm" class="flex flex-col md:flex-row gap-4 items-stretch">
+
+        <!-- 1. Barre de recherche -->
+        <div class="relative flex-grow w-full">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <!-- Icon: Magnifying Glass (Small) -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5 text-gray-400">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </div>
+
+          <input type="text" id="searchInput"
+            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-4 pe-28 shadow-sm"
+            placeholder="Rechercher un ticket..." required />
+
+          <button type="submit" id="searchBtn"
+            class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 transition-colors">
             Rechercher
           </button>
         </div>
-      </div>
-    </div>
 
-    <div class="row" style="margin-top: -15px; margin-bottom: 20px;">
-      <div class="col s12 center-align">
-        <label style="margin-right: 15px;">
-          <input type="checkbox" id="filterTasks" checked="checked" />
-          <span>Tâches</span>
-        </label>
-        <label style="margin-right: 15px;">
-          <input type="checkbox" id="filterEpics" />
-          <span>Epics</span>
-        </label>
-      </div>
-    </div>
-
-
-    <!-- État initial -->
-    <div id="initialState" class="center-align" style="margin-top: 80px;">
-      <i class="material-icons large grey-text text-lighten-1">search</i>
-      <h5 class="grey-text text-darken-1">Recherchez un ticket Jira</h5>
-      <p class="grey-text">Tapez des mots-clés pour commencer</p>
-    </div>
-
-    <!-- Chargement -->
-    <div id="loadingSpinner" class="center-align" style="display: none; margin-top: 80px;">
-      <div class="preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue-only">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
+        <!-- 2. Filtres -->
+        <div class="flex gap-2 shrink-0 md:w-auto w-full">
+          <!-- Filtre Tâches -->
+          <div
+            class="flex items-center ps-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:bg-gray-50 transition-colors w-full md:w-auto">
+            <input id="filterTasks" type="checkbox" checked
+              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+            <label for="filterTasks"
+              class="w-full py-4 ms-2 me-4 text-sm font-medium text-gray-900 cursor-pointer select-none whitespace-nowrap">Tâches</label>
           </div>
-          <div class="gap-patch">
-            <div class="circle"></div>
-          </div>
-          <div class="circle-clipper right">
-            <div class="circle"></div>
+          <!-- Filtre Epics -->
+          <div
+            class="flex items-center ps-4 border border-gray-200 rounded-lg bg-white shadow-sm hover:bg-gray-50 transition-colors w-full md:w-auto">
+            <input id="filterEpics" type="checkbox"
+              class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 cursor-pointer">
+            <label for="filterEpics"
+              class="w-full py-4 ms-2 me-4 text-sm font-medium text-gray-900 cursor-pointer select-none whitespace-nowrap">Epics</label>
           </div>
         </div>
+      </form>
+    </div>
+
+    <!-- 1. État Initial -->
+    <div id="initialState" class="text-center mt-20">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4 text-gray-400">
+        <!-- Icon: Magnifying Glass (Large) -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-10 h-10">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
       </div>
-      <p class="grey-text" style="margin-top: 20px;">Recherche en cours...</p>
+      <h5 class="text-xl font-bold text-gray-700 mb-2">Recherchez un ticket Jira</h5>
+      <p class="text-gray-500">Tapez des mots-clés ci-dessus pour lancer la recherche.</p>
     </div>
 
-    <!-- Résultats vides -->
-    <div id="emptyState" class="center-align" style="display: none; margin-top: 80px;">
-      <i class="material-icons large orange-text">info_outline</i>
-      <h5 class="grey-text text-darken-1">Aucun résultat trouvé</h5>
-      <p class="grey-text">Essayez avec d'autres mots-clés</p>
+    <!-- 2. Chargement -->
+    <div id="loadingSpinner" class="hidden text-center mt-20">
+      <svg aria-hidden="true" class="inline w-16 h-16 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101"
+        fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+          fill="currentColor" />
+        <path
+          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+          fill="currentFill" />
+      </svg>
+      <p class="text-gray-500 mt-4 font-medium">Recherche en cours chez Jira...</p>
     </div>
 
-    <!-- Message d'erreur -->
-    <div id="errorMessage" style="display: none; margin-top: 30px;"></div>
+    <!-- 3. Résultats vides -->
+    <div id="emptyState" class="hidden text-center mt-20">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-orange-100 mb-4 text-orange-500">
+        <!-- Icon: Information Circle -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-10 h-10">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg>
+      </div>
+      <h5 class="text-xl font-bold text-gray-700 mb-2">Aucun résultat trouvé</h5>
+      <p class="text-gray-500">Essayez avec d'autres mots-clés ou vérifiez vos filtres.</p>
+    </div>
 
-    <!-- Conteneur des résultats -->
-    <div id="resultsContainer" style="display: none;">
-      <h5 class="grey-text text-darken-2">
-        <i class="material-icons tiny">check_circle</i>
-        <span id="resultCount">0</span> résultat(s) trouvé(s)
-      </h5>
+    <!-- 4. Message d'erreur -->
+    <div id="errorMessage" class="hidden p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 mt-8" role="alert">
+      <div class="flex items-center gap-2">
+        <!-- Icon: Exclamation Circle -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+          <path fill-rule="evenodd"
+            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+            clip-rule="evenodd" />
+        </svg>
+        <span class="font-medium">Erreur :</span>
+        <span class="ml-1 message-content"></span>
+      </div>
+    </div>
 
-      <div class="row" id="resultsList">
-        <!-- Les cartes seront ajoutées ici dynamiquement -->
+    <!-- 5. Conteneur des résultats -->
+    <div id="resultsContainer" class="hidden">
+      <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
+        <h5 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+          <!-- Icon: Check Circle -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+            class="w-6 h-6 text-green-500">
+            <path fill-rule="evenodd"
+              d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+              clip-rule="evenodd" />
+          </svg>
+          <span id="resultCount">0</span> résultats trouvés
+        </h5>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="resultsList">
+        <!-- Les cartes seront ajoutées ici dynamiquement par le JS -->
       </div>
     </div>
 
   </div>
 
-  <!-- Bouton d'action flottant (masqué par défaut) -->
-  <div id="fabContainer" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;">
-    <a id="btnOpenSelected" class="btn-floating btn-large blue darken-3 waves-effect waves-light tooltipped"
-      data-position="left" data-tooltip="Ouvrir la sélection">
-      <i class="material-icons">open_in_new</i>
-    </a>
-    <span id="selectedCountBadge" class="new badge red"
-      style="position: absolute; z-index: inherit; top: -5px; right: -5px; min-width: 20px;"
-      data-badge-caption="">0</span>
+  <!-- FAB (Floating Action Button) -->
+  <!-- Position fixe en bas à droite - Version corrigée -->
+  <div id="fabContainer" class="hidden fixed bottom-6 right-6 z-50">
+
+    <div class="relative group">
+
+      <!-- 1. Le Bouton -->
+      <a id="btnOpenSelected"
+        class="flex items-center justify-center w-14 h-14 text-white bg-blue-700 rounded-full hover:bg-blue-800 shadow-xl transition-transform transform hover:scale-110 cursor-pointer focus:ring-4 focus:ring-blue-300">
+        <!-- Icon: Arrow Top Right On Square (External Link) -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-7 h-7">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+        <span class="sr-only">Ouvrir la sélection</span>
+      </a>
+
+      <!-- 2. Le Badge -->
+      <div
+        class="absolute -top-1 -right-1 flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full shadow-sm">
+        <span id="selectedCountBadge">0</span>
+      </div>
+
+      <!-- 3. Tooltip -->
+      <div
+        class="absolute bottom-full right-1/2 translate-x-1/2 mb-3 w-max px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+        Ouvrir la sélection
+        <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+      </div>
+
+    </div>
   </div>
 
-  <!-- Materialize JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- Flowbite JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+  <!-- Votre Script JS -->
   <script src="search.js"></script>
 </body>
 

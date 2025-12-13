@@ -1,5 +1,6 @@
 // Initialisation
 document.addEventListener('DOMContentLoaded', async () => {
+  const searchForm = document.getElementById('searchForm');
   const searchInput = document.getElementById('searchInput');
   const searchBtn = document.getElementById('searchBtn');
   const loadingSpinner = document.getElementById('loadingSpinner');
@@ -146,81 +147,98 @@ document.addEventListener('DOMContentLoaded', async () => {
     const typeColor = getTypeColor(issueType);
     const priorityColor = getPriorityColor(priority);
 
+    // ... (code précédent : définitions de issueUrl, statusColor, etc.) ...
+
     col.innerHTML = `
-      <div class="card hoverable" style="height: 100%; display: flex; flex-direction: column; border: 1px solid #e0e0e0; border-radius: 6px;">
-          
-          <div class="card-content" style="padding: 12px; flex: 1; display: flex; flex-direction: column;">
-              
-              <!-- LIGNE 1 : Checkbox + Clé + Statut -->
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                  
-                  <!-- Groupe Gauche : Checkbox + Clé -->
-                  <div style="display: flex; align-items: center;">
-                      <label style="margin-right: 12px;">
-                          <input type="checkbox" class="filled-in select-ticket-cb" value="${issueUrl}" />
-                          <span style="padding-left: 25px; height: 20px; line-height: 20px;"></span>
-                      </label>
-                      
-                      <a href="${issueUrl}" target="_blank" class="blue-text text-darken-2" style="font-size: 15px; font-weight: 700; text-decoration: none;">
-                          ${issue.key}
-                      </a>
-                  </div>
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col h-full group relative">
+        <div class="p-4 flex flex-col h-full">
 
-                  <!-- Groupe Droite : Badge Statut -->
-                  <span class="new badge ${statusColor}" data-badge-caption="" style="font-weight: 500; font-size: 11px; border-radius: 4px; min-width: auto; padding: 0 8px;">
-                      ${issue.fields.status.name}
-                  </span>
+            <!-- LIGNE 1 : En-tête -->
+            <div class="flex justify-between items-start mb-2">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" class="select-ticket-cb w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" value="${issueUrl}">
+                    <a href="${issueUrl}" target="_blank" class="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1">
+                        ${issue.key}
+                    </a>
+                </div>
+                <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded border border-transparent inline-flex items-center bg-gray-100 text-gray-800">
+                    ${issue.fields.status.name}
+                </span>
+            </div>
 
-              </div>
+            <!-- LIGNE 2 : Titre du ticket (Hauteur FIXE) -->
+            <!-- 
+               h-10 : Force une hauteur de 40px (exactement 2 lignes en text-sm) 
+               overflow-hidden : Cache ce qui dépasse
+               line-clamp-2 : Ajoute les "..." si c'est trop long
+               mb-4 : Pousse le footer vers le bas avec une marge constante
+            -->
+            <a href="${issueUrl}" target="_blank" 
+               class="block h-10 overflow-hidden text-gray-900 font-medium text-sm leading-snug hover:text-blue-600 transition-colors mb-4 line-clamp-2" 
+               title="${issue.fields.summary}">
+                ${issue.fields.summary}
+            </a>
 
-              <!-- LIGNE 2 : Titre du ticket (Hauteur fixe pour alignement grille) -->
-              <a href="${issueUrl}" target="_blank" class="grey-text text-darken-4" style="display: block; font-weight: 500; margin-bottom: 12px; font-size: 13px; line-height: 1.4; text-decoration: none; height: 38px; overflow: hidden;">
-                  ${truncateText(issue.fields.summary, 70)}
-              </a>
+            <!-- LIGNE 3 : Footer -->
+            <!-- mt-auto permet de coller au bas si jamais on change la hauteur de la card, 
+                 mais ici c'est surtout le h-10 du dessus qui assure l'alignement -->
+            <div class="mt-auto pt-3 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-500">
+                
+                <!-- Type -->
+                <div class="flex items-center gap-1" title="Type: ${issueType}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4" style="color: ${typeColor}">
+                        <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a1 1 0 011-1h5a1 1 0 01.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="truncate max-w-[80px]">${issueType}</span>
+                </div>
 
-              <!-- LIGNE 3 : Infos du bas (Type, Prio, Assigné, Date) -->
-              <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #757575; margin-top: auto; padding-top: 8px; border-top: 1px solid #f5f5f5;">
-                  
-                  <!-- Type -->
-                  <span style="display: flex; align-items: center;" title="Type: ${issueType}">
-                      <i class="material-icons tiny" style="color: ${typeColor}; font-size: 14px; margin-right: 4px;">label</i> 
-                      ${issueType}
-                  </span>
-                  
-                  <!-- Priorité -->
-                  <span style="display: flex; align-items: center;" title="Priorité: ${priority}">
-                      <i class="material-icons tiny" style="color: ${priorityColor}; font-size: 14px; margin-right: 4px;">flag</i> 
-                      ${priority}
-                  </span>
+                <!-- Priorité -->
+                <div class="flex items-center gap-1" title="Priorité: ${priority}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4" style="color: ${priorityColor}">
+                        <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+                    </svg>
+                    <span>${priority}</span>
+                </div>
 
-                  <!-- Assigné -->
-                  <span style="display: flex; align-items: center;" title="Assigné à: ${assignee}">
-                      <i class="material-icons tiny grey-text" style="font-size: 14px; margin-right: 4px;">person</i> 
-                      ${truncateText(assignee, 15)}
-                  </span>
-              </div>
+                <!-- Assigné -->
+                <div class="flex items-center gap-1 ml-auto" title="Assigné à: ${assignee}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gray-400">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="truncate max-w-[100px] font-medium text-gray-600">${truncateText(assignee, 15)}</span>
+                </div>
 
-          </div>
-      </div>
-    `;
+            </div>
+        </div>
+    </div>
+  `;
 
     return col;
   }
 
   // Couleur du badge selon le statut
   function getStatusColor(status) {
-    const statusLower = status.toLowerCase();
+    const s = status.toLowerCase();
 
-    if (statusLower.includes('done') || statusLower.includes('closed') || statusLower.includes('résolu') || statusLower.includes('terminé')) {
-      return 'green';
-    } else if (statusLower.includes('progress') || statusLower.includes('cours') || statusLower.includes('en cours')) {
-      return 'blue';
-    } else if (statusLower.includes('todo') || statusLower.includes('open') || statusLower.includes('faire') || statusLower.includes('à faire')) {
-      return 'orange';
-    } else if (statusLower.includes('review') || statusLower.includes('test')) {
-      return 'purple';
-    } else {
-      return 'grey';
+    // VERT : Terminé, Résolu, Closed
+    if (s.includes('done') || s.includes('terminé') || s.includes('closed') || s.includes('résolu')) {
+      return 'bg-green-100 text-green-800 border-green-200';
+    }
+    // BLEU : En cours, Progress
+    else if (s.includes('progress') || s.includes('cours')) {
+      return 'bg-blue-100 text-blue-800 border-blue-200';
+    }
+    // VIOLET : Review, Test, Recette
+    else if (s.includes('review') || s.includes('test') || s.includes('recette')) {
+      return 'bg-purple-100 text-purple-800 border-purple-200';
+    }
+    // ROUGE : Bloqué, Rejeté
+    else if (s.includes('block') || s.includes('bloqué') || s.includes('cancel')) {
+      return 'bg-red-100 text-red-800 border-red-200';
+    }
+    // GRIS (Défaut) : À faire, Open, To Do
+    else {
+      return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
 
@@ -311,6 +329,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       return numB - numA; // Ordre décroissant (plus récent d'abord)
     });
   }
+});
+
+// On écoute l'événement "submit" du formulaire
+// (Cela couvre le clic sur le bouton ET la touche Entrée dans l'input)
+searchForm.addEventListener('submit', function (event) {
+
+  // CRUCIAL : Empêche le rechargement de la page
+  event.preventDefault();
+
+  // Lance ta fonction de recherche existante
+  performSearch();
 });
 
 // 1. Écouter les changements sur les cases à cocher (Event Delegation)
