@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Charger la liste des users Jira
 async function loadUsers() {
   try {
-    const url = `${config.jiraUrl}/rest/api/3/users?maxResults=100`;
+    const url = `${config.jiraUrl}/rest/api/3/users/search?accountType=atlassian&maxResults=200`;
     console.log('📥 Chargement des utilisateurs:', url);
 
     const response = await fetch(url, {
@@ -53,7 +53,9 @@ async function loadUsers() {
     }
 
     const users = await response.json();
-    allUsers = users.filter(user => user.active); // Seulement les utilisateurs actifs
+    allUsers = users
+      .filter(user => user.active && user.accountType === 'atlassian')
+      .sort((a, b) => a.displayName.localeCompare(b.displayName, 'fr'));
 
     console.log('✅ Utilisateurs chargés:', allUsers.length);
 
