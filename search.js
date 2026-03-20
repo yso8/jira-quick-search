@@ -11,6 +11,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const initialState = document.getElementById('initialState');
   const errorMessage = document.getElementById('errorMessage');
 
+  const PAGE_SIZE = 25;
+  let currentJql = '';
+  let currentPage = 0;
+  let totalResults = 0;
+  let hasNextPage = false;
+  let pageTokens = [null]; // pageTokens[i] = nextPageToken pour accéder à la page i
+
   // Vérifier la configuration au démarrage
   const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
 
@@ -30,74 +37,80 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Fonction de recherche
+  searchForm.addEventListener('submit', (e) => { e.preventDefault(); performSearch(); });
+  document.getElementById('prevPageBtn').addEventListener('click', () => fetchPage(currentPage - 1));
+  document.getElementById('nextPageBtn').addEventListener('click', () => fetchPage(currentPage + 1));
+
+  // Nouvelle recherche : construit le JQL et lance la page 0
   async function performSearch() {
     const query = searchInput.value.trim();
-
-    // Récupération des filtres
     const showTasks = document.getElementById('filterTasks').checked;
     const showEpics = document.getElementById('filterEpics').checked;
 
-    // Masquer tous les états
+    let jql = query
+      ? `(text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*")`
+      : '';
+
+    const filters = [];
+    if (showTasks && !showEpics) {
+      filters.push('issuetype != Epic');
+    } else if (!showTasks && showEpics) {
+      filters.push('issuetype = Epic');
+    }
+
+    if (filters.length > 0) {
+      jql = jql ? `${jql} AND ${filters.join(' AND ')}` : filters.join(' AND ');
+    }
+
+    jql = (jql ? jql + ' ' : '') + 'ORDER BY updated DESC';
+    currentJql = jql;
+    pageTokens = [null]; // reset des tokens à chaque nouvelle recherche
+
+    await fetchPage(0);
+  }
+
+  // Fetch une page spécifique (pagination par curseur nextPageToken)
+  async function fetchPage(page) {
     hideAllStates();
     loadingSpinner.style.display = 'block';
 
     try {
       const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
 
-      // 1. Base de la recherche textuelle (optionnelle)
-      let jql = query
-        ? `(text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*")`
-        : '';
-
-      // 2. Gestion des Types (Tâches vs Epics)
-      const filters = [];
-      if (showTasks && !showEpics) {
-        filters.push('issuetype != Epic');
-      } else if (!showTasks && showEpics) {
-        filters.push('issuetype = Epic');
+      const body = {
+        jql: currentJql,
+        maxResults: PAGE_SIZE,
+        fields: ['summary', 'status', 'assignee', 'created', 'issuetype', 'priority']
+      };
+      if (pageTokens[page]) {
+        body.nextPageToken = pageTokens[page];
       }
 
-      if (filters.length > 0) {
-        jql = jql ? `${jql} AND ${filters.join(' AND ')}` : filters.join(' AND ');
-      }
-
-      jql = (jql ? jql + ' ' : '') + 'ORDER BY updated DESC';
-
-      // NOUVELLE API : /rest/api/3/search/jql
-      const url = `${config.jiraUrl}/rest/api/3/search/jql`;
-
-      console.log('🔍 Recherche avec JQL:', jql);
-      console.log('📡 URL API:', url);
-
-      const response = await fetch(url, {
+      const response = await fetch(`${config.jiraUrl}/rest/api/3/search/jql`, {
         method: 'POST',
         headers: {
           'Authorization': 'Basic ' + btoa(`${config.jiraEmail}:${config.jiraToken}`),
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          jql: jql,
-          maxResults: 50,
-          fields: ['summary', 'status', 'assignee', 'created', 'issuetype', 'priority']
-        })
+        body: JSON.stringify(body)
       });
-
-      console.log('📊 Statut réponse:', response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Erreur API:', errorText);
         throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
-      console.log('✅ Résultats reçus:', data.total || data.issues?.length || 0, 'ticket(s)');
-
       loadingSpinner.style.display = 'none';
 
       if (data.issues && data.issues.length > 0) {
+        currentPage = page;
+        totalResults = data.total || null;
+        hasNextPage = !!data.nextPageToken;
+        if (data.nextPageToken && !pageTokens[page + 1]) {
+          pageTokens[page + 1] = data.nextPageToken;
+        }
         displayResults(data.issues, config.jiraUrl);
       } else {
         emptyState.style.display = 'block';
@@ -114,16 +127,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   function displayResults(issues, jiraUrl) {
     resultsList.innerHTML = '';
 
-    // Trier les issues par clé avant l'affichage, plus récents en premier
     const sortedIssues = sortIssuesByKey(issues);
+    const from = currentPage * PAGE_SIZE + 1;
+    const to = from + sortedIssues.length - 1;
 
-    resultCount.textContent = sortedIssues.length;
+    resultCount.textContent = totalResults !== null ? totalResults : `${to}+`;
     resultsContainer.style.display = 'block';
 
-    issues.forEach(issue => {
+    sortedIssues.forEach(issue => {
       const card = createIssueCard(issue, jiraUrl);
       resultsList.appendChild(card);
     });
+
+    // Pagination
+    const paginationControls = document.getElementById('paginationControls');
+    const showPagination = currentPage > 0 || hasNextPage;
+
+    if (showPagination) {
+      paginationControls.classList.remove('hidden');
+      const pageLabel = totalResults !== null
+        ? `${from}–${to} sur ${totalResults}`
+        : `Page ${currentPage + 1}`;
+      document.getElementById('pageInfo').textContent = pageLabel;
+      document.getElementById('prevPageBtn').disabled = currentPage === 0;
+      document.getElementById('nextPageBtn').disabled = !hasNextPage;
+    } else {
+      paginationControls.classList.add('hidden');
+    }
   }
 
   // Créer une carte pour un ticket (VERSION COMPACTE + HAUTEUR FIXE)
@@ -326,17 +356,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       return numB - numA; // Ordre décroissant (plus récent d'abord)
     });
   }
-});
-
-// On écoute l'événement "submit" du formulaire
-// (Cela couvre le clic sur le bouton ET la touche Entrée dans l'input)
-searchForm.addEventListener('submit', function (event) {
-
-  // CRUCIAL : Empêche le rechargement de la page
-  event.preventDefault();
-
-  // Lance ta fonction de recherche existante
-  performSearch();
 });
 
 // 1. Écouter les changements sur les cases à cocher (Event Delegation)
