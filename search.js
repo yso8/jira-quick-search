@@ -38,11 +38,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const showTasks = document.getElementById('filterTasks').checked;
     const showEpics = document.getElementById('filterEpics').checked;
 
-    if (!query) {
-      M.toast({ html: '⚠️ Veuillez entrer des mots-clés', classes: 'orange' });
-      return;
-    }
-
     // Masquer tous les états
     hideAllStates();
     loadingSpinner.style.display = 'block';
@@ -50,22 +45,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
 
-      // 1. Base de la recherche textuelle
-      let jql = `(text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*")`;
+      // 1. Base de la recherche textuelle (optionnelle)
+      let jql = query
+        ? `(text ~ "${query}*" OR summary ~ "${query}*" OR description ~ "${query}*")`
+        : '';
 
       // 2. Gestion des Types (Tâches vs Epics)
+      const filters = [];
       if (showTasks && !showEpics) {
-        // Si on veut les tâches mais PAS les Epics (comportement par défaut précédent)
-        jql += ` AND issuetype != Epic`;
+        filters.push('issuetype != Epic');
       } else if (!showTasks && showEpics) {
-        // Si on veut JUSTE les Epics
-        jql += ` AND issuetype = Epic`;
-      } else if (!showTasks && !showEpics) {
-        // Si rien n'est coché, on cherche tout sauf les types bizarres, ou on laisse vide
-        // Pour l'UX, si rien n'est coché, on assume qu'on cherche tout.
+        filters.push('issuetype = Epic');
       }
 
-      jql += ` ORDER BY updated DESC`;
+      if (filters.length > 0) {
+        jql = jql ? `${jql} AND ${filters.join(' AND ')}` : filters.join(' AND ');
+      }
+
+      jql = (jql ? jql + ' ' : '') + 'ORDER BY updated DESC';
 
       // NOUVELLE API : /rest/api/3/search/jql
       const url = `${config.jiraUrl}/rest/api/3/search/jql`;
