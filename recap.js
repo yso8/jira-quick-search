@@ -246,11 +246,25 @@ function displayResults(issues) {
     const statusColor = getStatusColor(issue.status);
 
     row.innerHTML = `
-      <td class="px-6 py-4 font-medium text-blue-600 hover:underline">
-        ${issue.key}
+      <td class="px-6 py-4 font-medium text-blue-600">
+        <div class="flex items-center gap-2">
+          <a href="${issueUrl}" target="_blank" class="hover:underline">${issue.key}</a>
+          <button class="copy-key-btn text-gray-400 hover:text-gray-700 transition-colors" data-key="${issue.key}" title="Copier la clé">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+          </button>
+        </div>
       </td>
       <td class="px-6 py-4 text-gray-900">
-        ${truncateText(issue.summary, 60)}
+        <div class="flex items-center gap-2">
+          <span>${truncateText(issue.summary, 60)}</span>
+          <button class="copy-summary-btn flex-shrink-0 text-gray-400 hover:text-gray-700 transition-colors" data-summary="${issue.summary.replace(/"/g, '&quot;')}" title="Copier le résumé">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+          </button>
+        </div>
       </td>
       <td class="px-6 py-4 text-gray-700">
         ${issue.lastModifiedBy}
@@ -269,6 +283,30 @@ function displayResults(issues) {
         </span>
       </td>
     `;
+
+    // Copie de la clé du ticket
+    row.querySelector('.copy-key-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(issue.key).then(() => {
+        const btn = e.currentTarget;
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+        setTimeout(() => {
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>`;
+        }, 1500);
+      });
+    });
+
+    // Copie du résumé
+    row.querySelector('.copy-summary-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(issue.summary).then(() => {
+        const btn = e.currentTarget;
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+        setTimeout(() => {
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>`;
+        }, 1500);
+      });
+    });
 
     // Événement click pour ouvrir le ticket
     row.addEventListener('click', () => {
