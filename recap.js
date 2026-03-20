@@ -73,18 +73,62 @@ async function loadUsers() {
 }
 
 // Générer le récapitulatif
+// Calcule les dates de début/fin selon la période sélectionnée
+function getPeriodDates(period) {
+  const now = new Date();
+
+  const getMonday = (d) => {
+    const date = new Date(d);
+    date.setHours(0, 0, 0, 0);
+    const day = date.getDay();
+    date.setDate(date.getDate() - (day === 0 ? 6 : day - 1));
+    return date;
+  };
+
+  const endOfDay = (d) => {
+    const date = new Date(d);
+    date.setHours(23, 59, 59, 999);
+    return date;
+  };
+
+  switch (period) {
+    case 'this_week': {
+      return { start: getMonday(now), end: endOfDay(now) };
+    }
+    case 'last_week': {
+      const start = getMonday(now);
+      start.setDate(start.getDate() - 7);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+      return { start, end: endOfDay(end) };
+    }
+    case 'last_2_weeks': {
+      const start = getMonday(now);
+      start.setDate(start.getDate() - 7);
+      return { start, end: endOfDay(now) };
+    }
+    case 'this_month': {
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      start.setHours(0, 0, 0, 0);
+      return { start, end: endOfDay(now) };
+    }
+    default:
+      return { start: getMonday(now), end: endOfDay(now) };
+  }
+}
+
 async function generateRecap() {
   const userSelect = document.getElementById('userSelect');
   const dateRange = document.getElementById('dateRange');
 
   const assigneeId = userSelect.value;
-  const days = parseInt(dateRange.value);
+  const { start, end } = getPeriodDates(dateRange.value);
 
   hideAllStates();
   document.getElementById('loadingSpinner').style.display = 'block';
 
   try {
-    const results = await fetchWeeklyActivities(assigneeId, days);
+    const results = await fetchWeeklyActivities(assigneeId, start, end);
     currentResults = results;
 
     if (results.length === 0) {
@@ -105,20 +149,17 @@ async function generateRecap() {
 }
 
 // Récupérer les tickets modifiés dans la période
-async function fetchWeeklyActivities(assigneeId, days) {
+async function fetchWeeklyActivities(assigneeId, startDate, endDate) {
   try {
-    // Construction du JQL
-    let jql = `updated >= -${days}d`;
+    const startStr = startDate.toISOString().split('T')[0];
+    const endStr = endDate.toISOString().split('T')[0];
 
+    let jql = `updated >= "${startStr}" AND updated <= "${endStr}"`;
     if (assigneeId) {
       jql += ` AND assignee = "${assigneeId}"`;
     }
-
     jql += ` ORDER BY updated DESC`;
 
-    console.log('🔍 JQL:', jql);
-
-    // Appel API pour récupérer les tickets (utiliser /search/jql au lieu de /search)
     const url = `${config.jiraUrl}/rest/api/3/search/jql`;
     const response = await fetch(url, {
       method: 'POST',
@@ -128,7 +169,7 @@ async function fetchWeeklyActivities(assigneeId, days) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        jql: jql,
+        jql,
         maxResults: 100,
         fields: ['key', 'summary', 'status', 'assignee', 'updated', 'comment']
       })
@@ -141,10 +182,7 @@ async function fetchWeeklyActivities(assigneeId, days) {
     const data = await response.json();
     console.log('✅ Tickets récupérés:', data.issues.length);
 
-    // Enrichir chaque ticket avec les informations supplémentaires
-    const enrichedIssues = await Promise.all(
-      data.issues.map(issue => enrichIssueData(issue, days))
-    );
+    const enrichedIssues = data.issues.map(issue => enrichIssueData(issue, startDate));
 
     return enrichedIssues;
 
@@ -154,68 +192,37 @@ async function fetchWeeklyActivities(assigneeId, days) {
   }
 }
 
-// Enrichir les données d'un ticket
-async function enrichIssueData(issue, days) {
-  try {
-    // 1. Récupérer la personne qui a modifié en dernier
-    // On utilise le changelog pour trouver le dernier auteur
-    const changelogUrl = `${config.jiraUrl}/rest/api/3/issue/${issue.key}/changelog`;
-    const changelogResponse = await fetch(changelogUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Basic ' + btoa(`${config.jiraEmail}:${config.jiraToken}`),
-        'Accept': 'application/json'
-      }
-    });
+// Enrichir les données d'un ticket (synchrone, changelog déjà embarqué dans la réponse)
+function enrichIssueData(issue, startDate) {
+  const assigneeAccountId = issue.fields.assignee ? issue.fields.assignee.accountId : null;
+  let lastModifiedBy = 'Non disponible';
 
-    let lastModifiedBy = 'Non disponible';
-
-    if (changelogResponse.ok) {
-      const changelog = await changelogResponse.json();
-
-      if (changelog.values && changelog.values.length > 0) {
-        // Le changelog est trié du plus récent au plus ancien
-        const latestChange = changelog.values[0];
-        lastModifiedBy = latestChange.author.displayName;
-      }
-    }
-
-    // 2. Compter les commentaires de la période
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
-
-    let commentsCount = 0;
-    if (issue.fields.comment && issue.fields.comment.comments) {
-      commentsCount = issue.fields.comment.comments.filter(comment => {
-        const commentDate = new Date(comment.created);
-        return commentDate >= cutoffDate;
-      }).length;
-    }
-
-    // 3. Retourner l'objet enrichi
-    return {
-      key: issue.key,
-      summary: issue.fields.summary,
-      status: issue.fields.status.name,
-      updated: issue.fields.updated,
-      lastModifiedBy: lastModifiedBy,
-      commentsCount: commentsCount,
-      assignee: issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné'
-    };
-
-  } catch (error) {
-    console.error(`❌ Erreur enrichissement ${issue.key}:`, error);
-    // Retourner un objet minimal en cas d'erreur
-    return {
-      key: issue.key,
-      summary: issue.fields.summary,
-      status: issue.fields.status.name,
-      updated: issue.fields.updated,
-      lastModifiedBy: 'Erreur',
-      commentsCount: 0,
-      assignee: issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné'
-    };
+  const histories = issue.changelog ? issue.changelog.histories : [];
+  const changeByAssignee = histories.find(
+    change => assigneeAccountId &&
+      change.author.accountId === assigneeAccountId &&
+      new Date(change.created) >= startDate
+  );
+  if (changeByAssignee) {
+    lastModifiedBy = changeByAssignee.author.displayName;
   }
+
+  let commentsCount = 0;
+  if (issue.fields.comment && issue.fields.comment.comments) {
+    commentsCount = issue.fields.comment.comments.filter(
+      comment => new Date(comment.created) >= startDate
+    ).length;
+  }
+
+  return {
+    key: issue.key,
+    summary: issue.fields.summary,
+    status: issue.fields.status.name,
+    updated: issue.fields.updated,
+    lastModifiedBy,
+    commentsCount,
+    assignee: issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné'
+  };
 }
 
 // Afficher les résultats dans le tableau
@@ -387,12 +394,13 @@ async function copyToText() {
     return;
   }
 
-  const dateRange = document.getElementById('dateRange').value;
+  const dateRangeEl = document.getElementById('dateRange');
+  const periodLabel = dateRangeEl.options[dateRangeEl.selectedIndex].text;
   const userSelect = document.getElementById('userSelect');
   const selectedUser = userSelect.options[userSelect.selectedIndex].text;
 
   // En-tête
-  let text = `# Récapitulatif Jira - ${dateRange} derniers jours\n`;
+  let text = `# Récapitulatif Jira - ${periodLabel}\n`;
   if (userSelect.value) {
     text += `**Personne:** ${selectedUser}\n`;
   }
