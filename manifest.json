@@ -10,7 +10,19 @@
     "https://*.atlassian.net/*"
   ],
   "action": {
-    "default_title": "Jira Quick Search"
+    "default_title": "Jira Quick Search",
+    "default_popup": "popup.html"
+  },
+  "omnibox": {
+    "keyword": "jira"
+  },
+  "commands": {
+    "open_search": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+J"
+      },
+      "description": "Ouvrir Jira-Quick-Search"
+    }
   },
   "background": {
     "service_worker": "background.js"

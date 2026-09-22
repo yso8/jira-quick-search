@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let pageTokens = [null]; // pageTokens[i] = nextPageToken pour accéder à la page i
   let availableFilters = [];
   const selectedFilters = {};
+  const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
 
   // Vérifier la configuration au démarrage
   const config = await loadJiraConfig();
@@ -43,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Focus automatique sur le champ de recherche
+  searchInput.value = initialQuery;
   searchInput.focus();
 
   // Event listeners
@@ -59,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   copyJqlBtn.addEventListener('click', copyCurrentJql);
   document.getElementById('prevPageBtn').addEventListener('click', () => fetchPage(currentPage - 1));
   document.getElementById('nextPageBtn').addEventListener('click', () => fetchPage(currentPage + 1));
+  if (initialQuery) performSearch();
 
   // Nouvelle recherche : construit le JQL et lance la page 0
   async function performSearch() {
