@@ -2,6 +2,8 @@
 let config = null;
 let allUsers = [];
 let currentResults = [];
+let currentReport = null;
+let currentPeriod = null;
 const ACTIVITY_RULES_STORAGE_KEY = 'recapActivityRules';
 
 // Initialisation
@@ -18,6 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const errorMessage = document.getElementById('errorMessage');
   const exportButtons = document.getElementById('exportButtons');
   const ruleMatchMode = document.getElementById('ruleMatchMode');
+  const customPeriod = document.getElementById('customPeriod');
+  dateRange.addEventListener('change', () => customPeriod.classList.toggle('hidden', dateRange.value !== 'custom'));
 
   // Vérifier la configuration
   config = await loadJiraConfig();
@@ -151,6 +155,17 @@ async function generateRecap() {
 
   const assigneeId = userSelect.value;
   const { start, end } = getPeriodDates(dateRange.value);
+  if (dateRange.value === 'custom') {
+    const customStart = document.getElementById('customStart').value;
+    const customEnd = document.getElementById('customEnd').value;
+    if (!customStart || !customEnd || new Date(customStart) > new Date(customEnd)) {
+      showError('Sélectionnez une période personnalisée valide.');
+      return;
+    }
+    start.setTime(new Date(`${customStart}T00:00:00`).getTime());
+    end.setTime(new Date(`${customEnd}T23:59:59.999`).getTime());
+  }
+  currentPeriod = { start, end };
   const activityRules = getActivityRules();
   await saveActivityRules();
 
@@ -160,6 +175,7 @@ async function generateRecap() {
   try {
     const results = await fetchWeeklyActivities(assigneeId, start, end, activityRules);
     currentResults = results;
+    currentReport = classifyIssues(results, start, end);
 
     if (results.length === 0) {
       showError('Aucun ticket trouvé pour cette période.');
@@ -168,6 +184,12 @@ async function generateRecap() {
 
     displayResults(results);
     displayStats(results);
+    document.getElementById('reportSummary').textContent = generateSummary(currentReport, start, end);
+    document.getElementById('reportSummary').classList.remove('hidden');
+    displayTimeline(currentReport.involved);
+    document.getElementById('createdTickets').textContent = currentReport.created.length;
+    document.getElementById('completedTickets').textContent = currentReport.completed.length;
+    document.getElementById('inProgressTickets').textContent = currentReport.inProgress.length;
     document.getElementById('exportButtons').classList.remove('hidden');
 
   } catch (error) {
@@ -195,7 +217,7 @@ async function fetchWeeklyActivities(assigneeId, startDate, endDate, activityRul
       body: JSON.stringify({
         jql,
         maxResults: 100,
-        fields: ['key', 'summary', 'status', 'assignee', 'updated', 'comment']
+        fields: ['key', 'summary', 'status', 'assignee', 'updated', 'created', 'project', 'issuetype', 'comment']
       })
     });
 
@@ -266,6 +288,9 @@ async function enrichIssueData(issue, startDate, endDate, activityRules) {
     key: issue.key,
     summary: issue.fields.summary,
     status: issue.fields.status.name,
+    created: issue.fields.created,
+    project: issue.fields.project ? issue.fields.project.name : 'Projet inconnu',
+    type: issue.fields.issuetype ? issue.fields.issuetype.name : null,
     updated: issue.fields.updated,
     lastModifiedBy,
     commentsCount,
@@ -366,6 +391,20 @@ function displayResults(issues) {
   });
 
   document.getElementById('resultsContainer').style.display = 'block';
+}
+
+function displayTimeline(issues) {
+  const container = document.getElementById('timelineItems');
+  const timeline = sortTimeline(issues);
+  container.innerHTML = timeline.map(issue => {
+    const issueUrl = `${config.jiraUrl}/browse/${encodeURIComponent(issue.key)}`;
+    return `<a href="${issueUrl}" target="_blank" rel="noopener" class="block border-l-2 border-purple-300 pl-4 hover:border-purple-600">
+      <p class="text-xs text-gray-500">${escapeHtml(issue.updated || issue.created ? new Date(issue.updated || issue.created).toLocaleString('fr-FR') : 'Date indisponible')}</p>
+      <p class="font-medium text-blue-700 hover:underline">${escapeHtml(issue.key)} — ${escapeHtml(issue.summary || 'Sans résumé')}</p>
+      <p class="text-sm text-gray-600">Statut : ${escapeHtml(issue.status || 'Indisponible')}${issue.type ? ` · Type : ${escapeHtml(issue.type)}` : ''}</p>
+    </a>`;
+  }).join('');
+  document.getElementById('reportTimeline').classList.remove('hidden');
 }
 
 // Afficher les statistiques
@@ -471,7 +510,7 @@ function exportToCSV() {
   link.click();
   document.body.removeChild(link);
 
-  showToast('✅ CSV exporté avec succès !');
+  showToast('CSV exporté avec succès !');
 }
 
 // Copier en texte (format markdown)
@@ -480,6 +519,22 @@ async function copyToText() {
     showError('Aucune donnée à copier');
     return;
   }
+
+  const { start, end } = currentPeriod || getPeriodDates(document.getElementById('dateRange').value);
+  const report = currentReport || classifyIssues(currentResults, start, end);
+  const selectedUserLabel = document.getElementById('userSelect').selectedOptions[0]?.textContent;
+  try {
+    await navigator.clipboard.writeText(generateMarkdownReport(report, start, end, {
+      title: document.getElementById('userSelect').value ? selectedUserLabel : null,
+      summary: generateSummary(report, start, end),
+      baseUrl: config.jiraUrl
+    }));
+    showToast('Bilan Markdown copié !');
+  } catch (error) {
+    await debugLog('erreur copie bilan', { message: error.message, stack: error.stack });
+    showError('Erreur lors de la copie du bilan');
+  }
+  return;
 
   const dateRangeEl = document.getElementById('dateRange');
   const periodLabel = dateRangeEl.options[dateRangeEl.selectedIndex].text;
@@ -505,7 +560,7 @@ async function copyToText() {
   // Copier dans le presse-papiers
   try {
     await navigator.clipboard.writeText(text);
-    showToast('✅ Texte copié dans le presse-papiers !');
+    showToast('Texte copié dans le presse-papiers !');
   } catch (error) {
     await debugLog('erreur copie', { message: error.message, stack: error.stack });
     showError('Erreur lors de la copie');
