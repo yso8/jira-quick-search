@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const filterLoading = document.getElementById('filterLoading');
   const filterControls = document.getElementById('filterControls');
   const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+  const copyJqlBtn = document.getElementById('copyJqlBtn');
 
   const PAGE_SIZE = 25;
   let currentJql = '';
@@ -54,7 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   searchForm.addEventListener('submit', (e) => { e.preventDefault(); performSearch(); });
   clearFiltersBtn.addEventListener('click', clearFilters);
-  filterControls.addEventListener('click', handleFilterClick);
+  filterControls.addEventListener('change', handleFilterChange);
+  copyJqlBtn.addEventListener('click', copyCurrentJql);
   document.getElementById('prevPageBtn').addEventListener('click', () => fetchPage(currentPage - 1));
   document.getElementById('nextPageBtn').addEventListener('click', () => fetchPage(currentPage + 1));
 
@@ -90,25 +92,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     `).join('');
   }
 
-  function handleFilterClick(event) {
+  function handleFilterChange(event) {
     const select = event.target.closest('select[data-filter-id]');
     if (!select) return;
     const filterId = select.dataset.filterId;
     if (select.value) selectedFilters[filterId] = select.value;
     else delete selectedFilters[filterId];
-    clearFiltersBtn.classList.toggle('hidden', Object.keys(selectedFilters).length === 0);
+    updateClearFiltersState();
+    performSearch();
   }
 
-  function clearFilters() {
+  async function clearFilters() {
     Object.keys(selectedFilters).forEach(key => delete selectedFilters[key]);
     filterControls.querySelectorAll('select[data-filter-id]').forEach(select => { select.value = ''; });
-    clearFiltersBtn.classList.add('hidden');
+    updateClearFiltersState();
+    await performSearch();
+  }
+
+  function updateClearFiltersState() {
+    clearFiltersBtn.disabled = Object.keys(selectedFilters).length === 0;
+  }
+
+  async function copyCurrentJql() {
+    if (!currentJql) return;
+    await navigator.clipboard.writeText(currentJql);
+    const originalLabel = copyJqlBtn.textContent;
+    copyJqlBtn.textContent = 'JQL copié';
+    setTimeout(() => { copyJqlBtn.textContent = originalLabel; }, 1500);
   }
 
   // Fetch une page spécifique (pagination par curseur nextPageToken)
   async function fetchPage(page) {
     hideAllStates();
     loadingSpinner.style.display = 'block';
+    document.getElementById('prevPageBtn').disabled = true;
+    document.getElementById('nextPageBtn').disabled = true;
 
     try {
       const config = await loadJiraConfig();
@@ -163,6 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const to = from + sortedIssues.length - 1;
 
     resultCount.textContent = totalResults !== null ? totalResults : `${to}+`;
+    copyJqlBtn.disabled = false;
     resultsContainer.style.display = 'block';
 
     sortedIssues.forEach(issue => {
