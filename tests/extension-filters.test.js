@@ -16,5 +16,8 @@ assert.match(search, /<select id="filter-/);
 assert.match(search, /data-filter-id/);
 assert.match(search, /navigator\.clipboard\.writeText/);
 assert.match(search, /clearFiltersBtn\.disabled/);
+assert.match(search, /'project'/);
+assert.match(search, /'updated'/);
+assert.match(search, /issue\.fields\.project/);
 
 console.log('extension-filters: 6 tests passed');

@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const body = {
         jql: currentJql,
         maxResults: PAGE_SIZE,
-        fields: ['summary', 'status', 'assignee', 'created', 'issuetype', 'priority']
+        fields: ['summary', 'status', 'assignee', 'created', 'updated', 'project', 'issuetype', 'priority']
       };
       if (pageTokens[page]) {
         body.nextPageToken = pageTokens[page];
@@ -214,7 +214,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const statusColor = getStatusColor(issue.fields.status.name);
     const issueUrl = `${jiraUrl}/browse/${issue.key}`;
     const createdDate = new Date(issue.fields.created).toLocaleDateString('fr-FR');
+    const updatedDate = issue.fields.updated ? new Date(issue.fields.updated).toLocaleDateString('fr-FR') : 'N/A';
     const assignee = issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné';
+    const project = issue.fields.project ? (issue.fields.project.name || issue.fields.project.key) : 'Projet inconnu';
 
     // Informations supplémentaires
     const issueType = issue.fields.issuetype ? issue.fields.issuetype.name : 'N/A';
@@ -255,6 +257,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                title="${escapeHtml(issue.fields.summary)}">
                 ${escapeHtml(issue.fields.summary)}
             </a>
+
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 mb-3">
+                <span class="font-medium text-gray-600">${escapeHtml(project)}</span>
+                <span title="Créé le ${escapeHtml(createdDate)}">Créé le ${escapeHtml(createdDate)}</span>
+                <span title="Mis à jour le ${escapeHtml(updatedDate)}">Mis à jour le ${escapeHtml(updatedDate)}</span>
+            </div>
 
             <!-- LIGNE 3 : Footer -->
             <!-- mt-auto permet de coller au bas si jamais on change la hauteur de la card, 
