@@ -28,6 +28,7 @@
   font-weight: 700;
   line-height: 1.25;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .global-navbar__brand:focus-visible,
@@ -42,7 +43,7 @@
   width: 2rem;
   height: 2rem;
   border-radius: 0.5rem;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .global-navbar__links {
@@ -89,6 +90,7 @@
     width: 100%;
     justify-content: flex-start;
     overflow-x: auto;
+    scrollbar-width: thin;
   }
 
   .global-navbar__link {

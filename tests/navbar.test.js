@@ -12,6 +12,7 @@ const popup = fs.readFileSync('popup.html', 'utf8');
 assert.doesNotMatch(popup, /id="global-navbar"|navbar\.js/);
 
 const navbar = fs.readFileSync('navbar.js', 'utf8');
+const styles = fs.readFileSync('navbar.css', 'utf8');
 assert.match(navbar, /Jira Quick Search/);
 assert.match(navbar, /Recherche Jira/);
 assert.match(navbar, /Workspace/);
@@ -23,5 +24,8 @@ assert.match(navbar, /6D28D9/);
 assert.match(navbar, /icons\/jira-quick-search\.png/);
 assert.match(navbar, /<img src="icons\/jira-quick-search\.png"[^>]*class="global-navbar__logo"/);
 assert.doesNotMatch(navbar, /<span class="global-navbar__logo"/);
+assert.match(styles, /\.global-navbar__link:focus-visible/);
+assert.match(styles, /\.global-navbar__logo[\s\S]*object-fit:\s*contain/);
+assert.match(styles, /@media \(max-width: 640px\)/);
 
 console.log('navbar: 10 tests passed');
