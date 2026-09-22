@@ -81,19 +81,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     filterControls.classList.remove('hidden');
     filterControls.innerHTML = availableFilters.map(filter => `
       <div class="relative">
-        <button id="filter-button-${filter.id}" data-dropdown-toggle="filter-menu-${filter.id}" data-filter-button="${filter.id}" type="button" class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">
+        <button id="filter-button-${filter.id}" data-dropdown-toggle="filter-menu-${filter.id}" data-filter-button="${filter.id}" type="button" ${filter.options.length ? '' : 'disabled'} class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
           <span>${escapeHtml(filter.name)}</span>
           <span data-filter-label="${filter.id}" class="hidden inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800"></span>
           <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/></svg>
         </button>
         <div id="filter-menu-${filter.id}" class="z-10 hidden w-64 max-h-72 overflow-y-auto bg-white divide-y divide-gray-100 rounded-lg shadow" role="menu" aria-labelledby="filter-button-${filter.id}">
           <ul class="p-2 text-sm text-gray-700" data-filter-options="${filter.id}">
-            ${filter.options.map(option => `<li><button type="button" data-filter-id="${filter.id}" data-filter-value="${escapeHtml(option.value)}" class="w-full text-left rounded px-3 py-2 hover:bg-gray-100">${escapeHtml(option.label)}</button></li>`).join('')}
+            ${filter.options.length
+              ? filter.options.map(option => `<li><button type="button" data-filter-id="${filter.id}" data-filter-value="${escapeHtml(option.value)}" class="w-full text-left rounded px-3 py-2 hover:bg-gray-100">${escapeHtml(option.label)}</button></li>`).join('')
+              : '<li><span class="block px-3 py-2 text-gray-500">Aucune valeur disponible</span></li>'}
           </ul>
         </div>
       </div>
     `).join('');
-    if (typeof initDropdowns === 'function') initDropdowns();
+    availableFilters.forEach(filter => {
+      if (!filter.options.length || typeof Dropdown !== 'function') return;
+      const button = document.getElementById(`filter-button-${filter.id}`);
+      const menu = document.getElementById(`filter-menu-${filter.id}`);
+      new Dropdown(menu, button, { placement: 'bottom-start' });
+    });
   }
 
   function handleFilterClick(event) {

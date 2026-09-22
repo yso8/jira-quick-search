@@ -64,19 +64,31 @@ async function jiraRequest(config, path, options = {}) {
 }
 
 async function fetchFilterMetadata(config) {
-  const [projectsResponse, usersResponse, issueTypesResponse, statusesResponse, prioritiesResponse, fieldsResponse] = await Promise.all([
-    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/project/search?maxResults=100&status=live`),
-    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/users/search?maxResults=100`),
-    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/issuetype`),
-    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/status`),
-    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/priority`),
-    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/field`)
-  ]);
+  const sources = [
+    { key: 'projects', path: `/rest/api/${JIRA_API_VERSION}/project/search?maxResults=100&status=live` },
+    { key: 'users', path: `/rest/api/${JIRA_API_VERSION}/users/search?maxResults=100` },
+    { key: 'issueTypes', path: `/rest/api/${JIRA_API_VERSION}/issuetype` },
+    { key: 'statuses', path: `/rest/api/${JIRA_API_VERSION}/status` },
+    { key: 'priorities', path: `/rest/api/${JIRA_API_VERSION}/priority` },
+    { key: 'fields', path: `/rest/api/${JIRA_API_VERSION}/field` }
+  ];
 
-  const [projects, users, issueTypes, statuses, priorities, fields] = await Promise.all([
-    projectsResponse.json(), usersResponse.json(), issueTypesResponse.json(),
-    statusesResponse.json(), prioritiesResponse.json(), fieldsResponse.json()
-  ]);
+  const loadedSources = await Promise.all(sources.map(async source => {
+    try {
+      const response = await jiraRequest(config, source.path);
+      return [source.key, await response.json()];
+    } catch (error) {
+      await debugLog('métadonnée de filtre indisponible', { source: source.key, message: error.message });
+      return [source.key, []];
+    }
+  }));
+  const metadata = Object.fromEntries(loadedSources);
+  const projects = metadata.projects;
+  const users = metadata.users;
+  const issueTypes = metadata.issueTypes;
+  const statuses = metadata.statuses;
+  const priorities = metadata.priorities;
+  const fields = metadata.fields;
 
   const filters = [
     { id: 'project', name: 'Espace', jqlField: 'project', options: (projects.values || projects).map(project => ({ value: project.key, label: project.name })) },
