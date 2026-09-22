@@ -58,3 +58,61 @@ async function jiraRequest(config, path, options = {}) {
   }
   return response;
 }
+
+async function fetchFilterMetadata(config) {
+  const [projectsResponse, usersResponse, issueTypesResponse, statusesResponse, prioritiesResponse, fieldsResponse] = await Promise.all([
+    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/project/search?maxResults=100&status=live`),
+    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/users/search?maxResults=100`),
+    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/issuetype`),
+    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/status`),
+    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/priority`),
+    jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/field`)
+  ]);
+
+  const [projects, users, issueTypes, statuses, priorities, fields] = await Promise.all([
+    projectsResponse.json(), usersResponse.json(), issueTypesResponse.json(),
+    statusesResponse.json(), prioritiesResponse.json(), fieldsResponse.json()
+  ]);
+
+  const filters = [
+    { id: 'project', name: 'Espace', jqlField: 'project', options: (projects.values || projects).map(project => ({ value: project.key, label: project.name })) },
+    { id: 'assignee', name: 'Personne assignée', jqlField: 'assignee', options: users.filter(user => user.active).map(user => ({ value: user.accountId, label: user.displayName })) },
+    { id: 'issuetype', name: 'Type', jqlField: 'issuetype', options: issueTypes.map(type => ({ value: type.name, label: type.name })) },
+    { id: 'status', name: 'État', jqlField: 'status', options: statuses.map(status => ({ value: status.name, label: status.name })) },
+    { id: 'priority', name: 'Priorité', jqlField: 'priority', options: priorities.map(priority => ({ value: priority.name, label: priority.name })) }
+  ];
+
+  const customFields = await loadCustomSelectFilters(config, fields);
+  return filters.concat(customFields);
+}
+
+async function loadCustomSelectFilters(config, fields) {
+  const selectableFields = fields.filter(field => field.id.startsWith('customfield_') && field.schema && (
+    field.schema.type === 'option' || field.schema.type === 'array'
+  ));
+
+  const loaded = await Promise.all(selectableFields.map(async field => {
+    try {
+      const contextsResponse = await jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/field/${encodeURIComponent(field.id)}/context?maxResults=50`);
+      const contexts = await contextsResponse.json();
+      const context = contexts.values && contexts.values[0];
+      if (!context) return null;
+
+      const optionsResponse = await jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/field/${encodeURIComponent(field.id)}/context/${context.id}/option?maxResults=100`);
+      const options = await optionsResponse.json();
+      const values = (options.values || []).filter(option => option.disabled !== true);
+      if (!values.length) return null;
+
+      return {
+        id: field.id,
+        name: field.name,
+        jqlField: field.id,
+        options: values.map(option => ({ value: option.value, label: option.value }))
+      };
+    } catch {
+      return null;
+    }
+  }));
+
+  return loaded.filter(Boolean);
+}
