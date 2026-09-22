@@ -1,13 +1,15 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const pages = ['search', 'workspace', 'recap', 'options', 'popup'];
+const pages = ['search', 'workspace', 'recap', 'options'];
 for (const page of pages) {
   const html = fs.readFileSync(`${page}.html`, 'utf8');
   assert.match(html, /id="global-navbar"/);
   assert.match(html, /navbar\.js/);
   assert.match(html, new RegExp(`data-page="${page === 'search' ? 'search' : page}"`));
 }
+const popup = fs.readFileSync('popup.html', 'utf8');
+assert.doesNotMatch(popup, /id="global-navbar"|navbar\.js/);
 
 const navbar = fs.readFileSync('navbar.js', 'utf8');
 assert.match(navbar, /Jira Quick Search/);

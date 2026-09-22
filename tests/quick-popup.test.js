@@ -11,11 +11,13 @@ assert.match(popup, /id="quickSearchForm"/);
 assert.match(popup, /id="quickSearchInput"/);
 assert.match(popup, /id="quickSearchError"/);
 assert.match(popup, /vendor\/flowbite\.min\.css/);
+assert.doesNotMatch(popup, /global-navbar|navbar\.js/);
 assert.match(popupScript, /chrome\.storage\.sync\.get/);
 assert.match(popupScript, /search\.html/);
 assert.match(popupScript, /q=\$\{encodeURIComponent/);
 assert.match(popupScript, /browse/);
 assert.match(popupScript, /options\.html/);
 assert.doesNotMatch(background, /chrome\.action\.onClicked/);
+assert.match(background, /runtime\.getURL\('popup\.html'\)/);
 
 console.log('quick-popup: 9 tests passed');

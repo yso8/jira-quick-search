@@ -9,6 +9,8 @@ const options = fs.readFileSync('options.html', 'utf8');
 assert.equal(manifest.omnibox.keyword, 'jira');
 assert.equal(manifest.commands.open_search.suggested_key.default, 'Ctrl+Shift+J');
 assert.match(background, /chrome\.commands\.onCommand/);
+assert.match(background, /openQuickSearchPopup/);
+assert.match(background, /command === 'open_search'\) openQuickSearchPopup/);
 assert.match(background, /chrome\.omnibox\.onInputChanged/);
 assert.match(background, /chrome\.omnibox\.onInputEntered/);
 assert.match(background, /isJiraIssueKey/);

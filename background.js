@@ -12,12 +12,25 @@ function openExtensionPage(query = '') {
   });
 }
 
+async function openQuickSearchPopup() {
+  const config = await getStoredConfig();
+  if (!config) {
+    chrome.runtime.openOptionsPage();
+    return;
+  }
+  if (chrome.action && chrome.action.openPopup) {
+    await chrome.action.openPopup();
+    return;
+  }
+  chrome.tabs.create({ url: chrome.runtime.getURL('popup.html') });
+}
+
 function isJiraIssueKey(value) {
   return /^[A-Z][A-Z0-9]*-\d+$/i.test(value.trim());
 }
 
 chrome.commands.onCommand.addListener(command => {
-  if (command === 'open_search') openExtensionPage();
+  if (command === 'open_search') openQuickSearchPopup();
 });
 
 chrome.omnibox.onInputChanged.addListener((text, suggest) => {
