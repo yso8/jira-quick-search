@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-$files = @('background.js', 'jira-api.js', 'filter-utils.js', 'options.js', 'search.js', 'recap.js')
+$files = @('background.js', 'jira-api.js', 'diagnostic-utils.js', 'filter-utils.js', 'options.js', 'search.js', 'recap.js')
 foreach ($file in $files) {
   node --check $file
   if ($LASTEXITCODE -ne 0) { throw "Syntaxe JavaScript invalide : $file" }
@@ -15,4 +15,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Les tests de contrat des filtres ont échoué.
 node tests/debug-logger.test.js
 if ($LASTEXITCODE -ne 0) { throw 'Les tests du logger ont échoué.' }
 
-Write-Output 'Tests de l’extension réussis.'
+node tests/diagnostic-utils.test.js
+if ($LASTEXITCODE -ne 0) { throw 'Les tests de diagnostic ont échoué.' }
+
+Write-Output 'Tests de l extension reussis.'

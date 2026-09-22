@@ -50,15 +50,14 @@ async function jiraRequest(config, path, options = {}) {
     ...options,
     headers: { ...jiraHeaders(config.jiraEmail, config.jiraToken), ...(options.headers || {}) }
   });
-  const responseText = response.ok ? '' : await response.text();
-  await debugLog('réponse Jira', { method, path, status: response.status, details: responseText });
+  await debugLog('réponse Jira', { method, path, status: response.status });
   if (!response.ok) {
     const message = response.status === 401 || response.status === 403
       ? 'Accès Jira refusé. Vérifiez votre email, votre token et vos permissions.'
       : response.status === 429
         ? 'Jira limite temporairement les requêtes. Réessayez dans quelques instants.'
-        : `Jira a répondu avec le statut ${response.status}.`;
-    throw new Error(responseText ? `${message} ${responseText}` : message);
+        : 'Jira est momentanément indisponible. Réessayez dans quelques instants.';
+    throw Object.assign(new Error(message), { status: response.status });
   }
   return response;
 }

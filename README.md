@@ -48,6 +48,8 @@ Jira est puissant, mais retrouver rapidement un ticket ou vérifier l’activit�
 - gestion des erreurs Jira sans bloquer les filtres standards ;
 - styles Tailwind CSS et Flowbite embarqués localement pour respecter la politique de sécurité des extensions Chrome.
 
+La section « Connexion et diagnostics » vérifie l’URL Jira, l’accès à l’instance, l’authentification et la disponibilité de la recherche sans afficher de secret ni de réponse API complète. Le bouton « Supprimer toutes les données locales » efface la configuration synchronisée, les préférences, les tickets récents et épinglés, les recherches sauvegardées et les règles d’activité, après confirmation.
+
 ## Installation
 
 ### Installation manuelle dans Chrome
@@ -68,7 +70,9 @@ Le token API peut être créé depuis la page de sécurité du compte Atlassian 
 
 <https://id.atlassian.com/manage-profile/security/api-tokens>
 
-Les identifiants sont enregistrés dans `chrome.storage.sync`. Ils ne sont pas écrits dans le dépôt et ne doivent jamais être ajoutés dans une capture d’écran, un ticket ou un commit.
+Les identifiants sont enregistrés dans `chrome.storage.sync` et ne sont pas chiffrés par l’extension. Ils ne sont pas écrits dans le dépôt et ne doivent jamais être ajoutés dans une capture d’écran, un ticket ou un commit. Les préférences de logs, tickets récents, tickets épinglés et recherches sauvegardées sont enregistrés dans `chrome.storage.local`; les règles d’activité sont synchronisées dans `chrome.storage.sync`.
+
+L’extension appelle uniquement l’API REST Jira v3 de l’instance configurée pour l’authentification, la recherche, les filtres et le récapitulatif. Elle n’utilise aucun serveur tiers, analytics ou tracking. Elle ne collecte ni token en dehors du stockage de l’extension, ni historique distant, ni données personnelles supplémentaires.
 
 Les permissions Jira restent celles du compte utilisé. Certains champs personnalisés et leurs options peuvent être inaccessibles sans droits d’administration ; ils sont alors ignorés sans empêcher la recherche standard.
 

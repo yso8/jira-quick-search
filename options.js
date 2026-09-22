@@ -10,6 +10,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const jiraEmailInput = document.getElementById('jiraEmail');
   const jiraTokenInput = document.getElementById('jiraToken');
   const debugLogsInput = document.getElementById('debugLogs');
+  const diagnosticBtn = document.getElementById('diagnosticBtn');
+  const diagnosticChecks = document.getElementById('diagnosticChecks');
+  const diagnosticSummary = document.getElementById('diagnosticSummary');
+  const copyDiagnosticBtn = document.getElementById('copyDiagnosticBtn');
+  const lastDiagnostic = document.getElementById('lastDiagnostic');
+  const clearDataBtn = document.getElementById('clearDataBtn');
+  const clearDataMessage = document.getElementById('clearDataMessage');
+  let latestDiagnostic = null;
 
   saveBtn.classList.add('hidden');
   try {
@@ -19,6 +27,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     jiraTokenInput.value = config.jiraToken || '';
     const debugConfig = await chrome.storage.local.get({ debugLogs: false });
     debugLogsInput.checked = debugConfig.debugLogs === true;
+    const diagnosticConfig = await chrome.storage.local.get({ lastDiagnosticAt: null });
+    if (diagnosticConfig.lastDiagnosticAt) {
+      lastDiagnostic.textContent = `Dernier diagnostic : ${new Date(diagnosticConfig.lastDiagnosticAt).toLocaleString('fr-FR')}`;
+    }
   } catch (error) {
     await debugLog('erreur chargement configuration', { message: error.message, stack: error.stack });
   }
@@ -26,6 +38,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   connectBtn.addEventListener('click', connectAndSave);
   retryBtn.addEventListener('click', () => { statusMessage.classList.add('hidden'); jiraUrlInput.focus(); });
   form.addEventListener('submit', event => { event.preventDefault(); connectAndSave(); });
+  diagnosticBtn.addEventListener('click', runDiagnostics);
+  copyDiagnosticBtn.addEventListener('click', async () => {
+    if (!latestDiagnostic) return;
+    await navigator.clipboard.writeText(createTechnicalDetails(latestDiagnostic));
+    copyDiagnosticBtn.textContent = 'Détails copiés';
+  });
+  clearDataBtn.addEventListener('click', async () => {
+    if (!window.confirm('Supprimer toutes les données locales de l’extension ? Cette action est irréversible.')) return;
+    clearDataBtn.disabled = true;
+    clearDataMessage.textContent = 'Suppression en cours…';
+    try {
+      await clearExtensionData(chrome.storage);
+      clearDataMessage.textContent = 'Données supprimées. Redirection vers l’accueil…';
+      window.location.href = 'options.html';
+    } catch (error) {
+      clearDataBtn.disabled = false;
+      clearDataMessage.textContent = 'Impossible de supprimer les données. Réessayez.';
+      await debugLog('erreur suppression données', { message: error.message });
+    }
+  });
 
   async function connectAndSave() {
     const url = normalizeJiraUrl(jiraUrlInput.value);
@@ -37,16 +69,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     setLoading(true);
     try {
       const response = await jiraRequest({ jiraUrl: url, jiraEmail: email, jiraToken: token }, `/rest/api/${JIRA_API_VERSION}/myself`);
-      if (!response.ok) throw new Error(`Erreur ${response.status}. Vérifiez vos identifiants.`);
+      if (!response.ok) throw Object.assign(new Error('Authentification Jira refusée.'), { status: response.status });
       await chrome.storage.sync.set({ jiraUrl: url, jiraEmail: email, jiraToken: token });
       await chrome.storage.local.set({ debugLogs: debugLogsInput.checked });
       showMessage('Connexion réussie. Votre recherche est prête.', 'success');
       setTimeout(() => { window.location.href = 'search.html'; }, 900);
     } catch (error) {
-      await debugLog('erreur connexion onboarding', { message: error.message, stack: error.stack });
-      showMessage(`Impossible de se connecter : ${error.message}`, 'error');
+      await debugLog('erreur connexion onboarding', { status: error.status, message: error.message });
+      showMessage(error.status === 401 || error.status === 403 ? 'L’authentification Jira a échoué. Vérifiez votre token ou générez-en un nouveau.' : 'Impossible de se connecter à Jira. Vérifiez l’URL ou votre connexion réseau.', 'error');
       retryBtn.classList.remove('hidden');
     } finally { setLoading(false); }
+  }
+
+  async function runDiagnostics() {
+    diagnosticBtn.disabled = true;
+    diagnosticBtn.textContent = 'Diagnostic en cours…';
+    diagnosticSummary.textContent = 'Vérification de la configuration et de l’accès Jira…';
+    try {
+      latestDiagnostic = await runConnectionDiagnostics({ jiraUrl: jiraUrlInput.value, jiraEmail: jiraEmailInput.value.trim(), jiraToken: jiraTokenInput.value.trim() });
+      renderDiagnostics(latestDiagnostic);
+      await chrome.storage.local.set({ lastDiagnosticAt: new Date().toISOString() });
+    } catch (error) {
+      latestDiagnostic = { overall: 'error', checks: [{ id: 'diagnostic', label: 'Diagnostic', status: 'error', message: 'Le diagnostic n’a pas pu être terminé.', action: 'Réessayer.' }] };
+      renderDiagnostics(latestDiagnostic);
+      await debugLog('erreur diagnostic', { message: error.message });
+    } finally {
+      diagnosticBtn.disabled = false;
+      diagnosticBtn.textContent = 'Tester la connexion';
+    }
+  }
+
+  function renderDiagnostics(result) {
+    diagnosticSummary.textContent = result.overall === 'success' ? 'Connexion valide et recherche disponible.' : result.overall === 'warning' ? 'Connexion valide avec une limitation de permissions.' : 'Un problème nécessite votre attention.';
+    diagnosticChecks.replaceChildren(...result.checks.map(check => {
+      const item = document.createElement('li');
+      item.className = 'rounded-lg border border-gray-100 p-3 text-sm';
+      const marker = check.status === 'success' ? '✓' : check.status === 'warning' ? '⚠' : '✗';
+      item.innerHTML = `<div class="flex gap-2"><span aria-hidden="true">${marker}</span><div><strong>${escapeHtml(check.label)}</strong><p class="text-gray-600">${escapeHtml(check.message)}</p>${check.action ? `<p class="mt-1 text-xs text-gray-500">Action : ${escapeHtml(check.action)}</p>` : ''}</div></div>`;
+      return item;
+    }));
+    copyDiagnosticBtn.classList.remove('hidden');
+    lastDiagnostic.textContent = `Dernier diagnostic : ${new Date().toLocaleString('fr-FR')}`;
   }
 
   function setLoading(isLoading) {

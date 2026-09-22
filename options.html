@@ -35,6 +35,38 @@
       </ul>
     </div>
 
+    <section class="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm" aria-labelledby="diagnostics-heading">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 id="diagnostics-heading" class="text-xl font-semibold text-gray-900">Connexion et diagnostics</h2>
+          <p id="diagnosticSummary" class="mt-1 text-sm text-gray-500">Testez l’accès à votre instance Jira et à la recherche de tickets.</p>
+        </div>
+        <button type="button" id="diagnosticBtn" class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Tester la connexion</button>
+      </div>
+      <ul id="diagnosticChecks" class="mt-5 space-y-3" aria-live="polite">
+        <li class="rounded-lg bg-gray-50 p-3 text-sm text-gray-600">Aucun diagnostic exécuté.</li>
+      </ul>
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button type="button" id="copyDiagnosticBtn" class="hidden text-sm font-medium text-blue-700 hover:underline">Copier les détails du diagnostic</button>
+        <span id="lastDiagnostic" class="text-xs text-gray-500"></span>
+      </div>
+    </section>
+
+    <section class="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm" aria-labelledby="privacy-heading">
+      <h2 id="privacy-heading" class="text-xl font-semibold text-gray-900">Confidentialité et données locales</h2>
+      <p class="mt-2 text-sm text-gray-600">Vos données Jira restent utilisées localement par l’extension. Aucune donnée n’est envoyée à un serveur tiers.</p>
+      <ul class="mt-4 list-disc space-y-1 pl-5 text-sm text-gray-600">
+        <li>Configuration Jira et identifiants d’authentification</li>
+        <li>Préférence de logs de diagnostic</li>
+        <li>Tickets récents et tickets épinglés</li>
+        <li>Recherches sauvegardées et règles d’activité</li>
+      </ul>
+      <div class="mt-5 border-t border-gray-100 pt-5">
+        <button type="button" id="clearDataBtn" class="rounded-lg border border-red-200 px-4 py-2.5 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus:ring-4 focus:ring-red-100">Supprimer toutes les données locales</button>
+        <p id="clearDataMessage" class="mt-2 text-sm text-gray-500" role="status"></p>
+      </div>
+    </section>
+
     <!-- Card Formulaire -->
     <div class="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
       <form id="configForm">
@@ -221,6 +253,7 @@
   <script src="jira-api.js"></script>
   <script src="debug-logger.js"></script>
   <script src="navbar.js"></script>
+  <script src="diagnostic-utils.js"></script>
   <script src="options.js"></script>
 
   <!-- Ancienne compatibilité d'alertes conservée hors exécution pour CSP MV3.

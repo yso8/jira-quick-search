@@ -17,7 +17,7 @@ Extension Chrome pour la recherche rapide de tickets Jira Cloud. Architecture Ma
 - `icons/` - Icônes de l'extension
 
 ### Flux de données
-1. **Configuration** : Les credentials (jiraUrl, jiraEmail, jiraToken) sont stockés dans `chrome.storage.sync`
+1. **Configuration** : Les credentials (jiraUrl, jiraEmail, jiraToken) et les règles d’activité sont stockés dans `chrome.storage.sync`; les préférences et données d’espace de travail sont dans `chrome.storage.local`
 2. **Authentification** : Basic Auth via `btoa(email:token)` dans les headers
 3. **API Jira** :
    - REST API v3 (`/rest/api/3/`)
@@ -67,7 +67,7 @@ Extension Chrome pour la recherche rapide de tickets Jira Cloud. Architecture Ma
 - **UI Framework** : Tailwind CSS (CDN) + Flowbite 2.3.0 (composants)
 - **Icons** : SVG Heroicons inline (pas de library externe)
 - **API** : Jira REST API v3
-- **Storage** : `chrome.storage.sync` (synchronisé entre devices)
+- **Storage** : `chrome.storage.sync` pour la configuration/règles d’activité, `chrome.storage.local` pour les préférences, tickets récents, tickets épinglés et recherches sauvegardées
 - **Permissions** : `storage` + `https://*.atlassian.net/*`
 
 ## Développement
