@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const filterControls = document.getElementById('filterControls');
   const clearFiltersBtn = document.getElementById('clearFiltersBtn');
   const copyJqlBtn = document.getElementById('copyJqlBtn');
+  const saveSearchBtn = document.getElementById('saveSearchBtn');
 
   const PAGE_SIZE = 25;
   let currentJql = '';
@@ -59,6 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   clearFiltersBtn.addEventListener('click', clearFilters);
   filterControls.addEventListener('change', handleFilterChange);
   copyJqlBtn.addEventListener('click', copyCurrentJql);
+  saveSearchBtn.addEventListener('click', saveCurrentSearch);
   document.getElementById('prevPageBtn').addEventListener('click', () => fetchPage(currentPage - 1));
   document.getElementById('nextPageBtn').addEventListener('click', () => fetchPage(currentPage + 1));
   if (initialQuery) performSearch();
@@ -77,6 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       currentJql = currentJql.replace(' ORDER BY updated DESC', ` AND ${filter.jqlField} ${filter.value} ORDER BY updated DESC`);
     });
     pageTokens = [null]; // reset des tokens à chaque nouvelle recherche
+    saveSearchBtn.disabled = false;
 
     await fetchPage(0);
   }
@@ -122,6 +125,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const originalLabel = copyJqlBtn.textContent;
     copyJqlBtn.textContent = 'JQL copié';
     setTimeout(() => { copyJqlBtn.textContent = originalLabel; }, 1500);
+  }
+
+  async function saveCurrentSearch() {
+    const name = window.prompt('Nom de cette recherche :', searchInput.value.trim() || 'Ma recherche');
+    if (!name || !name.trim()) return;
+    const stored = await chrome.storage.local.get({ savedSearches: [] });
+    await chrome.storage.local.set({ savedSearches: saveSearch(stored.savedSearches, { name: name.trim(), query: searchInput.value.trim(), jql: currentJql }) });
+    saveSearchBtn.textContent = 'Sauvegardée';
+    setTimeout(() => { saveSearchBtn.textContent = 'Sauvegarder'; }, 1500);
   }
 
   // Fetch une page spécifique (pagination par curseur nextPageToken)
@@ -243,6 +255,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         ${escapeHtml(issue.key)}
                     </a>
                 </div>
+                <button type="button" class="pin-issue-btn text-gray-400 hover:text-yellow-500" title="Épingler ce ticket">☆</button>
                 <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded border border-transparent inline-flex items-center bg-gray-100 text-gray-800">
                     ${escapeHtml(issue.fields.status.name)}
                 </span>
@@ -300,6 +313,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
     </div>
   `;
+
+    const workspaceIssue = { key: issue.key, summary: issue.fields.summary, status: issue.fields.status.name, priority, updated: issue.fields.updated, url: issueUrl };
+    col.querySelector('.pin-issue-btn').addEventListener('click', async event => {
+      event.preventDefault();
+      const stored = await chrome.storage.local.get({ pinnedIssues: [] });
+      const pinned = togglePinnedIssue(stored.pinnedIssues, workspaceIssue);
+      await chrome.storage.local.set({ pinnedIssues: pinned });
+      event.currentTarget.textContent = pinned.some(item => item.key === issue.key) ? '★' : '☆';
+    });
+    col.querySelectorAll('a[href*="/browse/"]').forEach(link => link.addEventListener('click', async () => {
+      const stored = await chrome.storage.local.get({ recentIssues: [] });
+      await chrome.storage.local.set({ recentIssues: addRecentIssue(stored.recentIssues, workspaceIssue) });
+    }));
 
     return col;
   }

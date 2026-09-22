@@ -6,21 +6,11 @@
   <title>Recherche Jira</title>
   <link href="vendor/tailwind.min.css" rel="stylesheet">
   <link href="vendor/flowbite.min.css" rel="stylesheet">
+  <link href="navbar.css" rel="stylesheet">
 </head>
-<body class="w-80 bg-gray-50 text-gray-900">
+<body class="w-80 bg-gray-50 text-gray-900" data-page="popup">
+  <nav id="global-navbar"></nav>
   <main class="p-4">
-    <div class="mb-4 flex items-center gap-2">
-      <div class="rounded-lg bg-blue-100 p-2 text-blue-700">
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.2-5.2m0 0A7.5 7.5 0 1 0 5.2 5.2a7.5 7.5 0 0 0 10.6 10.6Z" />
-        </svg>
-      </div>
-      <div>
-        <h1 class="text-base font-semibold">Jira Quick Search</h1>
-        <p class="text-xs text-gray-500">Recherchez un ticket ou du texte</p>
-      </div>
-    </div>
-
     <form id="quickSearchForm">
       <label for="quickSearchInput" class="sr-only">Recherche Jira</label>
       <div class="relative">
@@ -37,6 +27,7 @@
   </main>
   <script src="jira-api.js"></script>
   <script src="debug-logger.js"></script>
+  <script src="navbar.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

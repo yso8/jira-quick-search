@@ -1,0 +1,120 @@
+.global-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.global-navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100% - 2rem, 72rem);
+  min-height: 3.75rem;
+  margin: 0 auto;
+}
+
+.global-navbar__brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.625rem;
+  color: #1f2937;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.global-navbar__brand:focus-visible,
+.global-navbar__link:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--navbar-accent) 30%, transparent);
+  outline-offset: 2px;
+}
+
+.global-navbar__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  color: var(--navbar-accent);
+  background: color-mix(in srgb, var(--navbar-accent) 12%, white);
+}
+
+.global-navbar__logo svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.global-navbar__links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.global-navbar__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.global-navbar__link:hover {
+  color: var(--navbar-accent);
+  background: color-mix(in srgb, var(--navbar-accent) 8%, white);
+}
+
+.global-navbar__link.is-active {
+  color: var(--navbar-accent);
+  background: color-mix(in srgb, var(--navbar-accent) 12%, white);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .global-navbar__inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.625rem 0;
+  }
+
+  .global-navbar__links {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .global-navbar__link {
+    flex: 0 0 auto;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .global-navbar {
+    position: static;
+  }
+
+  .global-navbar__inner {
+    width: calc(100% - 1rem);
+  }
+
+  .global-navbar__brand {
+    font-size: 1rem;
+  }
+}
