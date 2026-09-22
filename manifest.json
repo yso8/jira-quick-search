@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Jira Quick Search",
   "version": "1.0.0",
-  "description": "Recherche rapide de tickets Jira avec Material Design",
+  "description": "Recherche rapide de tickets Jira Cloud et récapitulatif d’activité",
   "permissions": [
     "storage"
   ],

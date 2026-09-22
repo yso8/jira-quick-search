@@ -1,0 +1,19 @@
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Dépendances et sorties locales
+node_modules/
+dist/
+build/
+coverage/
+*.log
+
+# Fichiers de test et secrets locaux
+.env
+.env.*
+*.local
+test-results/
