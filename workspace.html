@@ -4,7 +4,7 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Workspace — Jira Quick Search</title>
   <link href="vendor/tailwind.min.css" rel="stylesheet"><link href="vendor/flowbite.min.css" rel="stylesheet">
-  <link href="navbar.css" rel="stylesheet">
+  <link href="src/components/navigation/navbar.css" rel="stylesheet">
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900" data-page="workspace">
   <nav id="global-navbar"></nav>
@@ -15,6 +15,6 @@
       <section class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"><div class="mb-3 flex items-center justify-between"><h2 class="font-semibold">Recherches sauvegardées</h2><a href="search.html" class="text-xs font-medium text-blue-700 hover:underline">Nouvelle</a></div><div id="savedSearches" class="space-y-2"></div></section>
     </div>
   </main>
-  <script src="workspace-utils.js"></script><script src="navbar.js"></script><script src="workspace.js"></script>
+  <script src="src/utils/workspace/workspace-utils.js"></script><script src="src/components/navigation/navbar.js"></script><script src="src/pages/workspace/workspace.js"></script>
 </body>
 </html>

@@ -29,9 +29,9 @@
   },
   "options_page": "options.html",
   "icons": {
-    "16": "icons/jira-quick-search.png",
-    "32": "icons/jira-quick-search.png",
-    "64": "icons/jira-quick-search.png",
-    "128": "icons/jira-quick-search.png"
+    "16": "src/assets/icons/jira-quick-search.png",
+    "32": "src/assets/icons/jira-quick-search.png",
+    "64": "src/assets/icons/jira-quick-search.png",
+    "128": "src/assets/icons/jira-quick-search.png"
   }
 }

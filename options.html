@@ -7,7 +7,7 @@
   <title>Jira-Quick-Search — Connexion</title>
   <link href="vendor/tailwind.min.css" rel="stylesheet" />
   <link href="vendor/flowbite.min.css" rel="stylesheet" />
-  <link href="navbar.css" rel="stylesheet" />
+  <link href="src/components/navigation/navbar.css" rel="stylesheet" />
 
   <style>
     body {
@@ -292,12 +292,12 @@
 
   </div>
 
-  <script src="jira-api.js"></script>
-  <script src="debug-logger.js"></script>
-  <script src="navbar.js"></script>
-  <script src="diagnostic-utils.js"></script>
-  <script src="feedback-utils.js"></script>
-  <script src="options.js"></script>
+  <script src="src/services/jira/jira-api.js"></script>
+  <script src="src/services/diagnostics/debug-logger.js"></script>
+  <script src="src/components/navigation/navbar.js"></script>
+  <script src="src/services/diagnostics/diagnostic-utils.js"></script>
+  <script src="src/utils/feedback/feedback-utils.js"></script>
+  <script src="src/pages/settings/options.js"></script>
 
   <!-- Ancienne compatibilité d'alertes conservée hors exécution pour CSP MV3.
     function showStatus(message, type) {

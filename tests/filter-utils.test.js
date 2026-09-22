@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { buildFilterJql } = require('../filter-utils.js');
+const { buildFilterJql } = require('../src/utils/search/filter-utils.js');
 
 assert.equal(
   buildFilterJql('facture', { project: 'LVNET', status: 'En cours' }, [

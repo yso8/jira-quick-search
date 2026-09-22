@@ -6,7 +6,7 @@ const {
   runConnectionDiagnostics,
   clearExtensionData,
   createTechnicalDetails
-} = require('../diagnostic-utils.js');
+} = require('../src/services/diagnostics/diagnostic-utils.js');
 
 assert.deepEqual(validateDiagnosticUrl(''), { status: 'error', message: 'URL Jira absente.' });
 assert.equal(validateDiagnosticUrl('http://example.atlassian.net').status, 'error');
@@ -16,8 +16,8 @@ assert.equal(classifyDiagnosticError({ status: 401 }).kind, 'authentication');
 assert.equal(classifyDiagnosticError({ status: 403 }).kind, 'permission');
 assert.equal(classifyDiagnosticError(new TypeError('Failed to fetch')).kind, 'network');
 assert.doesNotMatch(createTechnicalDetails({ overall: 'error', checks: [{ id: 'authentication', label: 'Authentification', status: 'error', token: 'secret', authorization: 'Basic secret' }] }), /secret|authorization/i);
-const apiSource = fs.readFileSync('jira-api.js', 'utf8');
-const optionsSource = fs.readFileSync('options.js', 'utf8');
+const apiSource = fs.readFileSync('src/services/jira/jira-api.js', 'utf8');
+const optionsSource = fs.readFileSync('src/pages/settings/options.js', 'utf8');
 assert.doesNotMatch(apiSource, /responseText/);
 assert.doesNotMatch(apiSource, /\$\{[^}]*token[^}]*\}[^`]*\?/i);
 assert.match(optionsSource, /if \(!window\.confirm\(/);

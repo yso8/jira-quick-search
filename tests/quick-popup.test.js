@@ -3,7 +3,7 @@ const fs = require('node:fs');
 
 const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
 const popup = fs.readFileSync('popup.html', 'utf8');
-const popupScript = fs.readFileSync('popup.js', 'utf8');
+const popupScript = fs.readFileSync('src/pages/popup/popup.js', 'utf8');
 const background = fs.readFileSync('background.js', 'utf8');
 
 assert.equal(manifest.action.default_popup, 'popup.html');

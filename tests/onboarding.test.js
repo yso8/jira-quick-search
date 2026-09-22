@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const html = fs.readFileSync('options.html', 'utf8');
-const script = fs.readFileSync('options.js', 'utf8');
+const script = fs.readFileSync('src/pages/settings/options.js', 'utf8');
 const background = fs.readFileSync('background.js', 'utf8');
 
 assert.match(html, /Jira-Quick-Search/);

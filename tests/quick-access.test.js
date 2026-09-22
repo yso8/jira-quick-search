@@ -3,7 +3,7 @@ const fs = require('node:fs');
 
 const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
 const background = fs.readFileSync('background.js', 'utf8');
-const search = fs.readFileSync('search.js', 'utf8');
+const search = fs.readFileSync('src/pages/search/search.js', 'utf8');
 const options = fs.readFileSync('options.html', 'utf8');
 const searchHtml = fs.readFileSync('search.html', 'utf8');
 

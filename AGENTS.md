@@ -11,10 +11,12 @@ Extension Chrome pour la recherche rapide de tickets Jira Cloud. Architecture Ma
 ### Structure des fichiers
 - `manifest.json` - Configuration Chrome Extension (Manifest V3)
 - `background.js` - Service Worker : gère le clic sur l'icône et la première installation
-- `search.html` / `search.js` - Page principale de recherche de tickets
-- `recap.html` / `recap.js` - Page de récapitulatif hebdomadaire des activités
-- `options.html` / `options.js` - Page de configuration (URL Jira, email, token API)
-- `icons/` - Icônes de l'extension
+- `search.html`, `workspace.html`, `recap.html`, `options.html`, `popup.html` - Points d’entrée HTML
+- `src/pages/` - Scripts propres aux pages
+- `src/components/navigation/` - Navbar globale et styles
+- `src/services/` - API Jira et diagnostics
+- `src/utils/` - Filtres, workspace, rapports et feedbacks
+- `src/assets/icons/` - Icônes de l’extension
 
 ### Flux de données
 1. **Configuration** : Les credentials (jiraUrl, jiraEmail, jiraToken) et les règles d’activité sont stockés dans `chrome.storage.sync`; les préférences et données d’espace de travail sont dans `chrome.storage.local`
@@ -28,7 +30,7 @@ Extension Chrome pour la recherche rapide de tickets Jira Cloud. Architecture Ma
 
 ### Composants clés
 
-#### search.js
+#### `src/pages/search/search.js`
 - **JQL Builder** : Construit les requêtes dynamiques (lignes 54-68)
   - Recherche textuelle : `text ~ "query*" OR summary ~ "query*" OR description ~ "query*"`
   - Filtres : Tasks/Epics via les checkboxes `filterTasks` et `filterEpics`
@@ -38,7 +40,7 @@ Extension Chrome pour la recherche rapide de tickets Jira Cloud. Architecture Ma
 - **Multi-sélection** : Checkboxes + FAB (Floating Action Button) pour ouvrir plusieurs tickets
 - **Tri par key** : `sortIssuesByKey()` trie par numéro décroissant (PROJ-123 → 123)
 
-#### recap.js
+#### `src/pages/recap/recap.js`
 - **Chargement des utilisateurs** : Récupère la liste des users via `/rest/api/3/users?maxResults=100`
 - **Récapitulatif hebdomadaire** : Fonction `fetchWeeklyActivities(assigneeId, days)`
   - JQL : `updated >= -Xd ORDER BY updated DESC` (X = 7, 14 ou 30 jours)
@@ -53,7 +55,7 @@ Extension Chrome pour la recherche rapide de tickets Jira Cloud. Architecture Ma
   - CSV : Génère un fichier téléchargeable `recap-jira-YYYY-MM-DD.csv`
   - Texte : Copie en format markdown dans le presse-papiers
 
-#### options.js
+#### `src/pages/settings/options.js`
 - **Test de connexion** : Appel à `/rest/api/3/myself` pour valider les credentials
 - **Gestion des messages** : Fonction `showMessage()` avec SVG icons dynamiques
 - **Accordéon** : Gestion manuelle (Flowbite JS non initialisé automatiquement)
@@ -115,12 +117,12 @@ chrome.tabs.create({ url: issueUrl, active: false });
 - **URL Jira** : Format strict `https://votre-site.atlassian.net` (sans slash final)
 - **Champs Jira** : Les fields retournés sont configurables dans le body de la requête (`fields: [...]`)
 - **Couleurs de statut** : Mapping manuel dans `getStatusColor()` (vert=done, bleu=en cours, violet=review, rouge=bloqué, gris=à faire)
-- **Limite de résultats** : `maxResults: 50` (hardcodé dans search.js ligne 85)
+- **Limite de résultats** : `maxResults: 50` (hardcodé dans `src/pages/search/search.js`)
 
 ## Notes spécifiques
 
 - **Tailwind** : Utilisé via CDN (pas de build), classes utilisées directement dans le HTML
-- **Flowbite** : Composants pré-stylés (accordéon, spinners), mais initialisé manuellement dans options.js
+- **Flowbite** : Composants pré-stylés (accordéon, spinners), mais initialisé manuellement dans `src/pages/settings/options.js`
 - **Pas de node_modules** : Aucune dépendance NPM, tout est chargé via CDN
-- **Event delegation** : Les checkboxes des cartes utilisent l'event delegation (ligne 346 de search.js)
+- **Event delegation** : Les checkboxes des cartes utilisent l’event delegation dans `src/pages/search/search.js`
 - **FAB (Floating Action Button)** : Affiché uniquement quand au moins 1 ticket est sélectionné

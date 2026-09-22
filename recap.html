@@ -7,7 +7,7 @@
   <title>Récapitulatif Hebdomadaire - Jira</title>
   <link href="vendor/tailwind.min.css" rel="stylesheet" />
   <link href="vendor/flowbite.min.css" rel="stylesheet" />
-  <link href="navbar.css" rel="stylesheet" />
+  <link href="src/components/navigation/navbar.css" rel="stylesheet" />
 
   <style>
     body {
@@ -260,11 +260,11 @@
 
   <!-- Flowbite JS -->
   <!-- Script JS -->
-  <script src="jira-api.js"></script>
-  <script src="debug-logger.js"></script>
-  <script src="report-utils.js"></script>
-  <script src="navbar.js"></script>
-  <script src="recap.js"></script>
+  <script src="src/services/jira/jira-api.js"></script>
+  <script src="src/services/diagnostics/debug-logger.js"></script>
+  <script src="src/utils/reports/report-utils.js"></script>
+  <script src="src/components/navigation/navbar.js"></script>
+  <script src="src/pages/recap/recap.js"></script>
 </body>
 
 </html>

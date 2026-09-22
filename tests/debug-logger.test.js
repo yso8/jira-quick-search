@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { createDebugLogger } = require('../debug-logger.js');
+const { createDebugLogger } = require('../src/services/diagnostics/debug-logger.js');
 
 (async () => {
   let calls = [];

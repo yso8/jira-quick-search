@@ -4,7 +4,7 @@ const {
   buildFeedbackBody,
   buildGithubIssueUrl,
   buildTechnicalInfo
-} = require('../feedback-utils.js');
+} = require('../src/utils/feedback/feedback-utils.js');
 
 assert.deepEqual(validateFeedback({ type: '', title: '', description: '' }), {
   valid: false,

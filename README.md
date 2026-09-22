@@ -84,13 +84,14 @@ Les permissions Jira restent celles du compte utilisé. Certains champs personna
 | --- | --- |
 | `manifest.json` | Configuration de l’extension Chrome Manifest V3 |
 | `background.js` | Ouverture de la recherche et contrôle de la première installation |
-| `search.html` / `search.js` | Recherche, filtres, résultats et pagination |
-| `recap.html` / `recap.js` | Récapitulatif, règles d’activité et exports |
-| `options.html` / `options.js` | Configuration Jira, test de connexion et diagnostic |
-| `feedback-utils.js` | Validation et génération des brouillons GitHub |
-| `jira-api.js` | Authentification, appels REST Jira et métadonnées |
-| `filter-utils.js` | Construction et échappement du JQL |
-| `debug-logger.js` | Journalisation de diagnostic contrôlée par la configuration |
+| `search.html`, `workspace.html`, `recap.html`, `options.html`, `popup.html` | Points d’entrée des pages de l’extension |
+| `src/pages/` | Scripts propres à chaque page |
+| `src/components/navigation/` | Navbar globale et styles associés |
+| `src/services/jira/` | Authentification, appels REST Jira et métadonnées |
+| `src/services/diagnostics/` | Journalisation et diagnostic |
+| `src/utils/` | Filtres, workspace, rapports et feedbacks |
+| `src/assets/icons/` | Icônes de l’extension |
+| `tests/` | Tests unitaires et tests de structure |
 | `vendor/` | Ressources CSS locales Tailwind et Flowbite |
 | `scripts/` | Scripts de validation et de test du dépôt |
 

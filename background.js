@@ -1,4 +1,4 @@
-importScripts('jira-api.js', 'debug-logger.js');
+importScripts('src/services/jira/jira-api.js', 'src/services/diagnostics/debug-logger.js');
 
 async function getStoredConfig() {
   const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);

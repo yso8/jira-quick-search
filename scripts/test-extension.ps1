@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-$files = @('background.js', 'jira-api.js', 'diagnostic-utils.js', 'feedback-utils.js', 'filter-utils.js', 'options.js', 'search.js', 'recap.js')
+$files = @('background.js', 'src/services/jira/jira-api.js', 'src/services/diagnostics/diagnostic-utils.js', 'src/utils/feedback/feedback-utils.js', 'src/utils/search/filter-utils.js', 'src/pages/settings/options.js', 'src/pages/search/search.js', 'src/pages/recap/recap.js')
 foreach ($file in $files) {
   node --check $file
   if ($LASTEXITCODE -ne 0) { throw "Syntaxe JavaScript invalide : $file" }

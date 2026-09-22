@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
-const { classifyIssues, deduplicateIssues, generateMarkdownReport, generateSummary, getBreakdowns, sortTimeline } = require('../report-utils');
+const { classifyIssues, deduplicateIssues, generateMarkdownReport, generateSummary, getBreakdowns, sortTimeline } = require('../src/utils/reports/report-utils');
 const recapHtml = require('node:fs').readFileSync('recap.html', 'utf8');
-const recapScript = require('node:fs').readFileSync('recap.js', 'utf8');
+const recapScript = require('node:fs').readFileSync('src/pages/recap/recap.js', 'utf8');
 
 const start = new Date('2026-09-16T00:00:00.000Z');
 const end = new Date('2026-09-22T23:59:59.999Z');

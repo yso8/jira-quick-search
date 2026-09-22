@@ -7,7 +7,7 @@
   <title>Recherche Jira</title>
   <link href="vendor/tailwind.min.css" rel="stylesheet" />
   <link href="vendor/flowbite.min.css" rel="stylesheet" />
-  <link href="navbar.css" rel="stylesheet" />
+  <link href="src/components/navigation/navbar.css" rel="stylesheet" />
 
   <style>
     /* Pour le spinner de chargement */
@@ -241,12 +241,12 @@
 
   <!-- Flowbite JS -->
   <!-- Votre Script JS -->
-  <script src="jira-api.js"></script>
-  <script src="debug-logger.js"></script>
-  <script src="filter-utils.js"></script>
-  <script src="workspace-utils.js"></script>
-  <script src="navbar.js"></script>
-  <script src="search.js"></script>
+  <script src="src/services/jira/jira-api.js"></script>
+  <script src="src/services/diagnostics/debug-logger.js"></script>
+  <script src="src/utils/search/filter-utils.js"></script>
+  <script src="src/utils/workspace/workspace-utils.js"></script>
+  <script src="src/components/navigation/navbar.js"></script>
+  <script src="src/pages/search/search.js"></script>
 </body>
 
 </html>

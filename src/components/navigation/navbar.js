@@ -27,7 +27,7 @@
     navbar.innerHTML = `
       <div class="global-navbar__inner">
         <a href="search.html" class="global-navbar__brand" aria-label="Jira Quick Search — Recherche Jira">
-          <img src="icons/jira-quick-search.png" alt="" class="global-navbar__logo" aria-hidden="true">
+          <img src="src/assets/icons/jira-quick-search.png" alt="" class="global-navbar__logo" aria-hidden="true">
           <span>Jira Quick Search</span>
         </a>
         <div class="global-navbar__links" aria-label="Navigation principale">

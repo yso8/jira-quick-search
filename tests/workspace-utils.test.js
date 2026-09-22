@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { addRecentIssue, togglePinnedIssue, getPinnedIssueState, saveSearch, removeById } = require('../workspace-utils');
+const { addRecentIssue, togglePinnedIssue, getPinnedIssueState, saveSearch, removeById } = require('../src/utils/workspace/workspace-utils');
 
 const issue = { key: 'PROJ-1', summary: 'Résumé', status: 'En cours', priority: 'High', updated: '2026-09-22T10:00:00Z', url: 'https://demo.atlassian.net/browse/PROJ-1' };
 let recents = addRecentIssue([], issue, 2);

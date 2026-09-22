@@ -2,10 +2,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const html = fs.readFileSync('workspace.html', 'utf8');
-const script = fs.readFileSync('workspace.js', 'utf8');
-const search = fs.readFileSync('search.js', 'utf8');
+const script = fs.readFileSync('src/pages/workspace/workspace.js', 'utf8');
+const search = fs.readFileSync('src/pages/search/search.js', 'utf8');
 const searchHtml = fs.readFileSync('search.html', 'utf8');
-const navbar = fs.readFileSync('navbar.js', 'utf8');
+const navbar = fs.readFileSync('src/components/navigation/navbar.js', 'utf8');
 
 assert.match(html, /Tickets épinglés/);
 assert.match(html, /Tickets récents/);

@@ -2,8 +2,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const html = fs.readFileSync('search.html', 'utf8');
-const api = fs.readFileSync('jira-api.js', 'utf8');
-const search = fs.readFileSync('search.js', 'utf8');
+const api = fs.readFileSync('src/services/jira/jira-api.js', 'utf8');
+const search = fs.readFileSync('src/pages/search/search.js', 'utf8');
 
 assert.match(html, /id="filterControls"/);
 assert.match(html, /id="clearFiltersBtn"/);
