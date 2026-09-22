@@ -2,6 +2,7 @@
 let config = null;
 let allUsers = [];
 let currentResults = [];
+const ACTIVITY_RULES_STORAGE_KEY = 'recapActivityRules';
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', async () => {
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const resultsContainer = document.getElementById('resultsContainer');
   const errorMessage = document.getElementById('errorMessage');
   const exportButtons = document.getElementById('exportButtons');
+  const ruleMatchMode = document.getElementById('ruleMatchMode');
 
   // Vérifier la configuration
   config = await loadJiraConfig();
@@ -27,12 +29,50 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Charger la liste des users
   await loadUsers();
+  await loadActivityRules();
 
   // Event listeners
   generateBtn.addEventListener('click', generateRecap);
   exportCsvBtn.addEventListener('click', exportToCSV);
   copyTextBtn.addEventListener('click', copyToText);
+  ruleMatchMode.addEventListener('change', saveActivityRules);
+  document.querySelectorAll('.activity-rule').forEach(rule => rule.addEventListener('change', saveActivityRules));
 });
+
+async function loadActivityRules() {
+  const saved = await chrome.storage.sync.get(ACTIVITY_RULES_STORAGE_KEY);
+  const rules = saved[ACTIVITY_RULES_STORAGE_KEY];
+  if (!rules) return;
+  document.getElementById('ruleMatchMode').value = rules.matchMode === 'all' ? 'all' : 'any';
+  document.querySelectorAll('.activity-rule').forEach(input => {
+    input.checked = rules.conditions?.[input.dataset.rule] === true;
+  });
+}
+
+async function saveActivityRules() {
+  const conditions = {};
+  document.querySelectorAll('.activity-rule').forEach(input => {
+    conditions[input.dataset.rule] = input.checked;
+  });
+  if (!Object.values(conditions).some(Boolean)) {
+    document.querySelector('[data-rule="updated"]').checked = true;
+    conditions.updated = true;
+  }
+  await chrome.storage.sync.set({
+    [ACTIVITY_RULES_STORAGE_KEY]: {
+      matchMode: document.getElementById('ruleMatchMode').value,
+      conditions
+    }
+  });
+}
+
+function getActivityRules() {
+  const conditions = {};
+  document.querySelectorAll('.activity-rule').forEach(input => {
+    conditions[input.dataset.rule] = input.checked;
+  });
+  return { matchMode: document.getElementById('ruleMatchMode').value, conditions };
+}
 
 // Charger la liste des users Jira
 async function loadUsers() {
@@ -111,12 +151,14 @@ async function generateRecap() {
 
   const assigneeId = userSelect.value;
   const { start, end } = getPeriodDates(dateRange.value);
+  const activityRules = getActivityRules();
+  await saveActivityRules();
 
   hideAllStates();
   document.getElementById('loadingSpinner').style.display = 'block';
 
   try {
-    const results = await fetchWeeklyActivities(assigneeId, start, end);
+    const results = await fetchWeeklyActivities(assigneeId, start, end, activityRules);
     currentResults = results;
 
     if (results.length === 0) {
@@ -137,7 +179,7 @@ async function generateRecap() {
 }
 
 // Récupérer les tickets modifiés dans la période
-async function fetchWeeklyActivities(assigneeId, startDate, endDate) {
+async function fetchWeeklyActivities(assigneeId, startDate, endDate, activityRules) {
   try {
     const startStr = startDate.toISOString().split('T')[0];
     const endStr = endDate.toISOString().split('T')[0];
@@ -159,7 +201,8 @@ async function fetchWeeklyActivities(assigneeId, startDate, endDate) {
 
     const data = await response.json();
 
-    const enrichedIssues = data.issues.map(issue => enrichIssueData(issue, startDate));
+    const enrichedIssues = (await Promise.all(data.issues.map(issue => enrichIssueData(issue, startDate, endDate, activityRules))))
+      .filter(issue => issue.matchesRules);
 
     return enrichedIssues;
 
@@ -169,16 +212,25 @@ async function fetchWeeklyActivities(assigneeId, startDate, endDate) {
   }
 }
 
-// Enrichir les données d'un ticket (synchrone, changelog déjà embarqué dans la réponse)
-function enrichIssueData(issue, startDate) {
+// Enrichir les données d'un ticket et évaluer les règles d'activité sélectionnées.
+async function enrichIssueData(issue, startDate, endDate, activityRules) {
+  let histories = [];
+  try {
+    const changelogResponse = await jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/issue/${encodeURIComponent(issue.key)}/changelog?maxResults=100`);
+    const changelog = await changelogResponse.json();
+    histories = changelog.values || [];
+  } catch (error) {
+    await debugLog('changelog indisponible', { issue: issue.key, message: error.message });
+  }
+
   const assigneeAccountId = issue.fields.assignee ? issue.fields.assignee.accountId : null;
   let lastModifiedBy = 'Non disponible';
 
-  const histories = issue.changelog ? issue.changelog.histories : [];
   const changeByAssignee = histories.find(
     change => assigneeAccountId &&
       change.author.accountId === assigneeAccountId &&
-      new Date(change.created) >= startDate
+      new Date(change.created) >= startDate &&
+      new Date(change.created) <= endDate
   );
   if (changeByAssignee) {
     lastModifiedBy = changeByAssignee.author.displayName;
@@ -187,9 +239,28 @@ function enrichIssueData(issue, startDate) {
   let commentsCount = 0;
   if (issue.fields.comment && issue.fields.comment.comments) {
     commentsCount = issue.fields.comment.comments.filter(
-      comment => new Date(comment.created) >= startDate
+      comment => new Date(comment.created) >= startDate && new Date(comment.created) <= endDate
     ).length;
   }
+
+  const changesInPeriod = histories.filter(change => {
+    const date = new Date(change.created);
+    return date >= startDate && date <= endDate;
+  });
+  const activity = {
+    updated: new Date(issue.fields.updated) >= startDate && new Date(issue.fields.updated) <= endDate,
+    commentAdded: commentsCount > 0,
+    statusChanged: changesInPeriod.some(change => change.items.some(item => item.field === 'status')),
+    assigneeChanged: changesInPeriod.some(change => change.items.some(item => item.field === 'assignee')),
+    priorityChanged: changesInPeriod.some(change => change.items.some(item => item.field === 'priority')),
+    summaryChanged: changesInPeriod.some(change => change.items.some(item => ['summary', 'description'].includes(item.field)))
+  };
+  const activeRules = Object.entries(activityRules.conditions)
+    .filter(([, enabled]) => enabled)
+    .map(([rule]) => rule);
+  const matchesRules = activityRules.matchMode === 'all'
+    ? activeRules.every(rule => activity[rule])
+    : activeRules.some(rule => activity[rule]);
 
   return {
     key: issue.key,
@@ -198,7 +269,8 @@ function enrichIssueData(issue, startDate) {
     updated: issue.fields.updated,
     lastModifiedBy,
     commentsCount,
-    assignee: issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné'
+    assignee: issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné',
+    matchesRules
   };
 }
 
