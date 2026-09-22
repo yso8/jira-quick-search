@@ -19,5 +19,13 @@ const { createDebugLogger } = require('../debug-logger.js');
   assert.equal(calls[0][0], '[Jira Quick Search] request');
   assert.equal(calls[0][1].token, '[masqué]');
 
-  console.log('debug-logger: 2 tests passed');
+  calls = [];
+  const disabledLogger = createDebugLogger({
+    storage: { local: { get: async () => ({ debugLogs: false }) } },
+    console: { debug: (...args) => calls.push(args) }
+  });
+  await disabledLogger('hidden', { details: 'not logged' });
+  assert.equal(calls.length, 0);
+
+  console.log('debug-logger: 3 tests passed');
 })();

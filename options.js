@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // NOTE: On a supprimé 'M.updateTextFields()' car inutile avec Tailwind
   } catch (error) {
-    console.error('Erreur chargement config:', error);
+    await debugLog('erreur chargement configuration', { message: error.message, stack: error.stack });
   }
 
   // 2. Tester la connexion
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
     } catch (error) {
-      console.error('Erreur:', error);
+      await debugLog('erreur test connexion', { message: error.message, stack: error.stack });
       showMessage(`Erreur: ${error.message}`, 'error');
     } finally {
       // Rétablir le bouton (Icône Wifi SVG)
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'search.html';
       }, 1500);
     } catch (error) {
-      console.error('Erreur sauvegarde:', error);
+      await debugLog('erreur sauvegarde configuration', { message: error.message, stack: error.stack });
       showMessage(`Erreur de sauvegarde: ${error.message}`, 'error');
     }
   });

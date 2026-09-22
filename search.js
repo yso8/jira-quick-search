@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
     } catch (error) {
-      console.error('❌ Erreur de recherche:', error);
+      await debugLog('erreur de recherche', { message: error.message, stack: error.stack });
       loadingSpinner.style.display = 'none';
       showError(`❌ Erreur: ${error.message}`);
     }

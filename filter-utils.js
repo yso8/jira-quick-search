@@ -3,7 +3,7 @@ function escapeJqlValue(value) {
 }
 
 function buildFilterJql(query, selections, filters) {
-  const clauses = [];
+  const clauses = ['updated >= -30d'];
   const trimmedQuery = String(query || '').trim();
 
   if (trimmedQuery) {

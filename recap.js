@@ -55,7 +55,7 @@ async function loadUsers() {
     });
 
   } catch (error) {
-    console.error('❌ Erreur chargement users:', error);
+    await debugLog('erreur chargement utilisateurs', { message: error.message, stack: error.stack });
     showError(`Erreur lors du chargement des utilisateurs: ${error.message}`);
   }
 }
@@ -129,7 +129,7 @@ async function generateRecap() {
     document.getElementById('exportButtons').classList.remove('hidden');
 
   } catch (error) {
-    console.error('❌ Erreur génération récap:', error);
+    await debugLog('erreur génération récapitulatif', { message: error.message, stack: error.stack });
     showError(`Erreur: ${error.message}`);
   } finally {
     document.getElementById('loadingSpinner').style.display = 'none';
@@ -164,7 +164,7 @@ async function fetchWeeklyActivities(assigneeId, startDate, endDate) {
     return enrichedIssues;
 
   } catch (error) {
-    console.error('❌ Erreur fetchWeeklyActivities:', error);
+    await debugLog('erreur récupération activités', { message: error.message, stack: error.stack });
     throw error;
   }
 }
@@ -435,7 +435,7 @@ async function copyToText() {
     await navigator.clipboard.writeText(text);
     showToast('✅ Texte copié dans le presse-papiers !');
   } catch (error) {
-    console.error('❌ Erreur copie:', error);
+    await debugLog('erreur copie', { message: error.message, stack: error.stack });
     showError('Erreur lors de la copie');
   }
 }
