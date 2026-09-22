@@ -119,9 +119,11 @@ async function loadCustomSelectFilters(config, fields) {
       const values = (options.values || []).filter(option => option.disabled !== true);
       if (!values.length) return null;
 
+      const isProductField = String(field.name || '').trim().toLocaleLowerCase('fr-FR') === 'produit';
+
       return {
         id: field.id,
-        name: field.name,
+        name: isProductField ? 'Produit' : field.name,
         jqlField: field.id,
         options: values.map(option => ({ value: option.value, label: option.value }))
       };
