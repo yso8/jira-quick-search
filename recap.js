@@ -225,7 +225,7 @@ function displayResults(issues) {
     row.innerHTML = `
       <td class="px-6 py-4 font-medium text-blue-600">
         <div class="flex items-center gap-2">
-          <a href="${issueUrl}" target="_blank" class="hover:underline">${issue.key}</a>
+          <a href="${issueUrl}" target="_blank" class="hover:underline">${escapeHtml(issue.key)}</a>
           <button class="copy-key-btn text-gray-400 hover:text-gray-700 transition-colors" data-key="${issue.key}" title="Copier la clé">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -235,7 +235,7 @@ function displayResults(issues) {
       </td>
       <td class="px-6 py-4 text-gray-900">
         <div class="flex items-center gap-2">
-          <span>${truncateText(issue.summary, 60)}</span>
+          <span>${escapeHtml(truncateText(issue.summary, 60))}</span>
           <button class="copy-summary-btn flex-shrink-0 text-gray-400 hover:text-gray-700 transition-colors" data-summary="${issue.summary.replace(/"/g, '&quot;')}" title="Copier le résumé">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -244,19 +244,19 @@ function displayResults(issues) {
         </div>
       </td>
       <td class="px-6 py-4 text-gray-700">
-        ${issue.lastModifiedBy}
+        ${escapeHtml(issue.lastModifiedBy)}
       </td>
       <td class="px-6 py-4 text-gray-500">
         ${formattedDate}
       </td>
       <td class="px-6 py-4 text-center">
         <span class="inline-flex items-center justify-center w-8 h-8 text-xs font-semibold ${issue.commentsCount > 0 ? 'text-blue-800 bg-blue-100' : 'text-gray-500 bg-gray-100'} rounded-full">
-          ${issue.commentsCount}
+          ${escapeHtml(issue.commentsCount)}
         </span>
       </td>
       <td class="px-6 py-4">
         <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded">
-          ${issue.status}
+          ${escapeHtml(issue.status)}
         </span>
       </td>
     `;
@@ -318,7 +318,7 @@ function displayStats(issues) {
     const percentage = ((count / issues.length) * 100).toFixed(0);
     userStats.innerHTML += `
       <div class="flex items-center justify-between text-sm">
-        <span class="text-gray-700 truncate max-w-[150px]" title="${user}">${user}</span>
+        <span class="text-gray-700 truncate max-w-[150px]" title="${escapeHtml(user)}">${escapeHtml(user)}</span>
         <div class="flex items-center gap-2">
           <div class="w-24 bg-gray-200 rounded-full h-2">
             <div class="bg-green-600 h-2 rounded-full" style="width: ${percentage}%"></div>
@@ -347,7 +347,7 @@ function displayStats(issues) {
     const statusColor = getStatusColor(status);
     statusStats.innerHTML += `
       <div class="flex items-center justify-between text-sm">
-        <span class="${statusColor} text-xs font-medium px-2 py-0.5 rounded truncate max-w-[120px]" title="${status}">${status}</span>
+        <span class="${statusColor} text-xs font-medium px-2 py-0.5 rounded truncate max-w-[120px]" title="${escapeHtml(status)}">${escapeHtml(status)}</span>
         <div class="flex items-center gap-2">
           <div class="w-20 bg-gray-200 rounded-full h-2">
             <div class="bg-purple-600 h-2 rounded-full" style="width: ${percentage}%"></div>

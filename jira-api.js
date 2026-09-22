@@ -17,6 +17,24 @@ function normalizeJiraUrl(value) {
   return String(value || '').trim().replace(/\/+$/, '');
 }
 
+function isValidJiraUrl(value) {
+  try {
+    const url = new URL(normalizeJiraUrl(value));
+    return url.protocol === 'https:' && /^[a-z0-9-]+\.atlassian\.net$/i.test(url.hostname) && !url.pathname.replace(/\/+$/, '');
+  } catch {
+    return false;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 function jiraHeaders(email, token) {
   return {
     Authorization: `Basic ${btoa(`${email}:${token}`)}`,

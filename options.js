@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    if (!url.startsWith('https://') || !url.includes('atlassian.net')) {
+    if (!isValidJiraUrl(url)) {
       showMessage('L\'URL doit être au format: https://votre-site.atlassian.net', 'warning');
       return;
     }
@@ -89,6 +89,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!url || !email || !token) {
       showMessage('Veuillez remplir tous les champs', 'warning');
+      return;
+    }
+
+    if (!isValidJiraUrl(url)) {
+      showMessage('L’URL doit être au format: https://votre-site.atlassian.net', 'warning');
       return;
     }
 

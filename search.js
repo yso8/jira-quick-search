@@ -180,11 +180,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="flex items-center gap-3">
                     <input type="checkbox" class="select-ticket-cb w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" value="${issueUrl}">
                     <a href="${issueUrl}" target="_blank" class="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1">
-                        ${issue.key}
+                        ${escapeHtml(issue.key)}
                     </a>
                 </div>
                 <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded border border-transparent inline-flex items-center bg-gray-100 text-gray-800">
-                    ${issue.fields.status.name}
+                    ${escapeHtml(issue.fields.status.name)}
                 </span>
             </div>
 
@@ -197,8 +197,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             -->
             <a href="${issueUrl}" target="_blank" 
                class="block h-10 overflow-hidden text-gray-900 font-medium text-sm leading-snug hover:text-blue-600 transition-colors mb-4 line-clamp-2" 
-               title="${issue.fields.summary}">
-                ${issue.fields.summary}
+               title="${escapeHtml(issue.fields.summary)}">
+                ${escapeHtml(issue.fields.summary)}
             </a>
 
             <!-- LIGNE 3 : Footer -->
@@ -207,23 +207,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="mt-auto pt-3 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-500">
                 
                 <!-- Type -->
-                <div class="flex items-center gap-1" title="Type: ${issueType}">
+                <div class="flex items-center gap-1" title="Type: ${escapeHtml(issueType)}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4" style="color: ${typeColor}">
                         <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a1 1 0 011-1h5a1 1 0 01.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
                     </svg>
-                    <span class="truncate max-w-[80px]">${issueType}</span>
+                    <span class="truncate max-w-[80px]">${escapeHtml(issueType)}</span>
                 </div>
 
                 <!-- Priorité -->
-                <div class="flex items-center gap-1" title="Priorité: ${priority}">
+                <div class="flex items-center gap-1" title="Priorité: ${escapeHtml(priority)}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4" style="color: ${priorityColor}">
                         <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
                     </svg>
-                    <span>${priority}</span>
+                    <span>${escapeHtml(priority)}</span>
                 </div>
 
                 <!-- Assigné -->
-                <div class="flex items-center gap-1 ml-auto" title="Assigné à: ${assignee}">
+                <div class="flex items-center gap-1 ml-auto" title="Assigné à: ${escapeHtml(assignee)}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gray-400">
                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                     </svg>
