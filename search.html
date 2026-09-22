@@ -37,7 +37,7 @@
   <nav id="global-navbar"></nav>
 
   <!-- Main Container -->
-  <div class="flex-grow container mx-auto px-4 py-8 max-w-screen-xl">
+  <div class="flex-grow container mx-auto px-4 py-6 max-w-screen-xl">
 
     <!-- Search Bar & Filters -->
     <div class="max-w-5xl mx-auto mb-8">
@@ -100,7 +100,7 @@
     </div>
 
     <!-- 1. État Initial -->
-    <div id="initialState" class="text-center mt-20">
+    <div id="initialState" class="text-center mt-16">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-4 text-gray-400">
         <!-- Icon: Magnifying Glass (Large) -->
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -114,7 +114,7 @@
     </div>
 
     <!-- 2. Chargement -->
-    <div id="loadingSpinner" class="hidden text-center mt-20">
+    <div id="loadingSpinner" class="hidden text-center mt-16">
       <svg aria-hidden="true" class="inline w-16 h-16 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101"
         fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -128,7 +128,7 @@
     </div>
 
     <!-- 3. Résultats vides -->
-    <div id="emptyState" class="hidden text-center mt-20">
+    <div id="emptyState" class="hidden text-center mt-16">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-orange-100 mb-4 text-orange-500">
         <!-- Icon: Information Circle -->
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -167,7 +167,7 @@
               d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
               clip-rule="evenodd" />
           </svg>
-          <span id="resultCount">0</span> résultats trouvés
+          <span id="resultCount" aria-live="polite">0</span> résultats trouvés
         </h5>
         <div class="flex gap-2">
         <button type="button" id="saveSearchBtn" disabled class="text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 disabled:opacity-50 disabled:cursor-not-allowed" title="Sauvegarder cette recherche">

@@ -12,6 +12,7 @@ assert.match(html, /Tickets récents/);
 assert.match(html, /Recherches sauvegardées/);
 assert.match(html, /Workspace/);
 assert.match(html, /id="workspaceSummary"/);
+assert.match(html, /id="workspaceSummary"[^>]*aria-live="polite"/);
 assert.match(html, /id="global-navbar"/);
 assert.match(html, /data-page="workspace"/);
 assert.match(navbar, /Recherche Jira/);

@@ -5,6 +5,7 @@ const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
 const background = fs.readFileSync('background.js', 'utf8');
 const search = fs.readFileSync('search.js', 'utf8');
 const options = fs.readFileSync('options.html', 'utf8');
+const searchHtml = fs.readFileSync('search.html', 'utf8');
 
 assert.equal(manifest.omnibox.keyword, 'jira');
 assert.equal(manifest.commands.open_search.suggested_key.default, 'Ctrl+Shift+J');
@@ -22,5 +23,6 @@ assert.match(search, /searchInput\.value = initialQuery/);
 assert.match(search, /performSearch\(\)/);
 assert.match(options, /Ctrl\+Shift\+J/);
 assert.match(options, /omnibox/);
+assert.match(searchHtml, /id="resultCount"[^>]*aria-live="polite"/);
 
 console.log('quick-access: 13 tests passed');
