@@ -20,6 +20,7 @@ assert.match(html, /Aide et feedback/);
 assert.match(html, /Signaler un problème/);
 assert.match(html, /Proposer une fonctionnalité/);
 assert.match(html, /id="feedbackForm"/);
+assert.match(html, /id="feedbackMessage"[^>]*aria-live="polite"/);
 assert.match(html, /Aucune donnée n’est envoyée automatiquement/);
 assert.match(script, /chrome\.storage\.sync\.set\(\{ jiraUrl: url, jiraEmail: email, jiraToken: token \}\)/);
 assert.match(script, /window\.location\.href = 'search\.html'/);
