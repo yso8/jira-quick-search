@@ -1,7 +1,8 @@
 // Ouvrir la page de recherche au clic sur l'icône
-chrome.action.onClicked.addListener(() => {
+chrome.action.onClicked.addListener(async () => {
+  const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
   chrome.tabs.create({
-    url: chrome.runtime.getURL('search.html')
+    url: chrome.runtime.getURL(config.jiraUrl && config.jiraEmail && config.jiraToken ? 'search.html' : 'options.html')
   });
 });
 
