@@ -40,7 +40,7 @@ Les identifiants sont enregistrés dans `chrome.storage.sync`, le stockage synch
 
 ## Développement et vérification
 
-Le projet ne nécessite pas Node.js ni `node_modules`. Avant un commit, lancer depuis PowerShell :
+Le projet ne nécessite pas `node_modules`. Avant un commit, lancer depuis PowerShell :
 
 ```powershell
 .\scripts\validate-extension.ps1
