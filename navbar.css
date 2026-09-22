@@ -37,19 +37,12 @@
 }
 
 .global-navbar__logo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  flex: 0 0 auto;
   width: 2rem;
   height: 2rem;
   border-radius: 0.5rem;
-  color: var(--navbar-accent);
-  background: color-mix(in srgb, var(--navbar-accent) 12%, white);
-}
-
-.global-navbar__logo svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  object-fit: cover;
 }
 
 .global-navbar__links {

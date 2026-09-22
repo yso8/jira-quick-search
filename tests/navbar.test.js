@@ -18,5 +18,8 @@ assert.match(navbar, /Paramètres/);
 assert.match(navbar, /1A56DB/);
 assert.match(navbar, /F97316/);
 assert.match(navbar, /6D28D9/);
+assert.match(navbar, /icons\/jira-quick-search\.png/);
+assert.match(navbar, /<img src="icons\/jira-quick-search\.png"[^>]*class="global-navbar__logo"/);
+assert.doesNotMatch(navbar, /<span class="global-navbar__logo"/);
 
 console.log('navbar: 10 tests passed');
