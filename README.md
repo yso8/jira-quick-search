@@ -44,6 +44,7 @@ Le projet ne nécessite pas `node_modules`. Avant un commit, lancer depuis Power
 
 ```powershell
 .\scripts\validate-extension.ps1
+.\scripts\test-extension.ps1
 ```
 
 Pour tester manuellement : configurer l’extension, effectuer une recherche, changer de page, ouvrir le récapitulatif et tester les deux exports.
