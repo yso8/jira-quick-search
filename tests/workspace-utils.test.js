@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { addRecentIssue, togglePinnedIssue, saveSearch, removeById } = require('../workspace-utils');
+const { addRecentIssue, togglePinnedIssue, getPinnedIssueState, saveSearch, removeById } = require('../workspace-utils');
 
 const issue = { key: 'PROJ-1', summary: 'Résumé', status: 'En cours', priority: 'High', updated: '2026-09-22T10:00:00Z', url: 'https://demo.atlassian.net/browse/PROJ-1' };
 let recents = addRecentIssue([], issue, 2);
@@ -11,6 +11,16 @@ assert.deepEqual(addRecentIssue(recents, { key: 'PROJ-2' }, 2).map(item => item.
 let pinned = togglePinnedIssue([], issue);
 assert.equal(pinned.length, 1);
 assert.equal(togglePinnedIssue(pinned, issue).length, 0);
+assert.deepEqual(getPinnedIssueState(pinned, issue.key), {
+  pinned: true,
+  icon: '★',
+  label: 'Désépingler ce ticket'
+});
+assert.deepEqual(getPinnedIssueState([], issue.key), {
+  pinned: false,
+  icon: '☆',
+  label: 'Épingler ce ticket'
+});
 
 const saved = saveSearch([], { name: 'Mes tickets', query: 'project = PROJ', filters: { project: 'PROJ' } });
 assert.equal(saved[0].name, 'Mes tickets');

@@ -255,10 +255,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                         ${escapeHtml(issue.key)}
                     </a>
                 </div>
-                <button type="button" class="pin-issue-btn text-gray-400 hover:text-yellow-500" title="Épingler ce ticket">☆</button>
-                <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded border border-transparent inline-flex items-center bg-gray-100 text-gray-800">
-                    ${escapeHtml(issue.fields.status.name)}
-                </span>
+                <div class="flex items-center gap-2">
+                    <button type="button" class="pin-issue-btn inline-flex h-9 w-9 items-center justify-center rounded-full text-2xl leading-none text-gray-400 transition-colors hover:bg-yellow-50 hover:text-yellow-500 focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-500 focus-visible:outline-offset-1" aria-label="Épingler ce ticket" aria-pressed="false" title="Épingler ce ticket">☆</button>
+                    <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded border border-transparent inline-flex items-center bg-gray-100 text-gray-800">
+                        ${escapeHtml(issue.fields.status.name)}
+                    </span>
+                </div>
             </div>
 
             <!-- LIGNE 2 : Titre du ticket (Hauteur FIXE) -->
@@ -315,12 +317,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   `;
 
     const workspaceIssue = { key: issue.key, summary: issue.fields.summary, status: issue.fields.status.name, priority, updated: issue.fields.updated, url: issueUrl };
-    col.querySelector('.pin-issue-btn').addEventListener('click', async event => {
+    const pinButton = col.querySelector('.pin-issue-btn');
+    const updatePinButton = state => {
+      pinButton.textContent = state.icon;
+      pinButton.title = state.label;
+      pinButton.setAttribute('aria-label', state.label);
+      pinButton.setAttribute('aria-pressed', String(state.pinned));
+      pinButton.classList.toggle('text-yellow-500', state.pinned);
+      pinButton.classList.toggle('text-gray-400', !state.pinned);
+    };
+
+    chrome.storage.local.get({ pinnedIssues: [] }).then(stored => {
+      updatePinButton(getPinnedIssueState(stored.pinnedIssues, issue.key));
+    });
+
+    pinButton.addEventListener('click', async event => {
       event.preventDefault();
       const stored = await chrome.storage.local.get({ pinnedIssues: [] });
       const pinned = togglePinnedIssue(stored.pinnedIssues, workspaceIssue);
       await chrome.storage.local.set({ pinnedIssues: pinned });
-      event.currentTarget.textContent = pinned.some(item => item.key === issue.key) ? '★' : '☆';
+      updatePinButton(getPinnedIssueState(pinned, issue.key));
     });
     col.querySelectorAll('a[href*="/browse/"]').forEach(link => link.addEventListener('click', async () => {
       const stored = await chrome.storage.local.get({ recentIssues: [] });

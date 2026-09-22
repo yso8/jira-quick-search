@@ -13,6 +13,15 @@ function togglePinnedIssue(pinned, issue) {
     : [{ ...issue }, ...pinned];
 }
 
+function getPinnedIssueState(pinned, issueKey) {
+  const isPinned = pinned.some(item => item.key === issueKey);
+  return {
+    pinned: isPinned,
+    icon: isPinned ? '★' : '☆',
+    label: isPinned ? 'Désépingler ce ticket' : 'Épingler ce ticket'
+  };
+}
+
 function saveSearch(searches, search, now = new Date().toISOString()) {
   const id = search.id || `search-${Date.now()}`;
   const existing = searches.find(item => item.id === id);
@@ -25,5 +34,5 @@ function removeById(items, id) {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { WORKSPACE_MAX_RECENTS, addRecentIssue, togglePinnedIssue, saveSearch, removeById };
+  module.exports = { WORKSPACE_MAX_RECENTS, addRecentIssue, togglePinnedIssue, getPinnedIssueState, saveSearch, removeById };
 }
