@@ -234,13 +234,11 @@
 
   </div>
 
-  <!-- Flowbite JS (Nécessaire pour l'accordéon) -->
   <script src="jira-api.js"></script>
   <script src="debug-logger.js"></script>
   <script src="options.js"></script>
 
-  <!-- Script de compatibilité pour gérer les alertes Flowbite dynamiquement avec SVGs -->
-  <script>
+  <!-- Ancienne compatibilité d'alertes conservée hors exécution pour CSP MV3.
     function showStatus(message, type) {
       const el = document.getElementById('statusMessage');
       const msgSpan = document.getElementById('msgContent');
@@ -268,7 +266,7 @@
       msgSpan.textContent = message;
       el.classList.remove('hidden');
     }
-  </script>
+  </script> -->
 </body>
 
 </html
