@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const resultsContainer = document.getElementById('resultsContainer');
   const errorMessage = document.getElementById('errorMessage');
   const exportButtons = document.getElementById('exportButtons');
-  const showStatsToggle = document.getElementById('showStatsToggle');
 
   // Vérifier la configuration
   config = await loadJiraConfig();
@@ -33,21 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   generateBtn.addEventListener('click', generateRecap);
   exportCsvBtn.addEventListener('click', exportToCSV);
   copyTextBtn.addEventListener('click', copyToText);
-  document.querySelectorAll('.recap-column-toggle').forEach(toggle => {
-    toggle.addEventListener('change', applyDisplayOptions);
-  });
-  showStatsToggle.addEventListener('change', applyDisplayOptions);
-  applyDisplayOptions();
 });
-
-function applyDisplayOptions() {
-  document.querySelectorAll('.recap-column-toggle').forEach(toggle => {
-    document.querySelectorAll(`[data-column="${toggle.dataset.column}"]`).forEach(element => {
-      element.classList.toggle('hidden', !toggle.checked);
-    });
-  });
-  document.getElementById('statsSection').classList.toggle('hidden', !document.getElementById('showStatsToggle').checked);
-}
 
 // Charger la liste des users Jira
 async function loadUsers() {
@@ -238,7 +223,7 @@ function displayResults(issues) {
     const statusColor = getStatusColor(issue.status);
 
     row.innerHTML = `
-      <td data-column="ticket" class="px-6 py-4 font-medium text-blue-600">
+      <td class="px-6 py-4 font-medium text-blue-600">
         <div class="flex items-center gap-2">
           <a href="${issueUrl}" target="_blank" class="hover:underline">${escapeHtml(issue.key)}</a>
           <button class="copy-key-btn text-gray-400 hover:text-gray-700 transition-colors" data-key="${issue.key}" title="Copier la clé">
@@ -248,7 +233,7 @@ function displayResults(issues) {
           </button>
         </div>
       </td>
-      <td data-column="summary" class="px-6 py-4 text-gray-900">
+      <td class="px-6 py-4 text-gray-900">
         <div class="flex items-center gap-2">
           <span>${escapeHtml(truncateText(issue.summary, 60))}</span>
           <button class="copy-summary-btn flex-shrink-0 text-gray-400 hover:text-gray-700 transition-colors" data-summary="${issue.summary.replace(/"/g, '&quot;')}" title="Copier le résumé">
@@ -258,18 +243,18 @@ function displayResults(issues) {
           </button>
         </div>
       </td>
-      <td data-column="modifiedBy" class="px-6 py-4 text-gray-700">
+      <td class="px-6 py-4 text-gray-700">
         ${escapeHtml(issue.lastModifiedBy)}
       </td>
-      <td data-column="date" class="px-6 py-4 text-gray-500">
+      <td class="px-6 py-4 text-gray-500">
         ${formattedDate}
       </td>
-      <td data-column="comments" class="px-6 py-4 text-center">
+      <td class="px-6 py-4 text-center">
         <span class="inline-flex items-center justify-center w-8 h-8 text-xs font-semibold ${issue.commentsCount > 0 ? 'text-blue-800 bg-blue-100' : 'text-gray-500 bg-gray-100'} rounded-full">
           ${escapeHtml(issue.commentsCount)}
         </span>
       </td>
-      <td data-column="status" class="px-6 py-4">
+      <td class="px-6 py-4">
         <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded">
           ${escapeHtml(issue.status)}
         </span>
@@ -307,8 +292,6 @@ function displayResults(issues) {
 
     tableBody.appendChild(row);
   });
-
-  applyDisplayOptions();
 
   document.getElementById('resultsContainer').style.display = 'block';
 }
