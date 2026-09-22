@@ -80,57 +80,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     filterLoading.classList.add('hidden');
     filterControls.classList.remove('hidden');
     filterControls.innerHTML = availableFilters.map(filter => `
-      <div class="relative">
-        <button id="filter-button-${filter.id}" data-dropdown-toggle="filter-menu-${filter.id}" data-filter-button="${filter.id}" type="button" ${filter.options.length ? '' : 'disabled'} class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
-          <span>${escapeHtml(filter.name)}</span>
-          <span data-filter-label="${filter.id}" class="hidden inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800"></span>
-          <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/></svg>
-        </button>
-        <div id="filter-menu-${filter.id}" class="z-10 hidden w-64 max-h-72 overflow-y-auto bg-white divide-y divide-gray-100 rounded-lg shadow" role="menu" aria-labelledby="filter-button-${filter.id}">
-          <ul class="p-2 text-sm text-gray-700" data-filter-options="${filter.id}">
-            ${filter.options.length
-              ? filter.options.map(option => `<li><button type="button" data-filter-id="${filter.id}" data-filter-value="${escapeHtml(option.value)}" class="w-full text-left rounded px-3 py-2 hover:bg-gray-100">${escapeHtml(option.label)}</button></li>`).join('')
-              : '<li><span class="block px-3 py-2 text-gray-500">Aucune valeur disponible</span></li>'}
-          </ul>
-        </div>
+      <div class="min-w-48">
+        <label for="filter-${filter.id}" class="block mb-1 text-xs font-medium text-gray-700">${escapeHtml(filter.name)}</label>
+        <select id="filter-${filter.id}" data-filter-id="${filter.id}" ${filter.options.length ? '' : 'disabled'} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 disabled:opacity-50">
+          <option value="">${filter.options.length ? `Tous les ${escapeHtml(filter.name.toLowerCase())}` : 'Aucune valeur disponible'}</option>
+          ${filter.options.map(option => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join('')}
+        </select>
       </div>
     `).join('');
-    const FlowbiteDropdown = window.Dropdown;
-    if (typeof FlowbiteDropdown !== 'function' && typeof window.initDropdowns !== 'function') {
-      debugLog('Flowbite dropdown indisponible', { loaded: Boolean(window.Flowbite) });
-      return;
-    }
-
-    availableFilters.forEach(filter => {
-      if (!filter.options.length) return;
-      const button = document.getElementById(`filter-button-${filter.id}`);
-      const menu = document.getElementById(`filter-menu-${filter.id}`);
-      if (typeof FlowbiteDropdown === 'function') {
-        new FlowbiteDropdown(menu, button, { placement: 'bottom-start' });
-      }
-    });
-    if (typeof window.initDropdowns === 'function') window.initDropdowns();
   }
 
   function handleFilterClick(event) {
-    const option = event.target.closest('[data-filter-id]');
-    if (!option) return;
-    const filterId = option.dataset.filterId;
-    selectedFilters[filterId] = option.dataset.filterValue;
-    const label = filterControls.querySelector(`[data-filter-label="${filterId}"]`);
-    const filter = availableFilters.find(item => item.id === filterId);
-    const selected = filter.options.find(item => item.value === selectedFilters[filterId]);
-    label.textContent = selected ? selected.label : '';
-    label.classList.remove('hidden');
-    clearFiltersBtn.classList.remove('hidden');
+    const select = event.target.closest('select[data-filter-id]');
+    if (!select) return;
+    const filterId = select.dataset.filterId;
+    if (select.value) selectedFilters[filterId] = select.value;
+    else delete selectedFilters[filterId];
+    clearFiltersBtn.classList.toggle('hidden', Object.keys(selectedFilters).length === 0);
   }
 
   function clearFilters() {
     Object.keys(selectedFilters).forEach(key => delete selectedFilters[key]);
-    filterControls.querySelectorAll('[data-filter-label]').forEach(label => {
-      label.textContent = '';
-      label.classList.add('hidden');
-    });
+    filterControls.querySelectorAll('select[data-filter-id]').forEach(select => { select.value = ''; });
     clearFiltersBtn.classList.add('hidden');
   }
 

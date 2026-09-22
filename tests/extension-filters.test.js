@@ -10,9 +10,7 @@ assert.match(html, /id="clearFiltersBtn"/);
 assert.match(api, /fetchFilterMetadata/);
 assert.match(api, /loadCustomSelectFilters/);
 assert.match(search, /buildFilterJql/);
-assert.match(search, /data-dropdown-toggle/);
-assert.match(search, /new FlowbiteDropdown\(/);
-assert.match(search, /initDropdowns/);
+assert.match(search, /<select id="filter-/);
 assert.match(search, /data-filter-id/);
 
 console.log('extension-filters: 6 tests passed');
