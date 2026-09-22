@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 1. Charger la configuration existante
   try {
-    const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
+    const config = await chrome.storage.sync.get(JIRA_CONFIG_KEYS);
     if (config.jiraUrl) jiraUrlInput.value = config.jiraUrl;
     if (config.jiraEmail) jiraEmailInput.value = config.jiraEmail;
     if (config.jiraToken) jiraTokenInput.value = config.jiraToken;
@@ -52,24 +52,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
 
     try {
-      const apiUrl = `${url}/rest/api/3/myself`;
-      console.log('Test connexion vers:', apiUrl);
-
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Basic ' + btoa(`${email}:${token}`),
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await jiraRequest({ jiraUrl: normalizeJiraUrl(url), jiraEmail: email, jiraToken: token }, `/rest/api/${JIRA_API_VERSION}/myself`);
 
       if (response.ok) {
         const user = await response.json();
         showMessage(`Connexion réussie ! Bienvenue.`, 'success');
       } else {
-        const errorText = await response.text();
-        console.error('Erreur API:', errorText);
         throw new Error(`Erreur ${response.status}: Vérifiez vos identifiants`);
       }
 

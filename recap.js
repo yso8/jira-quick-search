@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const exportButtons = document.getElementById('exportButtons');
 
   // Vérifier la configuration
-  config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
+  config = await loadJiraConfig();
 
   if (!config.jiraUrl || !config.jiraEmail || !config.jiraToken) {
     showError('⚠️ Configuration manquante. Veuillez configurer l\'extension.', true);
@@ -37,27 +37,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Charger la liste des users Jira
 async function loadUsers() {
   try {
-    const url = `${config.jiraUrl}/rest/api/3/users/search?accountType=atlassian&maxResults=200`;
-    console.log('📥 Chargement des utilisateurs:', url);
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Basic ' + btoa(`${config.jiraEmail}:${config.jiraToken}`),
-        'Accept': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erreur API: ${response.status}`);
-    }
+    const response = await jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/users/search?accountType=atlassian&maxResults=200`);
 
     const users = await response.json();
     allUsers = users
       .filter(user => user.active && user.accountType === 'atlassian')
       .sort((a, b) => a.displayName.localeCompare(b.displayName, 'fr'));
 
-    console.log('✅ Utilisateurs chargés:', allUsers.length);
 
     // Remplir le dropdown
     const userSelect = document.getElementById('userSelect');
@@ -162,14 +148,8 @@ async function fetchWeeklyActivities(assigneeId, startDate, endDate) {
     }
     jql += ` ORDER BY updated DESC`;
 
-    const url = `${config.jiraUrl}/rest/api/3/search/jql`;
-    const response = await fetch(url, {
+    const response = await jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/search/jql`, {
       method: 'POST',
-      headers: {
-        'Authorization': 'Basic ' + btoa(`${config.jiraEmail}:${config.jiraToken}`),
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify({
         jql,
         maxResults: 100,
@@ -177,12 +157,7 @@ async function fetchWeeklyActivities(assigneeId, startDate, endDate) {
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Erreur API: ${response.status}`);
-    }
-
     const data = await response.json();
-    console.log('✅ Tickets récupérés:', data.issues.length);
 
     const enrichedIssues = data.issues.map(issue => enrichIssueData(issue, startDate));
 

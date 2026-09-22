@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let pageTokens = [null]; // pageTokens[i] = nextPageToken pour accéder à la page i
 
   // Vérifier la configuration au démarrage
-  const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
+  const config = await loadJiraConfig();
 
   if (!config.jiraUrl || !config.jiraEmail || !config.jiraToken) {
     showError('⚠️ Configuration manquante. Veuillez configurer l\'extension.', true);
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadingSpinner.style.display = 'block';
 
     try {
-      const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
+      const config = await loadJiraConfig();
 
       const body = {
         jql: currentJql,
@@ -86,13 +86,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         body.nextPageToken = pageTokens[page];
       }
 
-      const response = await fetch(`${config.jiraUrl}/rest/api/3/search/jql`, {
+      const response = await jiraRequest(config, `/rest/api/${JIRA_API_VERSION}/search/jql`, {
         method: 'POST',
-        headers: {
-          'Authorization': 'Basic ' + btoa(`${config.jiraEmail}:${config.jiraToken}`),
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify(body)
       });
 
