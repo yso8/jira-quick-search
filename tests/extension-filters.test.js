@@ -9,6 +9,7 @@ assert.match(html, /id="filterControls"/);
 assert.match(html, /id="clearFiltersBtn"/);
 assert.match(api, /fetchFilterMetadata/);
 assert.match(api, /loadCustomSelectFilters/);
+assert.match(api, /user\.accountType === 'atlassian'/);
 assert.match(search, /buildFilterJql/);
 assert.match(search, /<select id="filter-/);
 assert.match(search, /data-filter-id/);

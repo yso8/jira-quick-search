@@ -92,7 +92,7 @@ async function fetchFilterMetadata(config) {
 
   const filters = [
     { id: 'project', name: 'Espace', jqlField: 'project', options: (projects.values || projects).map(project => ({ value: project.key, label: project.name })) },
-    { id: 'assignee', name: 'Personne assignée', jqlField: 'assignee', options: users.filter(user => user.active).map(user => ({ value: user.accountId, label: user.displayName })) },
+    { id: 'assignee', name: 'Personne assignée', jqlField: 'assignee', options: users.filter(user => user.active && user.accountType === 'atlassian').sort((a, b) => a.displayName.localeCompare(b.displayName, 'fr')).map(user => ({ value: user.accountId, label: user.displayName })) },
     { id: 'issuetype', name: 'Type', jqlField: 'issuetype', options: issueTypes.map(type => ({ value: type.name, label: type.name })) },
     { id: 'status', name: 'État', jqlField: 'status', options: statuses.map(status => ({ value: status.name, label: status.name })) },
     { id: 'priority', name: 'Priorité', jqlField: 'priority', options: priorities.map(priority => ({ value: priority.name, label: priority.name })) }

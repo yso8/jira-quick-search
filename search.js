@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     filterControls.innerHTML = availableFilters.map(filter => `
       <div class="min-w-48">
         <label for="filter-${filter.id}" class="block mb-1 text-xs font-medium text-gray-700">${escapeHtml(filter.name)}</label>
-        <select id="filter-${filter.id}" data-filter-id="${filter.id}" ${filter.options.length ? '' : 'disabled'} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 disabled:opacity-50">
+        <select id="filter-${filter.id}" data-filter-id="${filter.id}" ${filter.options.length ? '' : 'disabled'} class="bg-blue-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 disabled:opacity-50">
           <option value="">${filter.options.length ? `Tous les ${escapeHtml(filter.name.toLowerCase())}` : 'Aucune valeur disponible'}</option>
           ${filter.options.map(option => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join('')}
         </select>
