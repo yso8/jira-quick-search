@@ -95,12 +95,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
       </div>
     `).join('');
+    const FlowbiteDropdown = window.Dropdown;
+    if (typeof FlowbiteDropdown !== 'function' && typeof window.initDropdowns !== 'function') {
+      debugLog('Flowbite dropdown indisponible', { loaded: Boolean(window.Flowbite) });
+      return;
+    }
+
     availableFilters.forEach(filter => {
-      if (!filter.options.length || typeof Dropdown !== 'function') return;
+      if (!filter.options.length) return;
       const button = document.getElementById(`filter-button-${filter.id}`);
       const menu = document.getElementById(`filter-menu-${filter.id}`);
-      new Dropdown(menu, button, { placement: 'bottom-start' });
+      if (typeof FlowbiteDropdown === 'function') {
+        new FlowbiteDropdown(menu, button, { placement: 'bottom-start' });
+      }
     });
+    if (typeof window.initDropdowns === 'function') window.initDropdowns();
   }
 
   function handleFilterClick(event) {
