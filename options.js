@@ -17,6 +17,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const lastDiagnostic = document.getElementById('lastDiagnostic');
   const clearDataBtn = document.getElementById('clearDataBtn');
   const clearDataMessage = document.getElementById('clearDataMessage');
+  const feedbackForm = document.getElementById('feedbackForm');
+  const feedbackType = document.getElementById('feedbackType');
+  const feedbackTitle = document.getElementById('feedbackTitle');
+  const feedbackDescription = document.getElementById('feedbackDescription');
+  const feedbackReproducibleLabel = document.getElementById('feedbackReproducibleLabel');
+  const feedbackReproducible = document.getElementById('feedbackReproducible');
+  const feedbackTechnical = document.getElementById('feedbackTechnical');
+  const feedbackMessage = document.getElementById('feedbackMessage');
+  const feedbackTypeButtons = document.querySelectorAll('.feedback-type-btn');
   let latestDiagnostic = null;
 
   saveBtn.classList.add('hidden');
@@ -58,6 +67,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       await debugLog('erreur suppression données', { message: error.message });
     }
   });
+  feedbackTypeButtons.forEach(button => button.addEventListener('click', () => {
+    feedbackType.value = button.dataset.feedbackType;
+    feedbackForm.classList.remove('hidden');
+    updateFeedbackType();
+    feedbackTitle.focus();
+  }));
+  feedbackType.addEventListener('change', updateFeedbackType);
+  document.getElementById('cancelFeedbackBtn').addEventListener('click', resetFeedbackForm);
+  feedbackForm.addEventListener('submit', prepareFeedback);
 
   async function connectAndSave() {
     const url = normalizeJiraUrl(jiraUrlInput.value);
@@ -110,6 +128,72 @@ document.addEventListener('DOMContentLoaded', async () => {
     }));
     copyDiagnosticBtn.classList.remove('hidden');
     lastDiagnostic.textContent = `Dernier diagnostic : ${new Date().toLocaleString('fr-FR')}`;
+  }
+
+  function updateFeedbackType() {
+    const isBug = feedbackType.value === 'bug';
+    feedbackReproducibleLabel.classList.toggle('hidden', !isBug);
+    feedbackReproducibleLabel.classList.toggle('flex', isBug);
+  }
+
+  function resetFeedbackForm() {
+    feedbackForm.reset();
+    feedbackForm.classList.add('hidden');
+    feedbackMessage.className = 'hidden rounded-lg border p-3 text-sm';
+    feedbackMessage.textContent = '';
+    updateFeedbackType();
+  }
+
+  async function prepareFeedback(event) {
+    event.preventDefault();
+    const input = {
+      type: feedbackType.value,
+      title: feedbackTitle.value,
+      description: feedbackDescription.value
+    };
+    const validation = validateFeedback(input);
+    if (!validation.valid) {
+      showFeedbackMessage(validation.message, 'error');
+      return;
+    }
+
+    const manifest = chrome.runtime.getManifest();
+    const technicalInfo = buildTechnicalInfo({
+      version: manifest.version,
+      browser: navigator.userAgent,
+      platform: navigator.platform || 'inconnu',
+      manifestVersion: manifest.manifest_version,
+      instanceType: getInstanceType(jiraUrlInput.value),
+      diagnosticStatus: diagnosticSummary.textContent || 'Non exécuté'
+    });
+    const body = buildFeedbackBody({
+      type: input.type,
+      description: input.description,
+      reproducible: feedbackReproducible.checked,
+      includeTechnical: feedbackTechnical.checked,
+      technicalInfo
+    });
+    const url = buildGithubIssueUrl({ type: input.type, title: input.title, body });
+    try {
+      await chrome.tabs.create({ url });
+      showFeedbackMessage('Votre brouillon GitHub est prêt. Vérifiez son contenu avant de le publier.', 'success');
+    } catch (error) {
+      showFeedbackMessage('Impossible d’ouvrir GitHub. Vérifiez votre connexion réseau et réessayez.', 'error');
+      await debugLog('erreur ouverture feedback GitHub', { message: error.message });
+    }
+  }
+
+  function getInstanceType(value) {
+    try {
+      return new URL(normalizeJiraUrl(value)).hostname.endsWith('.atlassian.net') ? 'Cloud' : 'Non déterminé';
+    } catch {
+      return 'Non déterminé';
+    }
+  }
+
+  function showFeedbackMessage(message, type) {
+    feedbackMessage.className = `rounded-lg border p-3 text-sm ${type === 'success' ? 'border-green-100 bg-green-50 text-green-800' : 'border-red-100 bg-red-50 text-red-800'}`;
+    feedbackMessage.textContent = message;
   }
 
   function setLoading(isLoading) {

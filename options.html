@@ -67,8 +67,50 @@
       </div>
     </section>
 
+    <section class="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm" aria-labelledby="feedback-heading">
+      <h2 id="feedback-heading" class="text-xl font-semibold text-gray-900">Aide et feedback</h2>
+      <p class="mt-2 text-sm text-gray-600">Préparez un brouillon GitHub modifiable avant sa publication. Aucune donnée n’est envoyée automatiquement.</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button type="button" class="feedback-type-btn rounded-lg border border-blue-200 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50" data-feedback-type="bug">Signaler un problème</button>
+        <button type="button" class="feedback-type-btn rounded-lg border border-blue-200 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50" data-feedback-type="feature">Proposer une fonctionnalité</button>
+      </div>
+      <form id="feedbackForm" class="mt-5 hidden space-y-4" novalidate>
+        <div>
+          <label for="feedbackType" class="mb-2 block text-sm font-medium text-gray-900">Type de feedback</label>
+          <select id="feedbackType" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500">
+            <option value="">Sélectionner</option>
+            <option value="bug">Bug</option>
+            <option value="feature">Fonctionnalité</option>
+            <option value="question">Question</option>
+          </select>
+        </div>
+        <div>
+          <label for="feedbackTitle" class="mb-2 block text-sm font-medium text-gray-900">Titre</label>
+          <input id="feedbackTitle" type="text" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500" maxlength="120">
+        </div>
+        <div>
+          <label for="feedbackDescription" class="mb-2 block text-sm font-medium text-gray-900">Description</label>
+          <textarea id="feedbackDescription" rows="5" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"></textarea>
+        </div>
+        <label id="feedbackReproducibleLabel" class="hidden items-center gap-2 text-sm text-gray-700">
+          <input id="feedbackReproducible" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          Le problème est reproductible
+        </label>
+        <label class="flex items-center gap-2 text-sm text-gray-700">
+          <input id="feedbackTechnical" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          Inclure les informations techniques non sensibles
+        </label>
+        <p class="text-xs text-gray-500">L’URL Jira, les tickets, votre identité et les secrets ne sont jamais ajoutés automatiquement.</p>
+        <p id="feedbackMessage" class="hidden rounded-lg border p-3 text-sm" role="status"></p>
+        <div class="flex justify-end gap-3">
+          <button type="button" id="cancelFeedbackBtn" class="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">Annuler</button>
+          <button type="submit" class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-800">Préparer le brouillon GitHub</button>
+        </div>
+      </form>
+    </section>
+
     <!-- Card Formulaire -->
-    <div class="p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+    <div class="mt-6 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
       <form id="configForm">
 
         <!-- URL Jira -->
@@ -254,6 +296,7 @@
   <script src="debug-logger.js"></script>
   <script src="navbar.js"></script>
   <script src="diagnostic-utils.js"></script>
+  <script src="feedback-utils.js"></script>
   <script src="options.js"></script>
 
   <!-- Ancienne compatibilité d'alertes conservée hors exécution pour CSP MV3.

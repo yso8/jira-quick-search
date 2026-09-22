@@ -48,6 +48,8 @@ Jira est puissant, mais retrouver rapidement un ticket ou vérifier l’activit�
 - gestion des erreurs Jira sans bloquer les filtres standards ;
 - styles Tailwind CSS et Flowbite embarqués localement pour respecter la politique de sécurité des extensions Chrome.
 
+La section « Aide et feedback » prépare un brouillon d’issue GitHub pour signaler un bug ou proposer une fonctionnalité. L’extension n’appelle pas l’API GitHub, ne crée pas automatiquement l’issue et ne conserve pas le brouillon. Le contenu est contrôlé et modifiable par l’utilisateur avant publication.
+
 La section « Connexion et diagnostics » vérifie l’URL Jira, l’accès à l’instance, l’authentification et la disponibilité de la recherche sans afficher de secret ni de réponse API complète. Le bouton « Supprimer toutes les données locales » efface la configuration synchronisée, les préférences, les tickets récents et épinglés, les recherches sauvegardées et les règles d’activité, après confirmation.
 
 ## Installation
@@ -85,6 +87,7 @@ Les permissions Jira restent celles du compte utilisé. Certains champs personna
 | `search.html` / `search.js` | Recherche, filtres, résultats et pagination |
 | `recap.html` / `recap.js` | Récapitulatif, règles d’activité et exports |
 | `options.html` / `options.js` | Configuration Jira, test de connexion et diagnostic |
+| `feedback-utils.js` | Validation et génération des brouillons GitHub |
 | `jira-api.js` | Authentification, appels REST Jira et métadonnées |
 | `filter-utils.js` | Construction et échappement du JQL |
 | `debug-logger.js` | Journalisation de diagnostic contrôlée par la configuration |
