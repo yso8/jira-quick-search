@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const jiraUrlInput = document.getElementById('jiraUrl');
   const jiraEmailInput = document.getElementById('jiraEmail');
   const jiraTokenInput = document.getElementById('jiraToken');
+  const debugLogsInput = document.getElementById('debugLogs');
 
   // 1. Charger la configuration existante
   try {
@@ -19,6 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (config.jiraUrl) jiraUrlInput.value = config.jiraUrl;
     if (config.jiraEmail) jiraEmailInput.value = config.jiraEmail;
     if (config.jiraToken) jiraTokenInput.value = config.jiraToken;
+    const debugConfig = await chrome.storage.local.get({ debugLogs: false });
+    debugLogsInput.checked = debugConfig.debugLogs === true;
 
     // NOTE: On a supprimé 'M.updateTextFields()' car inutile avec Tailwind
   } catch (error) {
@@ -99,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       await chrome.storage.sync.set({ jiraUrl: url, jiraEmail: email, jiraToken: token });
+      await chrome.storage.local.set({ debugLogs: debugLogsInput.checked });
       showMessage('Configuration sauvegardée avec succès !', 'success');
 
       setTimeout(() => {

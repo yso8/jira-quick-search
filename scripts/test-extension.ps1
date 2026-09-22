@@ -12,4 +12,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Les tests JQL ont échoué.' }
 node tests/extension-filters.test.js
 if ($LASTEXITCODE -ne 0) { throw 'Les tests de contrat des filtres ont échoué.' }
 
+node tests/debug-logger.test.js
+if ($LASTEXITCODE -ne 0) { throw 'Les tests du logger ont échoué.' }
+
 Write-Output 'Tests de l’extension réussis.'

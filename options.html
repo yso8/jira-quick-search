@@ -151,6 +151,18 @@
           </div>
         </div>
 
+        <div class="flex items-center justify-between border-t border-gray-100 pt-5 mt-6">
+          <div>
+            <label for="debugLogs" class="text-sm font-medium text-gray-900">Activer les logs de diagnostic</label>
+            <p class="text-xs text-gray-500 mt-1">Les logs restent locaux et masquent les informations sensibles.</p>
+          </div>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="debugLogs" class="sr-only peer">
+            <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
+            <span class="sr-only">Activer les logs de diagnostic</span>
+          </label>
+        </div>
+
         <!-- Buttons -->
         <div class="flex items-center justify-end space-x-3 border-t border-gray-100 pt-6 mt-6">
           <button type="button" id="testBtn"
@@ -227,6 +239,7 @@
   <!-- Flowbite JS (Nécessaire pour l'accordéon) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
   <script src="jira-api.js"></script>
+  <script src="debug-logger.js"></script>
   <script src="options.js"></script>
 
   <!-- Script de compatibilité pour gérer les alertes Flowbite dynamiquement avec SVGs -->

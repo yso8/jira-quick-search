@@ -5,7 +5,7 @@ $manifestPath = Join-Path $root 'manifest.json'
 $manifest = Get-Content -Raw $manifestPath | ConvertFrom-Json
 
 $requiredFiles = @(
-  'background.js', 'jira-api.js', 'search.html', 'search.js',
+  'background.js', 'jira-api.js', 'debug-logger.js', 'filter-utils.js', 'search.html', 'search.js',
   'recap.html', 'recap.js', 'options.html', 'options.js'
 )
 

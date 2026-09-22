@@ -44,17 +44,21 @@ function jiraHeaders(email, token) {
 }
 
 async function jiraRequest(config, path, options = {}) {
+  const method = options.method || 'GET';
+  await debugLog('requête Jira', { method, path });
   const response = await fetch(`${config.jiraUrl}${path}`, {
     ...options,
     headers: { ...jiraHeaders(config.jiraEmail, config.jiraToken), ...(options.headers || {}) }
   });
+  const responseText = response.ok ? '' : await response.text();
+  await debugLog('réponse Jira', { method, path, status: response.status, details: responseText });
   if (!response.ok) {
     const message = response.status === 401 || response.status === 403
       ? 'Accès Jira refusé. Vérifiez votre email, votre token et vos permissions.'
       : response.status === 429
         ? 'Jira limite temporairement les requêtes. Réessayez dans quelques instants.'
         : `Jira a répondu avec le statut ${response.status}.`;
-    throw new Error(message);
+    throw new Error(responseText ? `${message} ${responseText}` : message);
   }
   return response;
 }
