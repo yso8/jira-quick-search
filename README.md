@@ -1,138 +1,188 @@
+<p align="center">
+  <img src="images/jira_quick_search_banner.png" alt="Jira Quick Search" width="900">
+</p>
+
+<p align="center">
+  Rechercher, filtrer et exploiter ses tickets Jira plus rapidement depuis Chrome.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white" alt="Chrome Manifest V3">
+  <img src="https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?logo=javascript&logoColor=111827" alt="JavaScript">
+  <img src="https://img.shields.io/badge/license-MIT-22C55E" alt="Licence MIT">
+</p>
+
 # Jira Quick Search
 
-Extension Chrome Manifest V3 pour rechercher rapidement des tickets Jira Cloud et suivre l’activité d’une équipe.
+Jira Quick Search est une extension Chrome dédiée à Jira Cloud. Elle centralise
+la recherche de tickets, les filtres utiles et quelques outils de suivi dans une
+interface locale, accessible directement depuis le navigateur.
 
-![Chrome](https://img.shields.io/badge/Chrome-Manifest%20V3-green)
-![Jira Cloud](https://img.shields.io/badge/Jira-Cloud-blue)
-![License](https://img.shields.io/badge/license-MIT-orange)
-
-## Pourquoi cette extension ?
-
-Jira est puissant, mais retrouver rapidement un ticket ou vérifier l’activité d’une équipe demande souvent plusieurs manipulations. Jira Quick Search propose une interface légère pour :
-
-- rechercher un ticket en quelques secondes ;
-- filtrer les résultats avec les métadonnées Jira accessibles ;
-- ouvrir plusieurs tickets simultanément ;
-- produire un récapitulatif d’activité configurable sur une période donnée.
+L’objectif est simple : retrouver un ticket, ouvrir les bons résultats et
+consulter son activité sans multiplier les manipulations dans Jira.
 
 ## Fonctionnalités
 
+- Recherche plein texte dans les tickets, résumés et descriptions.
+- Filtres par projet, personne assignée, type, état et priorité, avec prise en
+  charge des champs personnalisés disponibles dans Jira.
+- Affichage des informations principales d’un ticket et ouverture dans Jira ou
+  dans plusieurs onglets.
+- Workspace personnel avec tickets récents, tickets épinglés et recherches
+  sauvegardées.
+- Récapitulatif d’activité configurable par période, personne et règles de
+  traitement.
+- Statistiques par personne et par statut, export CSV et copie au format
+  Markdown.
+- Pagination des résultats avec les curseurs Jira et copie du JQL généré.
+- Raccourci `Ctrl+Shift+J` et recherche via l’omnibox Chrome avec le mot-clé
+  `jira`.
+- Diagnostics de connexion, logs locaux optionnels et génération d’un brouillon
+  GitHub pour un bug ou une proposition de fonctionnalité.
+
+## Aperçu
+
 ### Recherche Jira
 
-- recherche par texte dans le ticket, le résumé et la description ;
-- filtres dynamiques pour le projet, l’assigné, le type, l’état et la priorité ;
-- prise en charge des champs personnalisés de type sélection lorsqu’ils sont accessibles ;
-- filtres Tâches et Epics ;
-- génération de JQL restreint avec tri par date de mise à jour ;
-- copie du JQL généré ;
-- pagination par curseur Jira ;
-- ouverture d’un ticket ou de plusieurs tickets dans de nouveaux onglets ;
-- affichage du projet, du statut, du type, de la priorité, de l’assigné et des dates du ticket.
+<p align="center">
+  <img src="images/search_page_screenshot.png" alt="Page Recherche Jira" width="900">
+</p>
+
+### Workspace
+
+<p align="center">
+  <img src="images/workspace_page_screenshot.png" alt="Page Workspace" width="900">
+</p>
 
 ### Récapitulatif d’activité
 
-- périodes prédéfinies : semaine actuelle, semaine dernière, deux dernières semaines et mois actuel ;
-- filtre par personne assignée ;
-- règles configurables pour définir ce qu’est un ticket traité : ticket mis à jour, commentaire ajouté, statut modifié, assignation modifiée, priorité modifiée, résumé ou description modifié ;
-- mode « au moins une règle » ou « toutes les règles » ;
-- sauvegarde automatique de la dernière configuration dans le stockage synchronisé de Chrome ;
-- statistiques par personne et par statut ;
-- export CSV ;
-- copie du récapitulatif au format Markdown.
-
-### Configuration et diagnostic
-
-- configuration de l’URL Jira, de l’adresse email Atlassian et du token API ;
-- test de connexion depuis la page de configuration ;
-- logs de diagnostic activables ou désactivables ;
-- gestion des erreurs Jira sans bloquer les filtres standards ;
-- styles Tailwind CSS et Flowbite embarqués localement pour respecter la politique de sécurité des extensions Chrome.
-
-La section « Aide et feedback » prépare un brouillon d’issue GitHub pour signaler un bug ou proposer une fonctionnalité. L’extension n’appelle pas l’API GitHub, ne crée pas automatiquement l’issue et ne conserve pas le brouillon. Le contenu est contrôlé et modifiable par l’utilisateur avant publication.
-
-La section « Connexion et diagnostics » vérifie l’URL Jira, l’accès à l’instance, l’authentification et la disponibilité de la recherche sans afficher de secret ni de réponse API complète. Le bouton « Supprimer toutes les données locales » efface la configuration synchronisée, les préférences, les tickets récents et épinglés, les recherches sauvegardées et les règles d’activité, après confirmation.
+<p align="center">
+  <img src="images/summary_page_screenshot.png" alt="Page Récapitulatif d’activité" width="900">
+</p>
 
 ## Installation
 
-### Installation manuelle dans Chrome
+Jira Quick Search est actuellement distribuée comme extension non empaquetée
+pour Chrome.
 
-1. Télécharger ou cloner ce dépôt.
-2. Ouvrir `chrome://extensions/` dans Chrome.
-3. Activer le **Mode développeur**.
-4. Cliquer sur **Charger l’extension non empaquetée**.
-5. Sélectionner le dossier du dépôt.
-6. Ouvrir la page de configuration de l’extension.
-7. Renseigner l’URL Jira, l’adresse email Atlassian et le token API.
+1. Clonez ou téléchargez ce dépôt.
+2. Ouvrez `chrome://extensions/` dans Chrome.
+3. Activez le **Mode développeur**.
+4. Cliquez sur **Charger l’extension non empaquetée**.
+5. Sélectionnez le dossier racine du dépôt, celui qui contient `manifest.json`.
+6. Ouvrez l’extension et accédez aux paramètres pour la configurer.
 
-L’extension cible les sites Jira Cloud dont le domaine se termine par `atlassian.net`.
+## Configuration et utilisation
 
-## Configuration Jira
+### Configurer Jira
 
-Le token API peut être créé depuis la page de sécurité du compte Atlassian :
+Dans la page **Paramètres**, renseignez :
 
-<https://id.atlassian.com/manage-profile/security/api-tokens>
+- l’URL racine de votre instance Jira Cloud, sans slash final ;
+- votre adresse email Atlassian ;
+- un token API Atlassian.
 
-Les identifiants sont enregistrés dans `chrome.storage.sync` et ne sont pas chiffrés par l’extension. Ils ne sont pas écrits dans le dépôt et ne doivent jamais être ajoutés dans une capture d’écran, un ticket ou un commit. Les préférences de logs, tickets récents, tickets épinglés et recherches sauvegardées sont enregistrés dans `chrome.storage.local`; les règles d’activité sont synchronisées dans `chrome.storage.sync`.
+Le bouton de test vérifie la connexion et l’accès aux données nécessaires.
+L’URL de création d’un token est disponible depuis la page de sécurité Atlassian :
+<https://id.atlassian.com/manage-profile/security/api-tokens>.
 
-L’extension appelle uniquement l’API REST Jira v3 de l’instance configurée pour l’authentification, la recherche, les filtres et le récapitulatif. Elle n’utilise aucun serveur tiers, analytics ou tracking. Elle ne collecte ni token en dehors du stockage de l’extension, ni historique distant, ni données personnelles supplémentaires.
+### Rechercher un ticket
 
-Les permissions Jira restent celles du compte utilisé. Certains champs personnalisés et leurs options peuvent être inaccessibles sans droits d’administration ; ils sont alors ignorés sans empêcher la recherche standard.
+Ouvrez la recherche depuis l’icône de l’extension, avec `Ctrl+Shift+J`, ou en
+utilisant l’omnibox Chrome : tapez `jira`, puis votre recherche. Saisissez un
+texte, choisissez les filtres souhaités et lancez la recherche. Les résultats
+peuvent être ouverts individuellement ou en sélection multiple.
+
+### Utiliser le Workspace
+
+Le **Workspace** regroupe les tickets récemment consultés, les tickets épinglés
+et les recherches sauvegardées. Il permet aussi de copier rapidement un lien ou
+de retirer un élément de l’espace personnel.
+
+### Générer un récapitulatif
+
+La page **Récapitulatif** permet de choisir une période, une personne assignée
+et des règles d’activité. Le résultat peut être exporté en CSV ou copié sous
+forme de rapport Markdown.
 
 ## Architecture
 
-| Fichier | Rôle |
-| --- | --- |
-| `manifest.json` | Configuration de l’extension Chrome Manifest V3 |
-| `background.js` | Ouverture de la recherche et contrôle de la première installation |
-| `search.html`, `workspace.html`, `recap.html`, `options.html`, `popup.html` | Points d’entrée des pages de l’extension |
-| `src/pages/` | Scripts propres à chaque page |
-| `src/components/navigation/` | Navbar globale et styles associés |
-| `src/services/jira/` | Authentification, appels REST Jira et métadonnées |
-| `src/services/diagnostics/` | Journalisation et diagnostic |
-| `src/utils/` | Filtres, workspace, rapports et feedbacks |
-| `src/assets/icons/` | Icônes de l’extension |
-| `tests/` | Tests unitaires et tests de structure |
-| `vendor/` | Ressources CSS locales Tailwind et Flowbite |
-| `scripts/` | Scripts de validation et de test du dépôt |
+Les pages HTML restent à la racine afin de conserver les points d’entrée de
+l’extension Chrome. Le code partagé est organisé dans `src/` :
+
+```text
+.
+├── search.html, workspace.html, recap.html, options.html, popup.html
+├── background.js                 # Service worker Manifest V3
+├── src/
+│   ├── pages/                    # Scripts propres à chaque page
+│   ├── components/navigation/   # Navigation globale et styles
+│   ├── services/                 # API Jira et diagnostics
+│   ├── utils/                    # Filtres, workspace, rapports et feedbacks
+│   └── assets/icons/             # Icônes de l’extension
+├── tests/                        # Tests unitaires et structurels
+├── scripts/                      # Validation et tests de syntaxe
+└── vendor/                       # Ressources CSS locales
+```
+
+Le projet ne nécessite pas de bundler ni de dépendances installées dans
+`node_modules`. Les commandes de validation sont disponibles dans `scripts/`.
+
+## Confidentialité et sécurité
+
+- L’extension communique directement avec l’API REST Jira v3 de l’instance
+  configurée ; aucun serveur intermédiaire, outil d’analytics ou mécanisme de
+  tracking n’est utilisé.
+- L’URL Jira, l’email et le token API sont enregistrés dans
+  `chrome.storage.sync`. L’extension ne chiffre pas elle-même ces valeurs.
+- Les préférences de diagnostic, tickets récents, tickets épinglés et recherches
+  sauvegardées sont conservés dans `chrome.storage.local`. Les règles d’activité
+  du récapitulatif sont synchronisées avec la configuration.
+- Les logs de diagnostic restent locaux et masquent les informations sensibles.
+- Le feedback intégré prépare un brouillon GitHub modifiable. L’extension ne
+  crée pas automatiquement d’issue et ne conserve pas le brouillon.
+- Les permissions Chrome sont limitées à `storage`, nécessaire à la
+  configuration et aux préférences, ainsi qu’à l’accès aux domaines
+  `https://*.atlassian.net/*`, nécessaire aux appels Jira.
+
+Ne partagez jamais votre token API. En cas d’exposition, révoquez-le depuis
+Atlassian. Pour signaler une vulnérabilité, consultez [SECURITY.md](SECURITY.md).
+
+## Limites connues
+
+- L’extension cible Jira Cloud et l’API REST Jira v3 ; elle n’est pas présentée
+  comme compatible avec les installations Jira Server ou Data Center.
+- Les projets, utilisateurs, champs et historiques visibles dépendent des droits
+  du compte Jira configuré.
+- Les champs personnalisés peuvent ne pas fournir leurs options lorsque Jira
+  restreint leur contexte ou leur accès.
+- La génération d’un récapitulatif peut prendre plus de temps pour un volume
+  important de tickets, car l’extension consulte également les historiques
+  accessibles.
+- L’extension est actuellement installée manuellement depuis le dépôt et n’est
+  pas publiée sur le Chrome Web Store.
 
 ## Développement
 
-Le projet ne nécessite pas `node_modules`. Les ressources nécessaires à l’extension sont déjà présentes dans le dépôt.
-
-Avant chaque commit, lancer depuis PowerShell :
+Le projet peut être vérifié depuis PowerShell avec :
 
 ```powershell
 .\scripts\validate-extension.ps1
 .\scripts\test-extension.ps1
 ```
 
-Pour tester manuellement :
+Les tests individuels se trouvent dans `tests/` et peuvent être exécutés avec
+Node.js, par exemple :
 
-1. charger ou recharger l’extension depuis `chrome://extensions/` ;
-2. ouvrir la page de configuration et tester la connexion ;
-3. effectuer une recherche avec et sans filtres ;
-4. tester la pagination et la copie du JQL ;
-5. générer un récapitulatif avec différentes règles d’activité ;
-6. vérifier les exports CSV et Markdown.
-
-## Limites connues
-
-- l’extension fonctionne avec Jira Cloud et l’API REST Jira v3 ;
-- les résultats et les métadonnées dépendent des permissions du compte Jira ;
-- l’analyse des règles d’activité s’appuie sur le changelog accessible pour chaque ticket ;
-- la récupération du changelog peut augmenter le temps de génération d’un récapitulatif volumineux ;
-- les champs personnalisés dont les contextes sont protégés par Jira ne peuvent pas toujours fournir leurs options.
-
-## Sécurité
-
-Consulter [SECURITY.md](SECURITY.md) pour signaler un problème de sécurité.
-
-Ne partagez jamais votre token API. En cas d’exposition, révoquez-le immédiatement depuis Atlassian.
+```powershell
+node tests\workspace.test.js
+```
 
 ## Contribution
 
-Les contributions sont les bienvenues. Consultez [CONTRIBUTING.md](CONTRIBUTING.md) avant de proposer une modification.
+Les contributions sont les bienvenues. Consultez [CONTRIBUTING.md](CONTRIBUTING.md)
+avant de proposer une modification.
 
 ## Licence
 
-Ce projet est distribué sous licence MIT. Voir [LICENSE](LICENSE).
+Jira Quick Search est distribué sous licence MIT. Voir [LICENSE](LICENSE).
