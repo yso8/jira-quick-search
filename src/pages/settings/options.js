@@ -29,13 +29,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const accordionButton = document.querySelector('[data-accordion-target="#accordion-collapse-body-1"]');
   const accordionBody = document.getElementById('accordion-collapse-body-1');
   const accordionIcon = accordionButton?.querySelector('[data-accordion-icon]');
-  const reviewOnboardingBtn = document.getElementById('reviewOnboardingBtn');
   let latestDiagnostic = null;
 
-  reviewOnboardingBtn?.addEventListener('click', async () => {
-    await chrome.storage.local.set({ onboardingCompleted: false });
-    window.location.href = 'onboarding.html';
-  });
 
   if (accordionButton && accordionBody) {
     accordionButton.addEventListener('click', () => {

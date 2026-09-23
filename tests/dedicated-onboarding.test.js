@@ -4,8 +4,6 @@ const fs = require('node:fs');
 const html = fs.readFileSync('onboarding.html', 'utf8');
 const script = fs.readFileSync('src/pages/onboarding/onboarding.js', 'utf8');
 const background = fs.readFileSync('background.js', 'utf8');
-const options = fs.readFileSync('options.html', 'utf8');
-const optionsScript = fs.readFileSync('src/pages/settings/options.js', 'utf8');
 
 assert.match(html, /Bienvenue sur Jira Quick Search/);
 assert.match(html, /Connectez votre espace Jira/);
@@ -26,7 +24,5 @@ assert.match(script, /Connexion en cours/);
 assert.match(script, /Jira est connecté/);
 assert.match(script, /confetti/);
 assert.match(background, /onboarding\.html/);
-assert.match(options, /Revoir l’introduction/);
-assert.match(optionsScript, /onboarding\.html/);
 
 console.log('dedicated-onboarding: 19 tests passed');

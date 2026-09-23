@@ -70,13 +70,13 @@ pour Chrome.
 3. Activez le **Mode développeur**.
 4. Cliquez sur **Charger l’extension non empaquetée**.
 5. Sélectionnez le dossier racine du dépôt, celui qui contient `manifest.json`.
-6. Ouvrez l’extension et accédez aux paramètres pour la configurer.
+6. Ouvrez l’extension et suivez l’onboarding pour configurer Jira.
 
 ## Configuration et utilisation
 
 ### Configurer Jira
 
-Dans la page **Paramètres**, renseignez :
+Lors de la première ouverture, l’onboarding vous guide pour renseigner :
 
 - l’URL racine de votre instance Jira Cloud, sans slash final ;
 - votre adresse email Atlassian ;
@@ -107,19 +107,19 @@ forme de rapport Markdown.
 
 ## Architecture
 
-Les pages HTML restent à la racine afin de conserver les points d’entrée de
-l’extension Chrome. Le code partagé est organisé dans `src/` :
+Les points d’entrée HTML de l’extension sont à la racine du dépôt. Le code
+applicatif partagé est organisé dans `src/` :
 
 ```text
 .
-├── search.html, workspace.html, recap.html, options.html, popup.html
-├── background.js                 # Service worker Manifest V3
+├── onboarding.html, search.html, workspace.html, recap.html, options.html, popup.html
+├── background.js                 # Service worker Manifest V3 et routage
 ├── src/
-│   ├── pages/                    # Scripts propres à chaque page
-│   ├── components/navigation/   # Navigation globale et styles
-│   ├── services/                 # API Jira et diagnostics
-│   ├── utils/                    # Filtres, workspace, rapports et feedbacks
-│   └── assets/icons/             # Icônes de l’extension
+│   ├── pages/                    # Scripts de l’onboarding et des pages métier
+│   ├── components/               # Navbar et composants d’interface partagés
+│   ├── services/                 # API Jira, diagnostics et journalisation
+│   ├── utils/                    # Filtres, workspace, rapports et feedback
+│   └── assets/icons/             # Logos et icônes de l’extension
 ├── tests/                        # Tests unitaires et structurels
 ├── scripts/                      # Validation et tests de syntaxe
 └── vendor/                       # Ressources CSS locales
@@ -130,15 +130,17 @@ Le projet ne nécessite pas de bundler ni de dépendances installées dans
 
 ## Confidentialité et sécurité
 
-- L’extension communique directement avec l’API REST Jira v3 de l’instance
-  configurée ; aucun serveur intermédiaire, outil d’analytics ou mécanisme de
-  tracking n’est utilisé.
-- L’URL Jira, l’email et le token API sont enregistrés dans
-  `chrome.storage.sync`. L’extension ne chiffre pas elle-même ces valeurs.
+- L’extension communique directement avec l’instance Jira configurée via son API
+  REST v3. Aucun serveur intermédiaire, outil d’analytics ou autre service tiers
+  n’est utilisé.
+- L’URL Jira, l’adresse e-mail et le token API sont enregistrés dans
+  `chrome.storage.sync` afin de permettre leur réutilisation. L’extension ne
+  chiffre pas elle-même ces valeurs.
 - Les préférences de diagnostic, tickets récents, tickets épinglés et recherches
   sauvegardées sont conservés dans `chrome.storage.local`. Les règles d’activité
   du récapitulatif sont synchronisées avec la configuration.
-- Les logs de diagnostic restent locaux et masquent les informations sensibles.
+- Le token est masqué dans l’interface et exclu des logs, diagnostics, brouillons
+  GitHub et messages d’erreur.
 - Le feedback intégré prépare un brouillon GitHub modifiable. L’extension ne
   crée pas automatiquement d’issue et ne conserve pas le brouillon.
 - Les permissions Chrome sont limitées à `storage`, nécessaire à la
