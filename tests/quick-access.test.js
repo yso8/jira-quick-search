@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const vm = require('node:vm');
 
 const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
 const background = fs.readFileSync('background.js', 'utf8');
@@ -24,4 +25,33 @@ assert.match(search, /performSearch\(\)/);
 assert.match(options, /chrome:\/\/extensions\/shortcuts/);
 assert.match(searchHtml, /id="resultCount"[^>]*aria-live="polite"/);
 
-console.log('quick-access: 13 tests passed');
+let onInputChanged;
+const context = {
+  chrome: {
+    commands: { onCommand: { addListener() {} } },
+    omnibox: {
+      onInputChanged: { addListener(listener) { onInputChanged = listener; } },
+      onInputEntered: { addListener() {} }
+    },
+    storage: { sync: { get: async () => ({}) } },
+    runtime: { getURL: page => page, onInstalled: { addListener() {} } },
+    tabs: { create() {} },
+  },
+  importScripts() {},
+  console
+};
+vm.runInNewContext(background, context);
+assert.equal(typeof onInputChanged, 'function');
+
+const suggestions = input => {
+  let result;
+  onInputChanged(input, value => { result = value; });
+  return JSON.parse(JSON.stringify(result));
+};
+
+assert.deepEqual(suggestions(''), []);
+assert.deepEqual(suggestions('   '), []);
+assert.deepEqual(suggestions('incident'), [{ content: 'incident', description: 'Rechercher dans Jira : incident' }]);
+assert.deepEqual(suggestions('DEMO-123'), [{ content: 'DEMO-123', description: 'Rechercher dans Jira : DEMO-123' }]);
+
+console.log('quick-access: 17 tests passed');

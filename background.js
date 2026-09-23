@@ -33,12 +33,18 @@ chrome.commands.onCommand.addListener(command => {
   if (command === 'open_search') openQuickSearchPopup();
 });
 
-chrome.omnibox.onInputChanged.addListener((text, suggest) => {
+function suggestOmniboxResults(text, suggest) {
   const value = text.trim();
+  if (!value) {
+    suggest([]);
+    return;
+  }
   suggest([
-    { content: value, description: value ? `Rechercher dans Jira : ${value}` : 'Ouvrir Jira-Quick-Search' }
+    { content: value, description: `Rechercher dans Jira : ${value}` }
   ]);
-});
+}
+
+chrome.omnibox.onInputChanged.addListener(suggestOmniboxResults);
 
 chrome.omnibox.onInputEntered.addListener(async text => {
   const value = text.trim();
