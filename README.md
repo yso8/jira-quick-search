@@ -128,6 +128,16 @@ applicatif partagé est organisé dans `src/` :
 Le projet ne nécessite pas de bundler ni de dépendances installées dans
 `node_modules`. Les commandes de validation sont disponibles dans `scripts/`.
 
+Pour générer le package minimal destiné à Chrome :
+
+```powershell
+.\scripts\package-extension.ps1
+```
+
+Le ZIP versionné est créé dans `dist/`, avec `manifest.json` directement à sa
+racine. Le script exclut les fichiers de développement, la documentation, les
+captures, les médias et les données sensibles.
+
 ## Confidentialité et sécurité
 
 Consultez la [politique de confidentialité](PRIVACY.md) pour le détail des
