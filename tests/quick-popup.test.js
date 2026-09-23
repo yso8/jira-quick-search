@@ -7,6 +7,7 @@ const popupScript = fs.readFileSync('src/pages/popup/popup.js', 'utf8');
 const background = fs.readFileSync('background.js', 'utf8');
 
 assert.equal(manifest.action.default_popup, 'popup.html');
+assert.match(popup, /src\/assets\/icons\/jira-quick-search\.png/);
 assert.match(popup, /id="quickSearchForm"/);
 assert.match(popup, /id="quickSearchInput"/);
 assert.match(popup, /id="quickSearchError"/);
