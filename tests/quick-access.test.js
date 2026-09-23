@@ -17,11 +17,12 @@ assert.match(background, /chrome\.omnibox\.onInputEntered/);
 assert.match(background, /isJiraIssueKey/);
 assert.match(background, /\/browse\//);
 assert.match(background, /search\.html.*q=/s);
-assert.match(background, /options\.html/);
+assert.match(background, /onboarding\.html/);
 assert.match(search, /URLSearchParams/);
 assert.match(search, /searchInput\.value = initialQuery/);
 assert.match(search, /performSearch\(\)/);
 assert.match(options, /chrome:\/\/extensions\/shortcuts/);
+assert.match(options, /Revoir l’introduction/);
 assert.match(searchHtml, /id="resultCount"[^>]*aria-live="polite"/);
 
 console.log('quick-access: 13 tests passed');

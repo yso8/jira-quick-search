@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira Quick Search — Bienvenue</title>
+  <link href="vendor/tailwind.min.css" rel="stylesheet">
+  <link href="vendor/flowbite.min.css" rel="stylesheet">
+  <link href="src/components/navigation/navbar.css" rel="stylesheet">
+  <style>
+    body { background: #f8fafc; }
+    .onboarding-panel { animation: onboarding-rise 420ms ease-out both; }
+    .onboarding-logo { animation: onboarding-logo-in 520ms ease-out both; }
+    .onboarding-step { animation: onboarding-step-in 260ms ease-out both; }
+    .confetti { animation: confetti-fall 850ms ease-out forwards; }
+    @keyframes onboarding-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes onboarding-logo-in { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: scale(1); } }
+    @keyframes onboarding-step-in { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes confetti-fall { from { opacity: 1; transform: translate(0, 0) rotate(0); } to { opacity: 0; transform: translate(var(--x), var(--y)) rotate(180deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen text-gray-900" data-page="onboarding">
+  <main class="mx-auto flex min-h-screen w-full max-w-3xl items-center justify-center px-4 py-10 sm:px-6">
+    <section class="onboarding-panel w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-xl sm:p-10" aria-labelledby="onboarding-title">
+      <div class="mb-8 flex items-center justify-center gap-2 text-sm font-semibold text-gray-700">
+        <span class="h-2 w-2 rounded-full bg-blue-600" data-step-dot="1"></span>
+        <span class="h-2 w-2 rounded-full bg-gray-200" data-step-dot="2"></span>
+        <span class="h-2 w-2 rounded-full bg-gray-200" data-step-dot="3"></span>
+        <span id="stepLabel" class="ml-2 text-xs font-normal text-gray-500">Bienvenue</span>
+      </div>
+
+      <div id="step-1" class="onboarding-step text-center" data-step="1">
+        <img src="src/assets/icons/jira-quick-search.png" alt="" class="onboarding-logo mx-auto mb-6 h-28 w-28 rounded-3xl object-contain sm:h-36 sm:w-36">
+        <h1 id="onboarding-title" class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Bienvenue sur Jira Quick Search</h1>
+        <p class="mx-auto mt-3 max-w-xl text-gray-500">Retrouvez vos tickets Jira rapidement, sans quitter votre navigateur.</p>
+        <div class="mt-8 flex flex-col items-center gap-3">
+          <button id="startBtn" type="button" class="rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300">Commencer</button>
+          <button id="skipBtn" type="button" class="text-sm text-gray-500 hover:text-blue-700 hover:underline">Passer l’introduction</button>
+        </div>
+      </div>
+
+      <div id="step-2" class="onboarding-step hidden" data-step="2">
+        <div class="mx-auto max-w-xl">
+          <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Connectez votre espace Jira</h1>
+          <p class="mt-2 text-gray-500">Utilisez vos identifiants Atlassian pour tester la connexion.</p>
+          <form id="onboardingForm" class="mt-7 space-y-5" novalidate>
+            <div>
+              <label for="onboardingJiraUrl" class="mb-2 block text-sm font-medium text-gray-900">URL Jira Cloud</label>
+              <input id="onboardingJiraUrl" type="url" required placeholder="https://votre-societe.atlassian.net" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+            <div>
+              <label for="onboardingJiraEmail" class="mb-2 block text-sm font-medium text-gray-900">E-mail Atlassian</label>
+              <input id="onboardingJiraEmail" type="email" required autocomplete="email" placeholder="vous@entreprise.com" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+            <div>
+              <label for="onboardingJiraToken" class="mb-2 block text-sm font-medium text-gray-900">Token API</label>
+              <input id="onboardingJiraToken" type="password" required autocomplete="off" placeholder="Collez votre token API" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
+              <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noreferrer" class="mt-2 inline-block text-xs font-medium text-blue-700 hover:underline">Créer un token API Atlassian</a>
+            </div>
+            <p id="onboardingMessage" class="hidden rounded-lg border p-3 text-sm" role="status" aria-live="polite"></p>
+            <button id="testConnectionBtn" type="submit" class="w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Tester et continuer</button>
+            <p class="text-center text-xs italic text-gray-500">Vos informations restent stockées localement dans l’extension.</p>
+          </form>
+        </div>
+      </div>
+
+      <div id="step-3" class="onboarding-step hidden text-center" data-step="3">
+        <div id="confettiLayer" class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true"></div>
+        <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 text-3xl text-orange-600">✓</div>
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Tout est prêt</h1>
+        <p class="mx-auto mt-2 max-w-lg text-gray-500">Jira est connecté. Vous êtes prêt à commencer.</p>
+        <div class="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3">
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800">Recherchez vos tickets en quelques secondes</p></div>
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800">Utilisez Ctrl + Shift + J pour ouvrir la recherche</p></div>
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800">Tapez “jira” dans la barre d’adresse pour utiliser l’omnibox</p></div>
+        </div>
+        <button id="continueBtn" type="button" class="mt-8 rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300">Commencer à rechercher</button>
+      </div>
+    </section>
+  </main>
+  <script src="src/services/jira/jira-api.js"></script>
+  <script src="src/services/diagnostics/debug-logger.js"></script>
+  <script src="src/pages/onboarding/onboarding.js"></script>
+</body>
+</html>

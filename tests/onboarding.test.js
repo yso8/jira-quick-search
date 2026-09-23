@@ -42,7 +42,7 @@ assert.match(script, /prepareFeedback/);
 assert.match(script, /buildGithubIssueUrl/);
 assert.match(script, /chrome\.tabs\.create\(\{ url \}\)/);
 assert.doesNotMatch(script, /chrome\.storage\.local\.set\(.*feedback/i);
-assert.match(background, /chrome\.runtime\.openOptionsPage\(\)/);
+assert.match(background, /chrome\.runtime\.getURL\('onboarding\.html'\)/);
 assert.match(background, /chrome\.tabs\.create\(\{\s*url: chrome\.runtime\.getURL\('search\.html'\)/s);
 assert.match(background, /config\.jiraUrl && config\.jiraEmail && config\.jiraToken/);
 

@@ -7,7 +7,7 @@ async function getStoredConfig() {
 
 function openExtensionPage(query = '') {
   return getStoredConfig().then(config => {
-    const page = config ? `search.html${query ? `?q=${encodeURIComponent(query)}` : ''}` : 'options.html';
+    const page = config ? `search.html${query ? `?q=${encodeURIComponent(query)}` : ''}` : 'onboarding.html';
     chrome.tabs.create({ url: chrome.runtime.getURL(page) });
   });
 }
@@ -15,7 +15,7 @@ function openExtensionPage(query = '') {
 async function openQuickSearchPopup() {
   const config = await getStoredConfig();
   if (!config) {
-    chrome.runtime.openOptionsPage();
+    chrome.tabs.create({ url: chrome.runtime.getURL('onboarding.html') });
     return;
   }
   if (chrome.action && chrome.action.openPopup) {
@@ -44,7 +44,7 @@ chrome.omnibox.onInputEntered.addListener(async text => {
   const value = text.trim();
   const config = await getStoredConfig();
   if (!config) {
-    chrome.runtime.openOptionsPage();
+    chrome.tabs.create({ url: chrome.runtime.getURL('onboarding.html') });
     return;
   }
 
@@ -69,9 +69,9 @@ chrome.omnibox.onInputEntered.addListener(async text => {
 // Vérifier la configuration au démarrage
 chrome.runtime.onInstalled.addListener(async () => {
   const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
-  // Si pas configuré, ouvrir la page d'options
+  // Si pas configuré, ouvrir l’onboarding dédié
   if (!config.jiraUrl || !config.jiraEmail || !config.jiraToken) {
-    chrome.runtime.openOptionsPage();
+    chrome.tabs.create({ url: chrome.runtime.getURL('onboarding.html') });
   } else {
     // Sinon, ouvrir la page de recherche
     chrome.tabs.create({
