@@ -26,7 +26,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   const feedbackTechnical = document.getElementById('feedbackTechnical');
   const feedbackMessage = document.getElementById('feedbackMessage');
   const feedbackTypeButtons = document.querySelectorAll('.feedback-type-btn');
+  const accordionButton = document.querySelector('[data-accordion-target="#accordion-collapse-body-1"]');
+  const accordionBody = document.getElementById('accordion-collapse-body-1');
+  const accordionIcon = accordionButton?.querySelector('[data-accordion-icon]');
   let latestDiagnostic = null;
+
+  if (accordionButton && accordionBody) {
+    accordionButton.addEventListener('click', () => {
+      const isOpen = accordionButton.getAttribute('aria-expanded') === 'true';
+      const nextOpen = !isOpen;
+      accordionButton.setAttribute('aria-expanded', String(nextOpen));
+      accordionBody.classList.toggle('hidden', !nextOpen);
+      accordionIcon?.classList.toggle('rotate-180', nextOpen);
+    });
+  }
 
   saveBtn.classList.add('hidden');
   try {

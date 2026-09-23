@@ -21,8 +21,7 @@ assert.match(background, /options\.html/);
 assert.match(search, /URLSearchParams/);
 assert.match(search, /searchInput\.value = initialQuery/);
 assert.match(search, /performSearch\(\)/);
-assert.match(options, /Ctrl\+Shift\+J/);
-assert.match(options, /omnibox/);
+assert.match(options, /chrome:\/\/extensions\/shortcuts/);
 assert.match(searchHtml, /id="resultCount"[^>]*aria-live="polite"/);
 
 console.log('quick-access: 13 tests passed');
