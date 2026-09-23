@@ -130,6 +130,10 @@ Le projet ne nécessite pas de bundler ni de dépendances installées dans
 
 ## Confidentialité et sécurité
 
+Consultez la [politique de confidentialité](PRIVACY.md) pour le détail des
+données utilisées, de leur stockage, des transmissions et des permissions
+Chrome.
+
 - L’extension communique directement avec l’instance Jira configurée via son API
   REST v3. Aucun serveur intermédiaire, outil d’analytics ou autre service tiers
   n’est utilisé.
