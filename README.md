@@ -12,6 +12,12 @@
   <img src="https://img.shields.io/badge/license-MIT-22C55E" alt="Licence MIT">
 </p>
 
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/jira-quick-search/ogmgonnbmcmalhddocndigjengnkbeok">
+    <img src="https://developer.chrome.com/static/docs/webstore/branding/image/tbyBjqi7Zu733AAKA5n4.png" alt="Disponible sur le Chrome Web Store" width="170">
+  </a>
+</p>
+
 # Jira Quick Search
 
 Jira Quick Search est une extension Chrome dédiée à Jira Cloud. Elle centralise
@@ -62,8 +68,8 @@ consulter son activité sans multiplier les manipulations dans Jira.
 
 ## Installation
 
-Jira Quick Search est actuellement distribuée comme extension non empaquetée
-pour Chrome.
+Jira Quick Search est disponible sur le Chrome Web Store. Elle peut également
+être chargée comme extension non empaquetée pour Chrome.
 
 1. Clonez ou téléchargez ce dépôt.
 2. Ouvrez `chrome://extensions/` dans Chrome.
@@ -175,8 +181,6 @@ Atlassian. Pour signaler une vulnérabilité, consultez [SECURITY.md](SECURITY.m
 - La génération d’un récapitulatif peut prendre plus de temps pour un volume
   important de tickets, car l’extension consulte également les historiques
   accessibles.
-- L’extension est actuellement installée manuellement depuis le dépôt et n’est
-  pas publiée sur le Chrome Web Store.
 
 ## Développement
 
