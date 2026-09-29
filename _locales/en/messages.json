@@ -1,0 +1,12 @@
+{
+  "appName": { "message": "Jira Quick Search" },
+  "appDescription": { "message": "Quick search for Jira Cloud issues and activity summaries" },
+  "actionTitle": { "message": "Jira Quick Search" },
+  "openSearchCommand": { "message": "Open Jira Quick Search" },
+  "omniboxSuggestion": { "message": "Search Jira: $QUERY$", "placeholders": { "query": { "content": "$1" } } },
+  "languageAuto": { "message": "Automatic" },
+  "languageEnglish": { "message": "English" },
+  "languageFrench": { "message": "French" },
+  "searchPlaceholder": { "message": "Search Jira issues" },
+  "settings": { "message": "Settings" }
+}

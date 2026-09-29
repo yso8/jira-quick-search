@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Jira Quick Search",
+  "name": "__MSG_appName__",
+  "default_locale": "en",
   "version": "1.0.0",
-  "description": "Recherche rapide de tickets Jira Cloud et récapitulatif d’activité",
+  "description": "__MSG_appDescription__",
   "permissions": [
     "storage"
   ],
@@ -10,7 +11,7 @@
     "https://*.atlassian.net/*"
   ],
   "action": {
-    "default_title": "Jira Quick Search",
+    "default_title": "__MSG_actionTitle__",
     "default_popup": "popup.html"
   },
   "omnibox": {
@@ -21,7 +22,7 @@
       "suggested_key": {
         "default": "Ctrl+Shift+J"
       },
-      "description": "Ouvrir Jira-Quick-Search"
+      "description": "__MSG_openSearchCommand__"
     }
   },
   "background": {

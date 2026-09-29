@@ -25,33 +25,43 @@ assert.match(search, /performSearch\(\)/);
 assert.match(options, /chrome:\/\/extensions\/shortcuts/);
 assert.match(searchHtml, /id="resultCount"[^>]*aria-live="polite"/);
 
-let onInputChanged;
-const context = {
-  chrome: {
-    commands: { onCommand: { addListener() {} } },
-    omnibox: {
-      onInputChanged: { addListener(listener) { onInputChanged = listener; } },
-      onInputEntered: { addListener() {} }
+async function verifyOmnibox(language, expectedDescription) {
+  const listeners = {};
+  const context = {
+    chrome: {
+      commands: { onCommand: { addListener(listener) { listeners.command = listener; } } },
+      omnibox: {
+        onInputChanged: { addListener(listener) { listeners.changed = listener; } },
+        onInputEntered: { addListener(listener) { listeners.entered = listener; } }
+      },
+      storage: { local: { get: async () => { throw new Error('language must use sync storage'); } }, sync: { get: async () => ({ language }) } },
+      i18n: { getUILanguage: () => 'en-US' },
+      runtime: { getURL: page => page, onInstalled: { addListener() {} } },
+      tabs: { create() {} }
     },
-    storage: { sync: { get: async () => ({}) } },
-    runtime: { getURL: page => page, onInstalled: { addListener() {} } },
-    tabs: { create() {} },
-  },
-  importScripts() {},
-  console
-};
-vm.runInNewContext(background, context);
-assert.equal(typeof onInputChanged, 'function');
+    fetch: async path => ({ ok: true, json: async () => JSON.parse(fs.readFileSync(path, 'utf8')) }),
+    importScripts(...paths) {
+      for (const path of paths) {
+        if (path.endsWith('/i18n.js')) vm.runInContext(fs.readFileSync(path, 'utf8'), context);
+      }
+    },
+    console
+  };
+  vm.createContext(context);
+  vm.runInContext(background, context);
+  assert.equal(typeof listeners.command, 'function');
+  assert.equal(typeof listeners.changed, 'function');
+  assert.equal(typeof listeners.entered, 'function');
+  const suggestions = input => new Promise(resolve => listeners.changed(input, value => resolve(JSON.parse(JSON.stringify(value)))));
+  assert.deepEqual(await suggestions(''), []);
+  assert.deepEqual(await suggestions('   '), []);
+  assert.deepEqual(await suggestions('incident'), [{ content: 'incident', description: expectedDescription }]);
+}
 
-const suggestions = input => {
-  let result;
-  onInputChanged(input, value => { result = value; });
-  return JSON.parse(JSON.stringify(result));
-};
-
-assert.deepEqual(suggestions(''), []);
-assert.deepEqual(suggestions('   '), []);
-assert.deepEqual(suggestions('incident'), [{ content: 'incident', description: 'Rechercher dans Jira : incident' }]);
-assert.deepEqual(suggestions('DEMO-123'), [{ content: 'DEMO-123', description: 'Rechercher dans Jira : DEMO-123' }]);
-
-console.log('quick-access: 17 tests passed');
+Promise.all([
+  verifyOmnibox('fr', 'Rechercher dans Jira : incident'),
+  verifyOmnibox('en', 'Search Jira: incident')
+]).then(() => console.log('quick-access: omnibox registration and localization passed')).catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});

@@ -1,0 +1,12 @@
+{
+  "appName": { "message": "Recherche rapide Jira" },
+  "appDescription": { "message": "Recherche rapide de tickets Jira Cloud et récapitulatif d’activité" },
+  "actionTitle": { "message": "Recherche rapide Jira" },
+  "openSearchCommand": { "message": "Ouvrir la recherche rapide Jira" },
+  "omniboxSuggestion": { "message": "Rechercher dans Jira : $QUERY$", "placeholders": { "query": { "content": "$1" } } },
+  "languageAuto": { "message": "Automatique" },
+  "languageEnglish": { "message": "Anglais" },
+  "languageFrench": { "message": "Français" },
+  "searchPlaceholder": { "message": "Rechercher des tickets Jira" },
+  "settings": { "message": "Paramètres" }
+}

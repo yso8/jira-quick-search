@@ -87,6 +87,22 @@ if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) { throw 'manifes
 try { $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json } catch { throw "manifest.json est invalide : $($_.Exception.Message)" }
 if (-not $manifest.name -or -not $manifest.version) { throw 'manifest.json doit contenir name et version.' }
 if ($manifest.manifest_version -ne 3) { throw 'Le package doit utiliser Manifest V3.' }
+if ($manifest.default_locale -ne 'en') { throw 'La locale par défaut doit être en.' }
+
+$manifestMessages = @($manifest.name, $manifest.description, $manifest.action.default_title, $manifest.commands.open_search.description)
+$messageKeys = foreach ($message in $manifestMessages) {
+  if ($message -notmatch '^__MSG_([A-Za-z0-9_]+)__$') { throw "Message de manifeste non localisé : $message" }
+  $Matches[1]
+}
+foreach ($locale in @('en', 'fr')) {
+  $catalogPath = Join-Path $root "_locales/$locale/messages.json"
+  if (-not (Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw "Catalogue absent : $catalogPath" }
+  try { $catalog = Get-Content -LiteralPath $catalogPath -Raw | ConvertFrom-Json } catch { throw "Catalogue invalide : $catalogPath" }
+  foreach ($key in $messageKeys) {
+    $entry = $catalog.PSObject.Properties[$key]
+    if (-not $entry -or -not $entry.Value.message) { throw "Message $key absent du catalogue $locale" }
+  }
+}
 
 $output = if ([string]::IsNullOrWhiteSpace($OutputDirectory)) { Join-Path $root 'dist' } else { [System.IO.Path]::GetFullPath($OutputDirectory) }
 if (-not (Test-Path -LiteralPath $output)) { New-Item -ItemType Directory -Path $output -Force | Out-Null }
@@ -101,6 +117,8 @@ try {
   New-Item -ItemType Directory -Path $staging -Force | Out-Null
   Add-StagedFile 'manifest.json' $root $staging
   Add-StagedFile 'background.js' $root $staging
+  Add-StagedFile '_locales/en/messages.json' $root $staging
+  Add-StagedFile '_locales/fr/messages.json' $root $staging
 
   foreach ($property in $manifest.icons.PSObject.Properties) { Add-StagedFile $property.Value $root $staging }
 

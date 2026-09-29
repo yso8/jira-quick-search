@@ -1,4 +1,10 @@
-importScripts('src/services/jira/jira-api.js', 'src/services/diagnostics/debug-logger.js');
+importScripts('src/services/i18n/i18n.js', 'src/services/jira/jira-api.js', 'src/services/diagnostics/debug-logger.js');
+
+let translationsReady;
+function ensureTranslations() {
+  if (!translationsReady) translationsReady = JiraQuickSearchI18n.initI18n();
+  return translationsReady;
+}
 
 async function getStoredConfig() {
   const config = await chrome.storage.sync.get(['jiraUrl', 'jiraEmail', 'jiraToken']);
@@ -33,15 +39,19 @@ chrome.commands.onCommand.addListener(command => {
   if (command === 'open_search') openQuickSearchPopup();
 });
 
-function suggestOmniboxResults(text, suggest) {
+async function suggestOmniboxResults(text, suggest) {
   const value = text.trim();
   if (!value) {
     suggest([]);
     return;
   }
-  suggest([
-    { content: value, description: `Rechercher dans Jira : ${value}` }
-  ]);
+  try {
+    await ensureTranslations();
+    suggest([{ content: value, description: JiraQuickSearchI18n.t('omniboxSuggestion', value) }]);
+  } catch (error) {
+    translationsReady = null;
+    suggest([{ content: value, description: `Search Jira: ${value}` }]);
+  }
 }
 
 chrome.omnibox.onInputChanged.addListener(suggestOmniboxResults);
