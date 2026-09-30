@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jira Quick Search — Bienvenue</title>
+  <title data-i18n="ui_jira_quick_search_welcome">Jira Quick Search — Bienvenue</title>
   <link href="vendor/tailwind.min.css" rel="stylesheet">
   <link href="vendor/flowbite.min.css" rel="stylesheet">
   <link href="src/components/navigation/navbar.css" rel="stylesheet">
@@ -29,40 +29,40 @@
         <span class="h-2 w-2 rounded-full bg-blue-600" data-step-dot="1"></span>
         <span class="h-2 w-2 rounded-full bg-gray-200" data-step-dot="2"></span>
         <span class="h-2 w-2 rounded-full bg-gray-200" data-step-dot="3"></span>
-        <span id="stepLabel" class="ml-2 text-xs font-normal text-gray-500">Bienvenue</span>
+        <span id="stepLabel" class="ml-2 text-xs font-normal text-gray-500" data-i18n="ui_welcome">Bienvenue</span>
       </div>
 
       <div id="step-1" class="onboarding-step text-center" data-step="1">
         <img src="src/assets/icons/jira-quick-search.png" alt="" class="onboarding-logo mx-auto mb-6 h-28 w-28 rounded-3xl object-contain sm:h-36 sm:w-36">
-        <h1 id="onboarding-title" class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Bienvenue sur Jira Quick Search</h1>
-        <p class="mx-auto mt-3 max-w-xl text-gray-500">Retrouvez vos tickets Jira rapidement, sans quitter votre navigateur.</p>
+        <h1 id="onboarding-title" class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl" data-i18n="ui_welcome_to_jira_quick_search">Bienvenue sur Jira Quick Search</h1>
+        <p class="mx-auto mt-3 max-w-xl text-gray-500" data-i18n="ui_find_jira_issues_quickly_without_leaving_your_browser">Retrouvez vos tickets Jira rapidement, sans quitter votre navigateur.</p>
         <div class="mt-8 flex flex-col items-center gap-3">
-          <button id="startBtn" type="button" class="rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300">Commencer</button>
-          <button id="skipBtn" type="button" class="text-sm text-gray-500 hover:text-blue-700 hover:underline">Passer l’introduction</button>
+          <button id="startBtn" type="button" class="rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300" data-i18n="ui_get_started">Commencer</button>
+          <button id="skipBtn" type="button" class="text-sm text-gray-500 hover:text-blue-700 hover:underline" data-i18n="ui_skip_introduction">Passer l’introduction</button>
         </div>
       </div>
 
       <div id="step-2" class="onboarding-step hidden" data-step="2">
         <div class="mx-auto max-w-xl">
-          <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Connectez votre espace Jira</h1>
-          <p class="mt-2 text-gray-500">Utilisez vos identifiants Atlassian pour tester la connexion.</p>
+          <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl" data-i18n="ui_connect_your_jira_workspace">Connectez votre espace Jira</h1>
+          <p class="mt-2 text-gray-500" data-i18n="ui_use_your_atlassian_credentials_to_test_the_connection">Utilisez vos identifiants Atlassian pour tester la connexion.</p>
           <form id="onboardingForm" class="mt-7 space-y-5" novalidate>
             <div>
-              <label for="onboardingJiraUrl" class="mb-2 block text-sm font-medium text-gray-900">URL Jira Cloud</label>
-              <input id="onboardingJiraUrl" type="url" required placeholder="https://votre-societe.atlassian.net" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
+              <label for="onboardingJiraUrl" class="mb-2 block text-sm font-medium text-gray-900" data-i18n="ui_jira_cloud_url">URL Jira Cloud</label>
+              <input id="onboardingJiraUrl" type="url" required placeholder="https://votre-societe.atlassian.net" data-i18n-placeholder="ui_https_your_company_atlassian_net" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
             </div>
             <div>
-              <label for="onboardingJiraEmail" class="mb-2 block text-sm font-medium text-gray-900">E-mail Atlassian</label>
-              <input id="onboardingJiraEmail" type="email" required autocomplete="email" placeholder="vous@entreprise.com" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
+              <label for="onboardingJiraEmail" class="mb-2 block text-sm font-medium text-gray-900" data-i18n="ui_atlassian_email">E-mail Atlassian</label>
+              <input id="onboardingJiraEmail" type="email" required autocomplete="email" placeholder="vous@entreprise.com" data-i18n-placeholder="ui_you_company_com" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
             </div>
             <div>
-              <label for="onboardingJiraToken" class="mb-2 block text-sm font-medium text-gray-900">Token API</label>
-              <input id="onboardingJiraToken" type="password" required autocomplete="off" placeholder="Collez votre token API" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
-              <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noreferrer" class="mt-2 inline-block text-xs font-medium text-blue-700 hover:underline">Créer un token API Atlassian</a>
+              <label for="onboardingJiraToken" class="mb-2 block text-sm font-medium text-gray-900" data-i18n="ui_api_token">Token API</label>
+              <input id="onboardingJiraToken" type="password" required autocomplete="off" placeholder="Collez votre token API" data-i18n-placeholder="ui_paste_your_api_token" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm focus:border-blue-500 focus:ring-blue-500">
+              <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noreferrer" class="mt-2 inline-block text-xs font-medium text-blue-700 hover:underline" data-i18n="ui_create_an_atlassian_api_token">Créer un token API Atlassian</a>
             </div>
             <p id="onboardingMessage" class="hidden rounded-lg border p-3 text-sm" role="status" aria-live="polite"></p>
-            <button id="testConnectionBtn" type="submit" class="w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">Tester et continuer</button>
-            <p class="text-center text-xs italic text-gray-500">Vos informations restent stockées localement dans l’extension.</p>
+            <button id="testConnectionBtn" type="submit" class="w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300" data-i18n="ui_test_and_continue">Tester et continuer</button>
+            <p class="text-center text-xs italic text-gray-500" data-i18n="ui_your_information_stays_stored_locally_in_the_extension">Vos informations restent stockées localement dans l’extension.</p>
           </form>
         </div>
       </div>
@@ -70,14 +70,14 @@
       <div id="step-3" class="onboarding-step hidden text-center" data-step="3">
         <div id="confettiLayer" class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true"></div>
         <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 text-3xl text-orange-600">✓</div>
-        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Tout est prêt</h1>
-        <p class="mx-auto mt-2 max-w-lg text-gray-500">Jira est connecté. Vous êtes prêt à commencer.</p>
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl" data-i18n="ui_all_set">Tout est prêt</h1>
+        <p class="mx-auto mt-2 max-w-lg text-gray-500" data-i18n="ui_jira_is_connected_you_re_ready_to_get_started">Jira est connecté. Vous êtes prêt à commencer.</p>
         <div class="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3">
-          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800">Recherchez vos tickets en quelques secondes</p></div>
-          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800">Utilisez Ctrl + Shift + J pour ouvrir la recherche</p></div>
-          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800">Tapez “jira” dans la barre d’adresse pour utiliser l’omnibox</p></div>
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800" data-i18n="ui_find_your_issues_in_seconds">Recherchez vos tickets en quelques secondes</p></div>
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800" data-i18n="ui_use_ctrl_shift_j_to_open_search">Utilisez Ctrl + Shift + J pour ouvrir la recherche</p></div>
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4"><p class="text-sm font-medium text-gray-800" data-i18n="ui_type_jira_in_the_address_bar_to_use_the_omnibox">Tapez “jira” dans la barre d’adresse pour utiliser l’omnibox</p></div>
         </div>
-        <button id="continueBtn" type="button" class="mt-8 rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300">Commencer à rechercher</button>
+        <button id="continueBtn" type="button" class="mt-8 rounded-lg bg-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300" data-i18n="ui_start_searching">Commencer à rechercher</button>
       </div>
     </section>
   </main>

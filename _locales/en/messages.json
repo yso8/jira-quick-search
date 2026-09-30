@@ -1,12 +1,1015 @@
 {
-  "appName": { "message": "Jira Quick Search" },
-  "appDescription": { "message": "Quick search for Jira Cloud issues and activity summaries" },
-  "actionTitle": { "message": "Jira Quick Search" },
-  "openSearchCommand": { "message": "Open Jira Quick Search" },
-  "omniboxSuggestion": { "message": "Search Jira: $QUERY$", "placeholders": { "query": { "content": "$1" } } },
-  "languageAuto": { "message": "Automatic" },
-  "languageEnglish": { "message": "English" },
-  "languageFrench": { "message": "French" },
-  "searchPlaceholder": { "message": "Search Jira issues" },
-  "settings": { "message": "Settings" }
+  "appName": {
+    "message": "Jira Quick Search"
+  },
+  "appDescription": {
+    "message": "Quick search for Jira Cloud issues and activity summaries"
+  },
+  "actionTitle": {
+    "message": "Jira Quick Search"
+  },
+  "openSearchCommand": {
+    "message": "Open Jira Quick Search"
+  },
+  "omniboxSuggestion": {
+    "message": "Search Jira: $QUERY$",
+    "placeholders": {
+      "query": {
+        "content": "$1"
+      }
+    }
+  },
+  "languageLabel": {
+    "message": "Language"
+  },
+  "languageAuto": {
+    "message": "Auto (browser language)"
+  },
+  "languageEnglish": {
+    "message": "English"
+  },
+  "languageFrench": {
+    "message": "Français"
+  },
+  "searchPlaceholder": {
+    "message": "Search Jira issues"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "ui_welcome": {
+    "message": "Welcome"
+  },
+  "ui_jira_quick_search_welcome": {
+    "message": "Jira Quick Search — Welcome"
+  },
+  "ui_welcome_to_jira_quick_search": {
+    "message": "Welcome to Jira Quick Search"
+  },
+  "ui_find_jira_issues_quickly_without_leaving_your_browser": {
+    "message": "Find Jira issues quickly without leaving your browser."
+  },
+  "ui_get_started": {
+    "message": "Get started"
+  },
+  "ui_skip_introduction": {
+    "message": "Skip introduction"
+  },
+  "ui_connect_your_jira_workspace": {
+    "message": "Connect your Jira workspace"
+  },
+  "ui_use_your_atlassian_credentials_to_test_the_connection": {
+    "message": "Use your Atlassian credentials to test the connection."
+  },
+  "ui_jira_cloud_url": {
+    "message": "Jira Cloud URL"
+  },
+  "ui_atlassian_email": {
+    "message": "Atlassian email"
+  },
+  "ui_atlassian_email_10": {
+    "message": "Atlassian email"
+  },
+  "ui_api_token": {
+    "message": "API token"
+  },
+  "ui_create_an_atlassian_api_token": {
+    "message": "Create an Atlassian API token"
+  },
+  "ui_test_and_continue": {
+    "message": "Test and continue"
+  },
+  "ui_your_information_stays_stored_locally_in_the_extension": {
+    "message": "Your information stays stored locally in the extension."
+  },
+  "ui_all_set": {
+    "message": "All set"
+  },
+  "ui_jira_is_connected_you_re_ready_to_get_started": {
+    "message": "Jira is connected. You're ready to get started."
+  },
+  "ui_find_your_issues_in_seconds": {
+    "message": "Find your issues in seconds"
+  },
+  "ui_use_ctrl_shift_j_to_open_search": {
+    "message": "Use Ctrl + Shift + J to open search"
+  },
+  "ui_type_jira_in_the_address_bar_to_use_the_omnibox": {
+    "message": "Type “jira” in the address bar to use the omnibox"
+  },
+  "ui_start_searching": {
+    "message": "Start searching"
+  },
+  "ui_jira_quick_search_connection": {
+    "message": "Jira Quick Search — Connection"
+  },
+  "ui_privacy_and_local_data": {
+    "message": "Privacy and local data"
+  },
+  "ui_your_jira_data_is_used_locally_by_the_extension_no_data": {
+    "message": "Your Jira data is used locally by the extension. No data is sent to a third-party server."
+  },
+  "ui_jira_configuration_and_credentials": {
+    "message": "Jira configuration and credentials"
+  },
+  "ui_diagnostic_log_preference": {
+    "message": "Diagnostic log preference"
+  },
+  "ui_recent_and_pinned_issues": {
+    "message": "Recent and pinned issues"
+  },
+  "ui_saved_searches_and_activity_rules": {
+    "message": "Saved searches and activity rules"
+  },
+  "ui_delete_all_local_data": {
+    "message": "Delete all local data"
+  },
+  "ui_help_and_feedback": {
+    "message": "Help and feedback"
+  },
+  "ui_prepare_an_editable_github_draft_before_publishing_noth": {
+    "message": "Prepare an editable GitHub draft before publishing. Nothing is sent automatically."
+  },
+  "ui_report_an_issue": {
+    "message": "Report an issue"
+  },
+  "ui_suggest_a_feature": {
+    "message": "Suggest a feature"
+  },
+  "ui_feedback_type": {
+    "message": "Feedback type"
+  },
+  "ui_select": {
+    "message": "Select"
+  },
+  "ui_bug": {
+    "message": "Bug"
+  },
+  "ui_feature": {
+    "message": "Feature"
+  },
+  "ui_question": {
+    "message": "Question"
+  },
+  "ui_title": {
+    "message": "Title"
+  },
+  "ui_description": {
+    "message": "Description"
+  },
+  "ui_the_issue_is_reproducible": {
+    "message": "The issue is reproducible"
+  },
+  "ui_include_nonsensitive_technical_information": {
+    "message": "Include nonsensitive technical information"
+  },
+  "ui_your_jira_url_issues_identity_and_secrets_are_never_add": {
+    "message": "Your Jira URL, issues, identity, and secrets are never added automatically."
+  },
+  "ui_cancel": {
+    "message": "Cancel"
+  },
+  "ui_prepare_github_draft": {
+    "message": "Prepare GitHub draft"
+  },
+  "ui_diagnostics": {
+    "message": "Diagnostics"
+  },
+  "ui_test_access_to_your_jira_instance_and_issue_search": {
+    "message": "Test access to your Jira instance and issue search."
+  },
+  "ui_test_connection": {
+    "message": "Test connection"
+  },
+  "ui_no_diagnostic_run_yet": {
+    "message": "No diagnostic run yet."
+  },
+  "ui_copy_diagnostic_details": {
+    "message": "Copy diagnostic details"
+  },
+  "ui_jira_connection": {
+    "message": "Jira connection"
+  },
+  "ui_configure_access_to_your_jira_instance": {
+    "message": "Configure access to your Jira instance."
+  },
+  "ui_your_jira_root_url_without_a_trailing_slash": {
+    "message": "Your Jira root URL, without a trailing slash."
+  },
+  "ui_generate_a_token": {
+    "message": "Generate a token"
+  },
+  "ui_info_alert": {
+    "message": "Info alert!"
+  },
+  "ui_enable_diagnostic_logs": {
+    "message": "Enable diagnostic logs"
+  },
+  "ui_logs_stay_local_and_mask_sensitive_information": {
+    "message": "Logs stay local and mask sensitive information."
+  },
+  "ui_try_again": {
+    "message": "Try again"
+  },
+  "ui_connect": {
+    "message": "Connect"
+  },
+  "ui_save": {
+    "message": "Save"
+  },
+  "ui_help_and_shortcuts": {
+    "message": "Help and shortcuts"
+  },
+  "ui_url": {
+    "message": "URL:"
+  },
+  "ui_must_start_with": {
+    "message": "Must start with"
+  },
+  "ui_email": {
+    "message": "Email:"
+  },
+  "ui_your_usual_sign_in_email": {
+    "message": "Your usual sign-in email."
+  },
+  "ui_token": {
+    "message": "Token:"
+  },
+  "ui_for_security_reasons_jira_no_longer_accepts_passwords": {
+    "message": "For security reasons, Jira no longer accepts passwords."
+  },
+  "ui_create_an_api_token_here": {
+    "message": "Create an API token here"
+  },
+  "ui_tip_configure_the_shortcut_in": {
+    "message": "Tip: configure the shortcut in"
+  },
+  "ui_or_type_in_the_address_bar": {
+    "message": ", or type in the address bar"
+  },
+  "ui_then_press_space_or_tab_before_entering_your_search": {
+    "message": ", then press Space or Tab before entering your search."
+  },
+  "ui_paste_your_token_here": {
+    "message": "Paste your token here"
+  },
+  "ui_https_your_company_atlassian_net": {
+    "message": "https://your-company.atlassian.net"
+  },
+  "ui_first_last_company_com": {
+    "message": "first.last@company.com"
+  },
+  "ui_you_company_com": {
+    "message": "you@company.com"
+  },
+  "ui_paste_your_api_token": {
+    "message": "Paste your API token"
+  },
+  "ui_search_for_an_issue_or_text": {
+    "message": "Search for an issue or text"
+  },
+  "ui_proj_123_or_october_invoice": {
+    "message": "PROJ-123 or October invoice"
+  },
+  "ui_enter_to_search_esc_to_close": {
+    "message": "Enter to search · Esc to close"
+  },
+  "ui_jira_search": {
+    "message": "Jira search"
+  },
+  "ui_go": {
+    "message": "Go"
+  },
+  "ui_search": {
+    "message": "Search"
+  },
+  "ui_tasks": {
+    "message": "Tasks"
+  },
+  "ui_epics": {
+    "message": "Epics"
+  },
+  "ui_loading_filters": {
+    "message": "Loading filters…"
+  },
+  "ui_clear_filters": {
+    "message": "Clear filters"
+  },
+  "ui_search_jira_issues": {
+    "message": "Search Jira issues"
+  },
+  "ui_enter_keywords_above_to_start_searching": {
+    "message": "Enter keywords above to start searching."
+  },
+  "ui_searching_jira": {
+    "message": "Searching Jira..."
+  },
+  "ui_no_results_found": {
+    "message": "No results found"
+  },
+  "ui_try_other_keywords_or_check_your_filters": {
+    "message": "Try other keywords or check your filters."
+  },
+  "ui_error": {
+    "message": "Error:"
+  },
+  "ui_results_found": {
+    "message": "results found"
+  },
+  "ui_copy_jql": {
+    "message": "Copy JQL"
+  },
+  "ui_previous": {
+    "message": "Previous"
+  },
+  "ui_next": {
+    "message": "Next"
+  },
+  "ui_open_selection": {
+    "message": "Open selection"
+  },
+  "ui_search_for_an_issue": {
+    "message": "Search for an issue..."
+  },
+  "ui_jira_filters": {
+    "message": "Jira filters"
+  },
+  "ui_save_this_search": {
+    "message": "Save this search"
+  },
+  "ui_copy_generated_jql": {
+    "message": "Copy generated JQL"
+  },
+  "ui_workspace_jira_quick_search": {
+    "message": "Workspace — Jira Quick Search"
+  },
+  "ui_workspace": {
+    "message": "Workspace"
+  },
+  "ui_quickly_find_your_important_issues_and_searches": {
+    "message": "Quickly find your important issues and searches."
+  },
+  "ui_new_search": {
+    "message": "New search"
+  },
+  "ui_issues": {
+    "message": "Issues"
+  },
+  "ui_pinned_issues": {
+    "message": "Pinned issues"
+  },
+  "ui_recent_issues": {
+    "message": "Recent issues"
+  },
+  "ui_recently_viewed": {
+    "message": "Recently viewed"
+  },
+  "ui_saved_searches": {
+    "message": "Saved searches"
+  },
+  "ui_new": {
+    "message": "New"
+  },
+  "ui_weekly_summary_jira": {
+    "message": "Weekly summary - Jira"
+  },
+  "ui_person": {
+    "message": "Person"
+  },
+  "ui_everyone": {
+    "message": "Everyone"
+  },
+  "ui_period": {
+    "message": "Period"
+  },
+  "ui_this_week": {
+    "message": "This week"
+  },
+  "ui_last_week": {
+    "message": "Last week"
+  },
+  "ui_last_2_weeks": {
+    "message": "Last 2 weeks"
+  },
+  "ui_this_month": {
+    "message": "This month"
+  },
+  "ui_custom_period": {
+    "message": "Custom period"
+  },
+  "ui_from": {
+    "message": "From"
+  },
+  "ui_to": {
+    "message": "To"
+  },
+  "ui_generate_summary": {
+    "message": "Generate summary"
+  },
+  "ui_activity_rules": {
+    "message": "Activity rules"
+  },
+  "ui_an_issue_counts_when_it_matches_the_selected_rules": {
+    "message": "An issue counts when it matches the selected rules."
+  },
+  "ui_at_least_one_rule": {
+    "message": "At least one rule"
+  },
+  "ui_all_rules": {
+    "message": "All rules"
+  },
+  "ui_issue_updated": {
+    "message": "Issue updated"
+  },
+  "ui_comment_added": {
+    "message": "Comment added"
+  },
+  "ui_status_changed": {
+    "message": "Status changed"
+  },
+  "ui_assignee_changed": {
+    "message": "Assignee changed"
+  },
+  "ui_priority_changed": {
+    "message": "Priority changed"
+  },
+  "ui_summary_or_description_changed": {
+    "message": "Summary or description changed"
+  },
+  "ui_export_csv": {
+    "message": "Export CSV"
+  },
+  "ui_copy_as_text": {
+    "message": "Copy as text"
+  },
+  "ui_generate_your_summary": {
+    "message": "Generate your summary"
+  },
+  "ui_select_a_period_and_click_generate_summary": {
+    "message": "Select a period and click “Generate summary”"
+  },
+  "ui_loading_data": {
+    "message": "Loading data..."
+  },
+  "ui_issue": {
+    "message": "Issue"
+  },
+  "ui_summary": {
+    "message": "Summary"
+  },
+  "ui_modified_by": {
+    "message": "Modified by"
+  },
+  "ui_date": {
+    "message": "Date"
+  },
+  "ui_comments": {
+    "message": "Comments"
+  },
+  "ui_status": {
+    "message": "Status"
+  },
+  "ui_change_timeline": {
+    "message": "Change timeline"
+  },
+  "ui_total_issues_modified": {
+    "message": "Total issues modified"
+  },
+  "ui_included": {
+    "message": "Included"
+  },
+  "ui_created": {
+    "message": "Created"
+  },
+  "ui_completed": {
+    "message": "Completed"
+  },
+  "ui_in_progress": {
+    "message": "In progress"
+  },
+  "ui_breakdown_by_person": {
+    "message": "Breakdown by person"
+  },
+  "ui_issues_by_status": {
+    "message": "Issues by status"
+  },
+  "ui_summary_152": {
+    "message": "Summary"
+  },
+  "ui_settings": {
+    "message": "Settings"
+  },
+  "ui_main_navigation": {
+    "message": "Main navigation"
+  },
+  "ui_jira_quick_search_jira_search": {
+    "message": "Jira Quick Search — Jira search"
+  },
+  "ui_please_fill_in_all_fields": {
+    "message": "Please fill in all fields."
+  },
+  "ui_the_url_must_have_the_format_https_your_site_atlassian_": {
+    "message": "The URL must have the format https://your-site.atlassian.net."
+  },
+  "ui_connecting": {
+    "message": "Connecting…"
+  },
+  "ui_connection_successful_your_search_is_ready": {
+    "message": "Connection successful. Your search is ready."
+  },
+  "ui_jira_authentication_failed_check_your_token_or_generate": {
+    "message": "Jira authentication failed. Check your token or generate a new one."
+  },
+  "ui_could_not_connect_to_jira_check_the_url_or_your_network": {
+    "message": "Could not connect to Jira. Check the URL or your network connection."
+  },
+  "ui_authentication_failed_check_your_email_and_token": {
+    "message": "Authentication failed. Check your email and token."
+  },
+  "ui_could_not_connect_to_jira_check_the_url_and_try_again": {
+    "message": "Could not connect to Jira. Check the URL and try again."
+  },
+  "ui_quick_tour": {
+    "message": "Quick tour"
+  },
+  "ui_issue_not_found_check_the_jira_key": {
+    "message": "Issue not found. Check the Jira key."
+  },
+  "ui_jira_configuration_is_incomplete_open_the_extension_set": {
+    "message": "Jira configuration is incomplete. Open the extension settings."
+  },
+  "ui_jira_access_denied_check_your_email_token_and_permissio": {
+    "message": "Jira access denied. Check your email, token, and permissions."
+  },
+  "ui_jira_is_temporarily_limiting_requests_try_again_shortly": {
+    "message": "Jira is temporarily limiting requests. Try again shortly."
+  },
+  "ui_jira_is_temporarily_unavailable_try_again_shortly": {
+    "message": "Jira is temporarily unavailable. Try again shortly."
+  },
+  "ui_project": {
+    "message": "Project"
+  },
+  "ui_assignee": {
+    "message": "Assignee"
+  },
+  "ui_type": {
+    "message": "Type"
+  },
+  "ui_status_173": {
+    "message": "Status"
+  },
+  "ui_priority": {
+    "message": "Priority"
+  },
+  "ui_jira_url_is_missing": {
+    "message": "Jira URL is missing."
+  },
+  "ui_the_jira_url_must_use_https": {
+    "message": "The Jira URL must use HTTPS."
+  },
+  "ui_the_url_must_point_to_a_jira_cloud_atlassian_net_instan": {
+    "message": "The URL must point to a Jira Cloud atlassian.net instance."
+  },
+  "ui_the_jira_url_is_invalid": {
+    "message": "The Jira URL is invalid."
+  },
+  "ui_check_the_email_and_api_token": {
+    "message": "Check the email and API token."
+  },
+  "ui_the_connection_works_but_the_extension_cannot_access_so": {
+    "message": "The connection works, but the extension cannot access some required data."
+  },
+  "ui_check_your_jira_account_permissions": {
+    "message": "Check your Jira account permissions."
+  },
+  "ui_the_expected_jira_api_is_unavailable_for_this_instance": {
+    "message": "The expected Jira API is unavailable for this instance."
+  },
+  "ui_check_the_url_and_jira_availability": {
+    "message": "Check the URL and Jira availability."
+  },
+  "ui_could_not_reach_this_jira_instance_check_the_url_or_you": {
+    "message": "Could not reach this Jira instance. Check the URL or your network connection."
+  },
+  "ui_check_the_network_connection_and_try_again": {
+    "message": "Check the network connection and try again."
+  },
+  "ui_jira_returned_an_unexpected_response": {
+    "message": "Jira returned an unexpected response."
+  },
+  "ui_try_again_or_view_the_technical_details": {
+    "message": "Try again or view the technical details."
+  },
+  "ui_authentication": {
+    "message": "Authentication"
+  },
+  "ui_the_token_or_email_is_missing": {
+    "message": "The token or email is missing."
+  },
+  "ui_enter_your_jira_credentials": {
+    "message": "Enter your Jira credentials."
+  },
+  "ui_jira_connection_191": {
+    "message": "Jira connection"
+  },
+  "ui_the_instance_responded_successfully": {
+    "message": "The instance responded successfully."
+  },
+  "ui_the_jira_credentials_are_valid": {
+    "message": "The Jira credentials are valid."
+  },
+  "ui_issue_search": {
+    "message": "Issue search"
+  },
+  "ui_issue_search_is_available": {
+    "message": "Issue search is available."
+  },
+  "ui_permissions": {
+    "message": "Permissions"
+  },
+  "ui_select_a_feedback_type": {
+    "message": "Select a feedback type."
+  },
+  "ui_add_a_title_to_your_feedback": {
+    "message": "Add a title to your feedback."
+  },
+  "ui_briefly_describe_the_issue_before_continuing": {
+    "message": "Briefly describe the issue before continuing."
+  },
+  "ui_unknown": {
+    "message": "unknown"
+  },
+  "ui_unknown_201": {
+    "message": "unknown"
+  },
+  "ui_undetermined": {
+    "message": "undetermined"
+  },
+  "ui_not_run": {
+    "message": "not run"
+  },
+  "ui_yes": {
+    "message": "Yes"
+  },
+  "ui_not_specified": {
+    "message": "Not specified"
+  },
+  "ui_details_copied": {
+    "message": "Details copied"
+  },
+  "ui_delete_all_local_extension_data_this_cannot_be_undone": {
+    "message": "Delete all local extension data? This cannot be undone."
+  },
+  "ui_deleting": {
+    "message": "Deleting…"
+  },
+  "ui_data_deleted_redirecting_to_settings": {
+    "message": "Data deleted. Redirecting to settings…"
+  },
+  "ui_could_not_delete_data_try_again": {
+    "message": "Could not delete data. Try again."
+  },
+  "ui_running_diagnostic": {
+    "message": "Running diagnostic…"
+  },
+  "ui_checking_configuration_and_jira_access": {
+    "message": "Checking configuration and Jira access…"
+  },
+  "ui_diagnostic": {
+    "message": "Diagnostic"
+  },
+  "ui_the_diagnostic_could_not_be_completed": {
+    "message": "The diagnostic could not be completed."
+  },
+  "ui_try_again_215": {
+    "message": "Try again."
+  },
+  "ui_connection_valid_and_search_available": {
+    "message": "Connection valid and search available."
+  },
+  "ui_connection_valid_with_limited_permissions": {
+    "message": "Connection valid with limited permissions."
+  },
+  "ui_a_problem_needs_your_attention": {
+    "message": "A problem needs your attention."
+  },
+  "ui_your_github_draft_is_ready_review_it_before_publishing": {
+    "message": "Your GitHub draft is ready. Review it before publishing."
+  },
+  "ui_could_not_open_github_check_your_network_connection_and": {
+    "message": "Could not open GitHub. Check your network connection and try again."
+  },
+  "ui_undetermined_221": {
+    "message": "Undetermined"
+  },
+  "ui_not_run_222": {
+    "message": "Not run"
+  },
+  "ui_configuration_missing_configure_the_extension": {
+    "message": "⚠️ Configuration missing. Configure the extension."
+  },
+  "ui_jql_copied": {
+    "message": "JQL copied"
+  },
+  "ui_saved": {
+    "message": "Saved"
+  },
+  "ui_name_this_search": {
+    "message": "Name this search:"
+  },
+  "ui_my_search": {
+    "message": "My search"
+  },
+  "ui_no_values_available": {
+    "message": "No values available"
+  },
+  "ui_unassigned": {
+    "message": "Unassigned"
+  },
+  "ui_unknown_project": {
+    "message": "Unknown project"
+  },
+  "ui_none": {
+    "message": "None"
+  },
+  "ui_date_unavailable": {
+    "message": "Date unavailable"
+  },
+  "ui_status_unavailable": {
+    "message": "Status unavailable"
+  },
+  "ui_summary_unavailable": {
+    "message": "Summary unavailable"
+  },
+  "ui_query_unavailable": {
+    "message": "Query unavailable"
+  },
+  "ui_modification_unavailable": {
+    "message": "Modification unavailable"
+  },
+  "ui_unavailable": {
+    "message": "Unavailable"
+  },
+  "ui_no_summary": {
+    "message": "No summary"
+  },
+  "ui_unavailable_239": {
+    "message": "Unavailable"
+  },
+  "ui_no_pinned_issues": {
+    "message": "No pinned issues"
+  },
+  "ui_pin_important_issues_from_search_results": {
+    "message": "Pin important issues from search results."
+  },
+  "ui_no_recent_issues": {
+    "message": "No recent issues"
+  },
+  "ui_open_an_issue_from_search_results_to_find_it_here": {
+    "message": "Open an issue from search results to find it here."
+  },
+  "ui_search_for_an_issue_244": {
+    "message": "Search for an issue"
+  },
+  "ui_unpin": {
+    "message": "Unpin"
+  },
+  "ui_remove_from_history": {
+    "message": "Remove from history"
+  },
+  "ui_open_in_jira": {
+    "message": "Open in Jira"
+  },
+  "ui_copy_link": {
+    "message": "Copy link"
+  },
+  "ui_copy": {
+    "message": "Copy"
+  },
+  "ui_no_saved_searches": {
+    "message": "No saved searches"
+  },
+  "ui_run_a_search_and_save_it_to_find_it_here": {
+    "message": "Run a search and save it to find it here."
+  },
+  "ui_run_again": {
+    "message": "Run again"
+  },
+  "ui_delete": {
+    "message": "Delete"
+  },
+  "ui_select_a_valid_custom_period": {
+    "message": "Select a valid custom period."
+  },
+  "ui_no_issues_found_for_this_period": {
+    "message": "No issues found for this period."
+  },
+  "ui_copy_key": {
+    "message": "Copy key"
+  },
+  "ui_copy_summary": {
+    "message": "Copy summary"
+  },
+  "ui_no_data_to_export": {
+    "message": "No data to export"
+  },
+  "ui_csv_exported_successfully": {
+    "message": "CSV exported successfully!"
+  },
+  "ui_no_data_to_copy": {
+    "message": "No data to copy"
+  },
+  "ui_markdown_summary_copied": {
+    "message": "Markdown summary copied!"
+  },
+  "ui_could_not_copy_the_summary": {
+    "message": "Could not copy the summary"
+  },
+  "ui_text_copied_to_clipboard": {
+    "message": "Text copied to clipboard!"
+  },
+  "ui_could_not_copy_the_text": {
+    "message": "Could not copy the text"
+  },
+  "lastDiagnostic": {
+    "message": "Last diagnostic: $1"
+  },
+  "diagnosticAction": {
+    "message": "Action: $1"
+  },
+  "configuredInstance": {
+    "message": "Configured instance: $1"
+  },
+  "resultsRange": {
+    "message": "$1–$2 of $3"
+  },
+  "pageNumber": {
+    "message": "Page $1"
+  },
+  "allFilterValues": {
+    "message": "All $1"
+  },
+  "workspaceSummary": {
+    "message": "Recent: $1 · Pinned: $2 · Saved searches: $3"
+  },
+  "lastUsed": {
+    "message": "Last used: $1"
+  },
+  "modifiedOn": {
+    "message": "Modified on $1"
+  },
+  "createdOn": {
+    "message": "Created on $1"
+  },
+  "updatedOn": {
+    "message": "Updated on $1"
+  },
+  "assignedTo": {
+    "message": "Assigned to: $1"
+  },
+  "priorityValue": {
+    "message": "Priority: $1"
+  },
+  "typeValue": {
+    "message": "Type: $1"
+  },
+  "errorDetails": {
+    "message": "Error: $1"
+  },
+  "filterLoadError": {
+    "message": "Could not load Jira filters: $1"
+  },
+  "usersLoadError": {
+    "message": "Could not load users: $1"
+  },
+  "reportPeriod": {
+    "message": "During the period from $1 to $2,"
+  },
+  "reportFirst": {
+    "message": "$1 Number of issues matching $3: $2."
+  },
+  "reportNoneCompleted": {
+    "message": "No issues are completed."
+  },
+  "reportCompleted": {
+    "message": "Completed issues: $1."
+  },
+  "reportActivityCriteria": {
+    "message": "the selected activity criteria"
+  },
+  "feedbackVersion": {
+    "message": "- Jira Quick Search version: $1"
+  },
+  "feedbackBrowser": {
+    "message": "- Browser: $1"
+  },
+  "feedbackSystem": {
+    "message": "- System: $1"
+  },
+  "feedbackManifest": {
+    "message": "- Manifest version: $1"
+  },
+  "feedbackInstance": {
+    "message": "- Jira instance type: $1"
+  },
+  "feedbackDiagnostic": {
+    "message": "- Diagnostic status: $1"
+  },
+  "feedbackBug": {
+    "message": "## Description\n\n$1\n\n## Steps to reproduce\n\n1.\n2.\n3.\n\n## Expected result\n\n<!-- What did you expect? -->\n\n## Actual result\n\n<!-- What happened? -->"
+  },
+  "feedbackReproducible": {
+    "message": "- Reproducible: $1"
+  },
+  "feedbackFeature": {
+    "message": "## Need\n\n$1\n\n## Proposal\n\n<!-- Describe the requested feature. -->\n\n## Usage context\n\n<!-- When would this feature be useful? -->"
+  },
+  "feedbackQuestion": {
+    "message": "## Question\n\n$1"
+  },
+  "feedbackTechnical": {
+    "message": "## Technical information\n\n$1"
+  },
+  "reportTitle": {
+    "message": "# Jira activity report"
+  },
+  "reportNamedTitle": {
+    "message": "# Jira report — $1"
+  },
+  "reportPeriodLine": {
+    "message": "Period: $1 – $2"
+  },
+  "reportOverview": {
+    "message": "## Overview"
+  },
+  "reportHighlights": {
+    "message": "## Highlights"
+  },
+  "reportBreakdown": {
+    "message": "## Breakdown"
+  },
+  "reportIssues": {
+    "message": "## Included issues"
+  },
+  "reportTimeline": {
+    "message": "## Timeline"
+  },
+  "reportProject": {
+    "message": "By project"
+  },
+  "reportStatus": {
+    "message": "By status"
+  },
+  "reportType": {
+    "message": "By type"
+  },
+  "reportInvolved": {
+    "message": "- Included issues: $1"
+  },
+  "reportCompletedLine": {
+    "message": "- Completed issues: $1"
+  },
+  "reportInProgress": {
+    "message": "- Issues in progress: $1"
+  },
+  "reportCreated": {
+    "message": "- Created issues: $1"
+  },
+  "reportUpdated": {
+    "message": "- Updated issues: $1"
+  },
+  "reportStatusLine": {
+    "message": "Status: $1"
+  },
+  "reportLastActivity": {
+    "message": "Last activity: $1"
+  },
+  "reportNoIssues": {
+    "message": "- No issues"
+  },
+  "reportFirstOne": {
+    "message": "$1 1 issue matches $2."
+  },
+  "reportFirstMany": {
+    "message": "$1 $2 issues match $3."
+  },
+  "reportCompletedOne": {
+    "message": "1 issue is completed."
+  },
+  "reportCompletedMany": {
+    "message": "$1 issues are completed."
+  },
+  "reportAnd": {
+    "message": " and "
+  },
+  "pinIssue": {
+    "message": "Pin this issue"
+  },
+  "unpinIssue": {
+    "message": "Unpin this issue"
+  },
+  "configureExtension": {
+    "message": "Configure the extension"
+  }
 }

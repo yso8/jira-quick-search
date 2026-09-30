@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+require('./i18n-test-setup.js');
 const { classifyIssues, deduplicateIssues, generateMarkdownReport, generateSummary, getBreakdowns, sortTimeline } = require('../src/utils/reports/report-utils');
 const recapHtml = require('node:fs').readFileSync('recap.html', 'utf8');
 const recapScript = require('node:fs').readFileSync('src/pages/recap/recap.js', 'utf8');

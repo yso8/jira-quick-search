@@ -70,8 +70,8 @@ function Assert-NoSensitiveContent([string] $Path) {
   $sensitivePatterns = @(
     '(?i)(?:api[_-]?key|api[_-]?token|access[_-]?token|password|secret)\s*[:=]\s*["''][^"'']{8,}["'']',
     '(?i)-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',
-    '(?i)(?<![A-Za-z0-9._%+-])(?!(?:vous|nom\.prenom)@entreprise\.com\b)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b',
-    '(?i)https://(?!(?:votre-societe|votre-site)\.atlassian\.net)[a-z0-9-]+\.atlassian\.net(?:/[^\s"''<>]*)?'
+    '(?i)(?<![A-Za-z0-9._%+-])(?!(?:(?:vous|nom\.prenom)@entreprise\.com|(?:you|first\.last)@company\.com)\b)[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b',
+    '(?i)https://(?!(?:votre-societe|votre-site|your-company|your-site)\.atlassian\.net)[a-z0-9-]+\.atlassian\.net(?:/[^\s"''<>]*)?'
   )
   $content = Get-Content -LiteralPath $Path -Raw
   foreach ($pattern in $sensitivePatterns) {

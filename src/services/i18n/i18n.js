@@ -55,6 +55,10 @@
     });
   }
 
+  function getDateLocale() {
+    return activeLanguage === 'fr' ? 'fr-FR' : 'en-US';
+  }
+
   async function initI18n(options = {}) {
     let preference = options.preference;
     if (preference === undefined) preference = await getLanguagePreference();
@@ -89,7 +93,7 @@
     for (const element of elements) translateElement(element);
   }
 
-  const api = { resolveLanguage, t, getLanguagePreference, setLanguagePreference, initI18n, applyTranslations };
+  const api = { resolveLanguage, t, getDateLocale, getLanguagePreference, setLanguagePreference, initI18n, applyTranslations };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.JiraQuickSearchI18n = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

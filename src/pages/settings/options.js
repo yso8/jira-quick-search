@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const locale = await JiraQuickSearchI18n.initI18n();
+  const dateLocale = JiraQuickSearchI18n.getDateLocale();
+  const { t, applyTranslations } = JiraQuickSearchI18n;
+  applyTranslations(document);
+  document.documentElement.lang = locale;
+  await bindLanguageControl(document.getElementById('language'), JiraQuickSearchI18n, window.location);
   const form = document.getElementById('configForm');
   const connectBtn = document.getElementById('connectBtn');
   const retryBtn = document.getElementById('retryBtn');
@@ -52,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     debugLogsInput.checked = debugConfig.debugLogs === true;
     const diagnosticConfig = await chrome.storage.local.get({ lastDiagnosticAt: null });
     if (diagnosticConfig.lastDiagnosticAt) {
-      lastDiagnostic.textContent = `Dernier diagnostic : ${new Date(diagnosticConfig.lastDiagnosticAt).toLocaleString('fr-FR')}`;
+      lastDiagnostic.textContent = t('lastDiagnostic', new Date(diagnosticConfig.lastDiagnosticAt).toLocaleString(dateLocale));
     }
   } catch (error) {
     await debugLog('erreur chargement configuration', { message: error.message, stack: error.stack });
@@ -65,19 +71,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   copyDiagnosticBtn.addEventListener('click', async () => {
     if (!latestDiagnostic) return;
     await navigator.clipboard.writeText(createTechnicalDetails(latestDiagnostic));
-    copyDiagnosticBtn.textContent = 'Détails copiés';
+    copyDiagnosticBtn.textContent = t('ui_details_copied');
   });
   clearDataBtn.addEventListener('click', async () => {
-    if (!window.confirm('Supprimer toutes les données locales de l’extension ? Cette action est irréversible.')) return;
+    if (!window.confirm(t('ui_delete_all_local_extension_data_this_cannot_be_undone'))) return;
     clearDataBtn.disabled = true;
-    clearDataMessage.textContent = 'Suppression en cours…';
+    clearDataMessage.textContent = t('ui_deleting');
     try {
       await clearExtensionData(chrome.storage);
-      clearDataMessage.textContent = 'Données supprimées. Redirection vers l’accueil…';
+      clearDataMessage.textContent = t('ui_data_deleted_redirecting_to_settings');
       window.location.href = 'options.html';
     } catch (error) {
       clearDataBtn.disabled = false;
-      clearDataMessage.textContent = 'Impossible de supprimer les données. Réessayez.';
+      clearDataMessage.textContent = t('ui_could_not_delete_data_try_again');
       await debugLog('erreur suppression données', { message: error.message });
     }
   });
@@ -95,8 +101,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const url = normalizeJiraUrl(jiraUrlInput.value);
     const email = jiraEmailInput.value.trim();
     const token = jiraTokenInput.value.trim();
-    if (!url || !email || !token) { showMessage('Veuillez remplir tous les champs.', 'warning'); return; }
-    if (!isValidJiraUrl(url)) { showMessage('L’URL doit être au format https://votre-site.atlassian.net.', 'warning'); return; }
+    if (!url || !email || !token) { showMessage(t('ui_please_fill_in_all_fields'), 'warning'); return; }
+    if (!isValidJiraUrl(url)) { showMessage(t('ui_the_url_must_have_the_format_https_your_site_atlassian_'), 'warning'); return; }
 
     setLoading(true);
     try {
@@ -104,44 +110,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!response.ok) throw Object.assign(new Error('Authentification Jira refusée.'), { status: response.status });
       await chrome.storage.sync.set({ jiraUrl: url, jiraEmail: email, jiraToken: token });
       await chrome.storage.local.set({ debugLogs: debugLogsInput.checked });
-      showMessage('Connexion réussie. Votre recherche est prête.', 'success');
+      showMessage(t('ui_connection_successful_your_search_is_ready'), 'success');
       setTimeout(() => { window.location.href = 'search.html'; }, 900);
     } catch (error) {
       await debugLog('erreur connexion onboarding', { status: error.status, message: error.message });
-      showMessage(error.status === 401 || error.status === 403 ? 'L’authentification Jira a échoué. Vérifiez votre token ou générez-en un nouveau.' : 'Impossible de se connecter à Jira. Vérifiez l’URL ou votre connexion réseau.', 'error');
+      showMessage(error.status === 401 || error.status === 403 ? t('ui_jira_authentication_failed_check_your_token_or_generate') : t('ui_could_not_connect_to_jira_check_the_url_or_your_network'), 'error');
       retryBtn.classList.remove('hidden');
     } finally { setLoading(false); }
   }
 
   async function runDiagnostics() {
     diagnosticBtn.disabled = true;
-    diagnosticBtn.textContent = 'Diagnostic en cours…';
-    diagnosticSummary.textContent = 'Vérification de la configuration et de l’accès Jira…';
+    diagnosticBtn.textContent = t('ui_running_diagnostic');
+    diagnosticSummary.textContent = t('ui_checking_configuration_and_jira_access');
     try {
       latestDiagnostic = await runConnectionDiagnostics({ jiraUrl: jiraUrlInput.value, jiraEmail: jiraEmailInput.value.trim(), jiraToken: jiraTokenInput.value.trim() });
       renderDiagnostics(latestDiagnostic);
       await chrome.storage.local.set({ lastDiagnosticAt: new Date().toISOString() });
     } catch (error) {
-      latestDiagnostic = { overall: 'error', checks: [{ id: 'diagnostic', label: 'Diagnostic', status: 'error', message: 'Le diagnostic n’a pas pu être terminé.', action: 'Réessayer.' }] };
+      latestDiagnostic = { overall: 'error', checks: [{ id: 'diagnostic', label: t('ui_diagnostic'), status: 'error', message: t('ui_the_diagnostic_could_not_be_completed'), action: t('ui_try_again_215') }] };
       renderDiagnostics(latestDiagnostic);
       await debugLog('erreur diagnostic', { message: error.message });
     } finally {
       diagnosticBtn.disabled = false;
-      diagnosticBtn.textContent = 'Tester la connexion';
+      diagnosticBtn.textContent = t('ui_test_connection');
     }
   }
 
   function renderDiagnostics(result) {
-    diagnosticSummary.textContent = result.overall === 'success' ? 'Connexion valide et recherche disponible.' : result.overall === 'warning' ? 'Connexion valide avec une limitation de permissions.' : 'Un problème nécessite votre attention.';
+    diagnosticSummary.textContent = result.overall === 'success' ? t('ui_connection_valid_and_search_available') : result.overall === 'warning' ? t('ui_connection_valid_with_limited_permissions') : t('ui_a_problem_needs_your_attention');
     diagnosticChecks.replaceChildren(...result.checks.map(check => {
       const item = document.createElement('li');
       item.className = 'rounded-lg border border-gray-100 p-3 text-sm';
       const marker = check.status === 'success' ? '✓' : check.status === 'warning' ? '⚠' : '✗';
-      item.innerHTML = `<div class="flex gap-2"><span aria-hidden="true">${marker}</span><div><strong>${escapeHtml(check.label)}</strong><p class="text-gray-600">${escapeHtml(check.message)}</p>${check.action ? `<p class="mt-1 text-xs text-gray-500">Action : ${escapeHtml(check.action)}</p>` : ''}</div></div>`;
+      item.innerHTML = `<div class="flex gap-2"><span aria-hidden="true">${marker}</span><div><strong>${escapeHtml(check.label)}</strong><p class="text-gray-600">${escapeHtml(check.message)}</p>${check.action ? `<p class="mt-1 text-xs text-gray-500">${escapeHtml(t('diagnosticAction', check.action))}</p>` : ''}</div></div>`;
       return item;
     }));
     copyDiagnosticBtn.classList.remove('hidden');
-    lastDiagnostic.textContent = `Dernier diagnostic : ${new Date().toLocaleString('fr-FR')}`;
+    lastDiagnostic.textContent = t('lastDiagnostic', new Date().toLocaleString(dateLocale));
   }
 
   function updateFeedbackType() {
@@ -175,10 +181,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const technicalInfo = buildTechnicalInfo({
       version: manifest.version,
       browser: navigator.userAgent,
-      platform: navigator.platform || 'inconnu',
+      platform: navigator.platform || t('ui_unknown_201'),
       manifestVersion: manifest.manifest_version,
       instanceType: getInstanceType(jiraUrlInput.value),
-      diagnosticStatus: diagnosticSummary.textContent || 'Non exécuté'
+      diagnosticStatus: diagnosticSummary.textContent || t('ui_not_run_222')
     });
     const body = buildFeedbackBody({
       type: input.type,
@@ -190,18 +196,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const url = buildGithubIssueUrl({ type: input.type, title: input.title, body });
     try {
       await chrome.tabs.create({ url });
-      showFeedbackMessage('Votre brouillon GitHub est prêt. Vérifiez son contenu avant de le publier.', 'success');
+      showFeedbackMessage(t('ui_your_github_draft_is_ready_review_it_before_publishing'), 'success');
     } catch (error) {
-      showFeedbackMessage('Impossible d’ouvrir GitHub. Vérifiez votre connexion réseau et réessayez.', 'error');
+      showFeedbackMessage(t('ui_could_not_open_github_check_your_network_connection_and'), 'error');
       await debugLog('erreur ouverture feedback GitHub', { message: error.message });
     }
   }
 
   function getInstanceType(value) {
     try {
-      return new URL(normalizeJiraUrl(value)).hostname.endsWith('.atlassian.net') ? 'Cloud' : 'Non déterminé';
+      return new URL(normalizeJiraUrl(value)).hostname.endsWith('.atlassian.net') ? 'Cloud' : t('ui_undetermined_221');
     } catch {
-      return 'Non déterminé';
+      return t('ui_undetermined_221');
     }
   }
 
@@ -213,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function setLoading(isLoading) {
     connectBtn.disabled = isLoading;
     retryBtn.disabled = isLoading;
-    connectBtn.textContent = isLoading ? 'Connexion en cours…' : 'Se connecter';
+    connectBtn.textContent = isLoading ? t('ui_connecting') : t('ui_connect');
   }
 
   function showMessage(message, type) {

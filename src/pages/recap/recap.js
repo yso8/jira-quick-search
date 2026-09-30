@@ -5,9 +5,15 @@ let currentResults = [];
 let currentReport = null;
 let currentPeriod = null;
 const ACTIVITY_RULES_STORAGE_KEY = 'recapActivityRules';
+var t = (...args) => JiraQuickSearchI18n.t(...args);
+let dateLocale = 'en-US';
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', async () => {
+  const locale = await JiraQuickSearchI18n.initI18n();
+  dateLocale = JiraQuickSearchI18n.getDateLocale();
+  document.documentElement.lang = locale;
+  JiraQuickSearchI18n.applyTranslations(document);
   // Éléments du DOM
   const userSelect = document.getElementById('userSelect');
   const dateRange = document.getElementById('dateRange');
@@ -24,10 +30,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   dateRange.addEventListener('change', () => customPeriod.classList.toggle('hidden', dateRange.value !== 'custom'));
 
   // Vérifier la configuration
-  config = await loadJiraConfig();
+  try {
+    config = await loadJiraConfig();
+  } catch {
+    showError(t('ui_configuration_missing_configure_the_extension'), true);
+    return;
+  }
 
   if (!config.jiraUrl || !config.jiraEmail || !config.jiraToken) {
-    showError('⚠️ Configuration manquante. Veuillez configurer l\'extension.', true);
+    showError(t('ui_configuration_missing_configure_the_extension'), true);
     return;
   }
 
@@ -86,7 +97,7 @@ async function loadUsers() {
     const users = await response.json();
     allUsers = users
       .filter(user => user.active && user.accountType === 'atlassian')
-      .sort((a, b) => a.displayName.localeCompare(b.displayName, 'fr'));
+      .sort((a, b) => a.displayName.localeCompare(b.displayName, dateLocale));
 
 
     // Remplir le dropdown
@@ -100,7 +111,7 @@ async function loadUsers() {
 
   } catch (error) {
     await debugLog('erreur chargement utilisateurs', { message: error.message, stack: error.stack });
-    showError(`Erreur lors du chargement des utilisateurs: ${error.message}`);
+    showError(t('usersLoadError', error.message));
   }
 }
 
@@ -159,7 +170,7 @@ async function generateRecap() {
     const customStart = document.getElementById('customStart').value;
     const customEnd = document.getElementById('customEnd').value;
     if (!customStart || !customEnd || new Date(customStart) > new Date(customEnd)) {
-      showError('Sélectionnez une période personnalisée valide.');
+      showError(t('ui_select_a_valid_custom_period'));
       return;
     }
     start.setTime(new Date(`${customStart}T00:00:00`).getTime());
@@ -178,7 +189,7 @@ async function generateRecap() {
     currentReport = classifyIssues(results, start, end);
 
     if (results.length === 0) {
-      showError('Aucun ticket trouvé pour cette période.');
+      showError(t('ui_no_issues_found_for_this_period'));
       return;
     }
 
@@ -194,7 +205,7 @@ async function generateRecap() {
 
   } catch (error) {
     await debugLog('erreur génération récapitulatif', { message: error.message, stack: error.stack });
-    showError(`Erreur: ${error.message}`);
+    showError(error.message);
   } finally {
     document.getElementById('loadingSpinner').style.display = 'none';
   }
@@ -246,7 +257,7 @@ async function enrichIssueData(issue, startDate, endDate, activityRules) {
   }
 
   const assigneeAccountId = issue.fields.assignee ? issue.fields.assignee.accountId : null;
-  let lastModifiedBy = 'Non disponible';
+  let lastModifiedBy = t('ui_unavailable');
 
   const changeByAssignee = histories.find(
     change => assigneeAccountId &&
@@ -289,12 +300,12 @@ async function enrichIssueData(issue, startDate, endDate, activityRules) {
     summary: issue.fields.summary,
     status: issue.fields.status.name,
     created: issue.fields.created,
-    project: issue.fields.project ? issue.fields.project.name : 'Projet inconnu',
+    project: issue.fields.project ? issue.fields.project.name : t('ui_unknown_project'),
     type: issue.fields.issuetype ? issue.fields.issuetype.name : null,
     updated: issue.fields.updated,
     lastModifiedBy,
     commentsCount,
-    assignee: issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné',
+    assignee: issue.fields.assignee ? issue.fields.assignee.displayName : t('ui_unassigned'),
     matchesRules
   };
 }
@@ -309,7 +320,7 @@ function displayResults(issues) {
     row.className = 'bg-white border-b hover:bg-gray-50 cursor-pointer transition-colors';
 
     const issueUrl = `${config.jiraUrl}/browse/${issue.key}`;
-    const formattedDate = new Date(issue.updated).toLocaleDateString('fr-FR', {
+    const formattedDate = new Date(issue.updated).toLocaleDateString(dateLocale, {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
@@ -323,7 +334,7 @@ function displayResults(issues) {
       <td class="px-6 py-4 font-medium text-blue-600">
         <div class="flex items-center gap-2">
           <a href="${issueUrl}" target="_blank" class="hover:underline">${escapeHtml(issue.key)}</a>
-          <button class="copy-key-btn text-gray-400 hover:text-gray-700 transition-colors" data-key="${issue.key}" title="Copier la clé">
+          <button class="copy-key-btn text-gray-400 hover:text-gray-700 transition-colors" data-key="${issue.key}" title="${t('ui_copy_key')}">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
             </svg>
@@ -333,7 +344,7 @@ function displayResults(issues) {
       <td class="px-6 py-4 text-gray-900">
         <div class="flex items-center gap-2">
           <span>${escapeHtml(truncateText(issue.summary, 60))}</span>
-          <button class="copy-summary-btn flex-shrink-0 text-gray-400 hover:text-gray-700 transition-colors" data-summary="${issue.summary.replace(/"/g, '&quot;')}" title="Copier le résumé">
+          <button class="copy-summary-btn flex-shrink-0 text-gray-400 hover:text-gray-700 transition-colors" data-summary="${issue.summary.replace(/"/g, '&quot;')}" title="${t('ui_copy_summary')}">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
             </svg>
@@ -399,9 +410,9 @@ function displayTimeline(issues) {
   container.innerHTML = timeline.map(issue => {
     const issueUrl = `${config.jiraUrl}/browse/${encodeURIComponent(issue.key)}`;
     return `<a href="${issueUrl}" target="_blank" rel="noopener" class="block border-l-2 border-purple-300 pl-4 hover:border-purple-600">
-      <p class="text-xs text-gray-500">${escapeHtml(issue.updated || issue.created ? new Date(issue.updated || issue.created).toLocaleString('fr-FR') : 'Date indisponible')}</p>
-      <p class="font-medium text-blue-700 hover:underline">${escapeHtml(issue.key)} — ${escapeHtml(issue.summary || 'Sans résumé')}</p>
-      <p class="text-sm text-gray-600">Statut : ${escapeHtml(issue.status || 'Indisponible')}${issue.type ? ` · Type : ${escapeHtml(issue.type)}` : ''}</p>
+      <p class="text-xs text-gray-500">${escapeHtml(issue.updated || issue.created ? new Date(issue.updated || issue.created).toLocaleString(dateLocale) : t('ui_date_unavailable'))}</p>
+      <p class="font-medium text-blue-700 hover:underline">${escapeHtml(issue.key)} — ${escapeHtml(issue.summary || t('ui_no_summary'))}</p>
+      <p class="text-sm text-gray-600">${escapeHtml(t('reportStatusLine', issue.status || t('ui_unavailable_239')))}${issue.type ? ` · ${escapeHtml(t('typeValue', issue.type))}` : ''}</p>
     </a>`;
   }).join('');
   document.getElementById('reportTimeline').classList.remove('hidden');
@@ -473,16 +484,16 @@ function displayStats(issues) {
 // Exporter en CSV
 function exportToCSV() {
   if (currentResults.length === 0) {
-    showError('Aucune donnée à exporter');
+    showError(t('ui_no_data_to_export'));
     return;
   }
 
   // Headers CSV
-  const headers = ['Ticket', 'Résumé', 'Modifié par', 'Date', 'Commentaires', 'Statut'];
+  const headers = [t('ui_issue'), t('ui_summary'), t('ui_modified_by'), t('ui_date'), t('ui_comments'), t('ui_status')];
 
   // Lignes de données
   const rows = currentResults.map(issue => {
-    const date = new Date(issue.updated).toLocaleDateString('fr-FR');
+    const date = new Date(issue.updated).toLocaleDateString(dateLocale);
     return [
       issue.key,
       `"${issue.summary.replace(/"/g, '""')}"`, // Échapper les guillemets
@@ -510,13 +521,13 @@ function exportToCSV() {
   link.click();
   document.body.removeChild(link);
 
-  showToast('CSV exporté avec succès !');
+  showToast(t('ui_csv_exported_successfully'));
 }
 
 // Copier en texte (format markdown)
 async function copyToText() {
   if (currentResults.length === 0) {
-    showError('Aucune donnée à copier');
+    showError(t('ui_no_data_to_copy'));
     return;
   }
 
@@ -529,41 +540,10 @@ async function copyToText() {
       summary: generateSummary(report, start, end),
       baseUrl: config.jiraUrl
     }));
-    showToast('Bilan Markdown copié !');
+    showToast(t('ui_markdown_summary_copied'));
   } catch (error) {
     await debugLog('erreur copie bilan', { message: error.message, stack: error.stack });
-    showError('Erreur lors de la copie du bilan');
-  }
-  return;
-
-  const dateRangeEl = document.getElementById('dateRange');
-  const periodLabel = dateRangeEl.options[dateRangeEl.selectedIndex].text;
-  const userSelect = document.getElementById('userSelect');
-  const selectedUser = userSelect.options[userSelect.selectedIndex].text;
-
-  // En-tête
-  let text = `# Récapitulatif Jira - ${periodLabel}\n`;
-  if (userSelect.value) {
-    text += `**Personne:** ${selectedUser}\n`;
-  }
-  text += `**Total tickets:** ${currentResults.length}\n\n`;
-
-  // Tableau markdown
-  text += `| Ticket | Résumé | Modifié par | Date | Commentaires | Statut |\n`;
-  text += `|--------|---------|-------------|------|--------------|--------|\n`;
-
-  currentResults.forEach(issue => {
-    const date = new Date(issue.updated).toLocaleDateString('fr-FR');
-    text += `| ${issue.key} | ${issue.summary.substring(0, 50)}... | ${issue.lastModifiedBy} | ${date} | ${issue.commentsCount} | ${issue.status} |\n`;
-  });
-
-  // Copier dans le presse-papiers
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast('Texte copié dans le presse-papiers !');
-  } catch (error) {
-    await debugLog('erreur copie', { message: error.message, stack: error.stack });
-    showError('Erreur lors de la copie');
+    showError(t('ui_could_not_copy_the_summary'));
   }
 }
 
@@ -586,7 +566,7 @@ function getStatusColor(status) {
 }
 
 function truncateText(text, maxLength) {
-  if (!text) return 'N/A';
+  if (!text) return t('ui_unavailable');
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';
 }
@@ -610,8 +590,8 @@ function showError(message, withSettingsLink = false) {
           d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
           clip-rule="evenodd" />
       </svg>
-      <span class="font-medium">Erreur :</span>
-      <span class="ml-1">${message}</span>
+      <span class="font-medium">${t('ui_error')}</span>
+      <span class="ml-1">${escapeHtml(message)}</span>
     </div>
   `;
 
@@ -622,7 +602,7 @@ function showError(message, withSettingsLink = false) {
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
         </svg>
-        Configurer l'extension
+        ${t('configureExtension')}
       </a>
     `;
   }

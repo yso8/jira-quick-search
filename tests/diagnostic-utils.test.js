@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+require('./i18n-test-setup.js');
 const fs = require('node:fs');
 const {
   validateDiagnosticUrl,

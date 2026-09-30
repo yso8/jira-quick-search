@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const locale = await JiraQuickSearchI18n.initI18n();
+  const { t, applyTranslations } = JiraQuickSearchI18n;
+  applyTranslations(document);
+  document.documentElement.lang = locale;
   const form = document.getElementById('quickSearchForm');
   const input = document.getElementById('quickSearchInput');
   const error = document.getElementById('quickSearchError');
@@ -28,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       } catch (requestError) {
         await debugLog('ticket popup introuvable', { message: requestError.message });
-        showError('Ticket introuvable. Vérifiez la clé Jira.');
+        showError(t('ui_issue_not_found_check_the_jira_key'));
         return;
       }
     }

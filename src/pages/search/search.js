@@ -1,5 +1,10 @@
 // Initialisation
 document.addEventListener('DOMContentLoaded', async () => {
+  const locale = await JiraQuickSearchI18n.initI18n();
+  const dateLocale = locale === 'fr' ? 'fr-FR' : 'en-US';
+  const { t, applyTranslations } = JiraQuickSearchI18n;
+  applyTranslations(document);
+  document.documentElement.lang = locale;
   const searchForm = document.getElementById('searchForm');
   const searchInput = document.getElementById('searchInput');
   const searchBtn = document.getElementById('searchBtn');
@@ -28,10 +33,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
 
   // Vérifier la configuration au démarrage
-  const config = await loadJiraConfig();
+  let config;
+  try {
+    config = await loadJiraConfig();
+  } catch {
+    showError(t('ui_configuration_missing_configure_the_extension'), true);
+    return;
+  }
 
   if (!config.jiraUrl || !config.jiraEmail || !config.jiraToken) {
-    showError('⚠️ Configuration manquante. Veuillez configurer l\'extension.', true);
+    showError(t('ui_configuration_missing_configure_the_extension'), true);
     return;
   }
 
@@ -41,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderFilterControls();
   } catch (error) {
     filterBar.classList.add('hidden');
-    showError(`Impossible de charger les filtres Jira : ${error.message}`);
+    showError(t('filterLoadError', error.message));
   }
 
   // Focus automatique sur le champ de recherche
@@ -91,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <div class="${filter.id === 'assignee' ? 'w-52' : 'w-36'}">
         <label for="filter-${filter.id}" class="block mb-1 text-xs font-medium text-gray-700">${escapeHtml(filter.name)}</label>
         <select id="filter-${filter.id}" data-filter-id="${filter.id}" ${filter.options.length ? '' : 'disabled'} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 disabled:opacity-50">
-          <option value="">${filter.options.length ? `Tous les ${escapeHtml(filter.name.toLowerCase())}` : 'Aucune valeur disponible'}</option>
+          <option value="">${filter.options.length ? escapeHtml(t('allFilterValues', filter.name.toLowerCase())) : t('ui_no_values_available')}</option>
           ${filter.options.map(option => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`).join('')}
         </select>
       </div>
@@ -123,17 +134,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!currentJql) return;
     await navigator.clipboard.writeText(currentJql);
     const originalLabel = copyJqlBtn.textContent;
-    copyJqlBtn.textContent = 'JQL copié';
+    copyJqlBtn.textContent = t('ui_jql_copied');
     setTimeout(() => { copyJqlBtn.textContent = originalLabel; }, 1500);
   }
 
   async function saveCurrentSearch() {
-    const name = window.prompt('Nom de cette recherche :', searchInput.value.trim() || 'Ma recherche');
+    const name = window.prompt(t('ui_name_this_search'), searchInput.value.trim() || t('ui_my_search'));
     if (!name || !name.trim()) return;
     const stored = await chrome.storage.local.get({ savedSearches: [] });
     await chrome.storage.local.set({ savedSearches: saveSearch(stored.savedSearches, { name: name.trim(), query: searchInput.value.trim(), jql: currentJql }) });
-    saveSearchBtn.textContent = 'Sauvegardée';
-    setTimeout(() => { saveSearchBtn.textContent = 'Sauvegarder'; }, 1500);
+    saveSearchBtn.textContent = t('ui_saved');
+    setTimeout(() => { saveSearchBtn.textContent = t('ui_save'); }, 1500);
   }
 
   // Fetch une page spécifique (pagination par curseur nextPageToken)
@@ -162,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Erreur API: ${response.status} ${response.statusText}`);
+        throw new Error(t('errorDetails', `${response.status} ${response.statusText}`));
       }
 
       const data = await response.json();
@@ -183,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
       await debugLog('erreur de recherche', { message: error.message, stack: error.stack });
       loadingSpinner.style.display = 'none';
-      showError(`❌ Erreur: ${error.message}`);
+      showError(`❌ ${t('errorDetails', error.message)}`);
     }
   }
 
@@ -211,8 +222,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (showPagination) {
       paginationControls.classList.remove('hidden');
       const pageLabel = totalResults !== null
-        ? `${from}–${to} sur ${totalResults}`
-        : `Page ${currentPage + 1}`;
+        ? t('resultsRange', [from, to, totalResults])
+        : t('pageNumber', currentPage + 1);
       document.getElementById('pageInfo').textContent = pageLabel;
       document.getElementById('prevPageBtn').disabled = currentPage === 0;
       document.getElementById('nextPageBtn').disabled = !hasNextPage;
@@ -228,14 +239,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const statusColor = getStatusColor(issue.fields.status.name);
     const issueUrl = `${jiraUrl}/browse/${issue.key}`;
-    const createdDate = new Date(issue.fields.created).toLocaleDateString('fr-FR');
-    const updatedDate = issue.fields.updated ? new Date(issue.fields.updated).toLocaleDateString('fr-FR') : 'N/A';
-    const assignee = issue.fields.assignee ? issue.fields.assignee.displayName : 'Non assigné';
-    const project = issue.fields.project ? (issue.fields.project.name || issue.fields.project.key) : 'Projet inconnu';
+    const createdDate = new Date(issue.fields.created).toLocaleDateString(dateLocale);
+    const updatedDate = issue.fields.updated ? new Date(issue.fields.updated).toLocaleDateString(dateLocale) : t('ui_date_unavailable');
+    const assignee = issue.fields.assignee ? issue.fields.assignee.displayName : t('ui_unassigned');
+    const project = issue.fields.project ? (issue.fields.project.name || issue.fields.project.key) : t('ui_unknown_project');
 
     // Informations supplémentaires
-    const issueType = issue.fields.issuetype ? issue.fields.issuetype.name : 'N/A';
-    const priority = issue.fields.priority ? issue.fields.priority.name : 'Aucune';
+    const issueType = issue.fields.issuetype ? issue.fields.issuetype.name : t('ui_unavailable');
+    const priority = issue.fields.priority ? issue.fields.priority.name : t('ui_none');
 
     // Couleurs pour les icônes
     const typeColor = getTypeColor(issueType);
@@ -256,7 +267,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </a>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="button" class="pin-issue-btn inline-flex h-9 w-9 items-center justify-center rounded-full text-2xl leading-none text-gray-400 transition-colors hover:bg-yellow-50 hover:text-yellow-500 focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-500 focus-visible:outline-offset-1" aria-label="Épingler ce ticket" aria-pressed="false" title="Épingler ce ticket">☆</button>
+                    <button type="button" class="pin-issue-btn inline-flex h-9 w-9 items-center justify-center rounded-full text-2xl leading-none text-gray-400 transition-colors hover:bg-yellow-50 hover:text-yellow-500 focus:outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-yellow-500 focus-visible:outline-offset-1" aria-label="${t('pinIssue')}" aria-pressed="false" title="${t('pinIssue')}">☆</button>
                     <span class="${statusColor} text-xs font-medium px-2.5 py-0.5 rounded border border-transparent inline-flex items-center bg-gray-100 text-gray-800">
                         ${escapeHtml(issue.fields.status.name)}
                     </span>
@@ -278,8 +289,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 mb-3">
                 <span class="font-medium text-gray-600">${escapeHtml(project)}</span>
-                <span title="Créé le ${escapeHtml(createdDate)}">Créé le ${escapeHtml(createdDate)}</span>
-                <span title="Mis à jour le ${escapeHtml(updatedDate)}">Mis à jour le ${escapeHtml(updatedDate)}</span>
+                <span title="${t('createdOn', createdDate)}">${t('createdOn', createdDate)}</span>
+                <span title="${t('updatedOn', updatedDate)}">${t('updatedOn', updatedDate)}</span>
             </div>
 
             <!-- LIGNE 3 : Footer -->
@@ -288,7 +299,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="mt-auto pt-3 border-t border-gray-100 flex flex-wrap gap-4 text-xs text-gray-500">
                 
                 <!-- Type -->
-                <div class="flex items-center gap-1" title="Type: ${escapeHtml(issueType)}">
+                <div class="flex items-center gap-1" title="${escapeHtml(t('typeValue', issueType))}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4" style="color: ${typeColor}">
                         <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a1 1 0 011-1h5a1 1 0 01.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
                     </svg>
@@ -296,7 +307,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
 
                 <!-- Priorité -->
-                <div class="flex items-center gap-1" title="Priorité: ${escapeHtml(priority)}">
+                <div class="flex items-center gap-1" title="${escapeHtml(t('priorityValue', priority))}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4" style="color: ${priorityColor}">
                         <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
                     </svg>
@@ -304,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
 
                 <!-- Assigné -->
-                <div class="flex items-center gap-1 ml-auto" title="Assigné à: ${escapeHtml(assignee)}">
+                <div class="flex items-center gap-1 ml-auto" title="${escapeHtml(t('assignedTo', assignee))}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gray-400">
                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                     </svg>
@@ -320,8 +331,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pinButton = col.querySelector('.pin-issue-btn');
     const updatePinButton = state => {
       pinButton.textContent = state.icon;
-      pinButton.title = state.label;
-      pinButton.setAttribute('aria-label', state.label);
+      const label = t(state.pinned ? 'unpinIssue' : 'pinIssue');
+      pinButton.title = label;
+      pinButton.setAttribute('aria-label', label);
       pinButton.setAttribute('aria-pressed', String(state.pinned));
       pinButton.classList.toggle('text-yellow-500', state.pinned);
       pinButton.classList.toggle('text-gray-400', !state.pinned);
@@ -410,7 +422,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Tronquer le texte
   function truncateText(text, maxLength) {
-    if (!text) return 'N/A';
+    if (!text) return t('ui_unavailable');
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   }
@@ -432,7 +444,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let html = `
       <div class="card-panel red lighten-4">
         <span class="red-text text-darken-2">
-          ${message}
+          ${escapeHtml(message)}
         </span>
     `;
 
@@ -441,7 +453,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <br><br>
         <a href="options.html" class="btn red darken-2 waves-effect waves-light">
           <i class="material-icons left">settings</i>
-          Configurer
+          ${t('configureExtension')}
         </a>
       `;
     }

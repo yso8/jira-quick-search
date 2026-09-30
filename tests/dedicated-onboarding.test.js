@@ -20,8 +20,8 @@ assert.match(html, /id="testConnectionBtn"[\s\S]*Vos informations restent stock√
 assert.match(script, /onboardingCompleted/);
 assert.match(script, /chrome\.storage\.local\.set/);
 assert.match(script, /jiraRequest/);
-assert.match(script, /Connexion en cours/);
-assert.match(script, /Jira est connect√©/);
+assert.match(script, /ui_connecting/);
+assert.match(script, /ui_jira_is_connected_you_re_ready_to_get_started/);
 assert.match(script, /confetti/);
 assert.match(background, /onboarding\.html/);
 

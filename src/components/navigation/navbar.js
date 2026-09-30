@@ -8,15 +8,17 @@
   };
 
   const links = [
-    { page: 'search', label: 'Recherche Jira', href: 'search.html' },
-    { page: 'workspace', label: 'Workspace', href: 'workspace.html' },
-    { page: 'recap', label: 'Récapitulatif', href: 'recap.html' },
-    { page: 'options', label: 'Paramètres', href: 'options.html' }
+    { page: 'search', label: 'ui_jira_search', href: 'search.html' },
+    { page: 'workspace', label: 'ui_workspace', href: 'workspace.html' },
+    { page: 'recap', label: 'ui_summary_152', href: 'recap.html' },
+    { page: 'options', label: 'settings', href: 'options.html' }
   ];
 
-  function renderNavbar() {
+  async function renderNavbar() {
     const navbar = document.getElementById('global-navbar');
     if (!navbar) return;
+    await JiraQuickSearchI18n.initI18n();
+    const { t } = JiraQuickSearchI18n;
 
     const page = document.body.dataset.page || 'search';
     const activePage = page === 'popup' ? 'search' : page;
@@ -26,13 +28,13 @@
     navbar.style.setProperty('--navbar-accent', accent);
     navbar.innerHTML = `
       <div class="global-navbar__inner">
-        <a href="search.html" class="global-navbar__brand" aria-label="Jira Quick Search — Recherche Jira">
+        <a href="search.html" class="global-navbar__brand" aria-label="${t('ui_jira_quick_search_jira_search')}">
           <img src="src/assets/icons/jira-quick-search.png" alt="" class="global-navbar__logo" aria-hidden="true">
           <span>Jira Quick Search</span>
         </a>
-        <div class="global-navbar__links" aria-label="Navigation principale">
+        <div class="global-navbar__links" aria-label="${t('ui_main_navigation')}">
           ${links.map((link) => `
-            <a href="${link.href}" data-page="${link.page}" class="global-navbar__link${link.page === activePage ? ' is-active' : ''}">${link.label}</a>
+            <a href="${link.href}" data-page="${link.page}" class="global-navbar__link${link.page === activePage ? ' is-active' : ''}">${t(link.label)}</a>
           `).join('')}
         </div>
       </div>

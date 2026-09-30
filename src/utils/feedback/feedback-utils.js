@@ -1,36 +1,37 @@
 const FEEDBACK_ISSUE_URL = 'https://github.com/yso8/jira-quick-search/issues/new';
 const FEEDBACK_TYPES = new Set(['bug', 'feature', 'question']);
+var t = (...args) => JiraQuickSearchI18n.t(...args);
 
 function validateFeedback({ type, title, description } = {}) {
-  if (!FEEDBACK_TYPES.has(type)) return { valid: false, message: 'Sélectionnez un type de feedback.' };
-  if (!String(title || '').trim()) return { valid: false, message: 'Ajoutez un titre à votre feedback.' };
-  if (!String(description || '').trim()) return { valid: false, message: 'Décrivez brièvement le problème avant de continuer.' };
+  if (!FEEDBACK_TYPES.has(type)) return { valid: false, message: t('ui_select_a_feedback_type') };
+  if (!String(title || '').trim()) return { valid: false, message: t('ui_add_a_title_to_your_feedback') };
+  if (!String(description || '').trim()) return { valid: false, message: t('ui_briefly_describe_the_issue_before_continuing') };
   return { valid: true };
 }
 
 function buildTechnicalInfo({ version, browser, platform, manifestVersion, instanceType, diagnosticStatus } = {}) {
   return [
-    `- Version de Jira Quick Search : ${version || 'inconnue'}`,
-    `- Navigateur : ${browser || 'inconnu'}`,
-    `- Système : ${platform || 'inconnu'}`,
-    `- Version du manifest : ${manifestVersion || 'inconnue'}`,
-    `- Type d’instance Jira : ${instanceType || 'non déterminé'}`,
-    `- État du diagnostic : ${diagnosticStatus || 'non exécuté'}`
+    t('feedbackVersion', version || t('ui_unknown')),
+    t('feedbackBrowser', browser || t('ui_unknown_201')),
+    t('feedbackSystem', platform || t('ui_unknown_201')),
+    t('feedbackManifest', manifestVersion || t('ui_unknown')),
+    t('feedbackInstance', instanceType || t('ui_undetermined')),
+    t('feedbackDiagnostic', diagnosticStatus || t('ui_not_run'))
   ].join('\n');
 }
 
 function buildFeedbackBody({ type, description, reproducible = false, includeTechnical = false, technicalInfo = '' } = {}) {
   let body;
   if (type === 'bug') {
-    body = `## Description\n\n${description.trim()}\n\n## Étapes pour reproduire\n\n1.\n2.\n3.\n\n## Résultat attendu\n\n<!-- Que deviez-vous obtenir ? -->\n\n## Résultat obtenu\n\n<!-- Que s’est-il réellement passé ? -->`;
-    body += `\n\n- Reproductible : ${reproducible ? 'Oui' : 'Non précisé'}`;
+    body = t('feedbackBug', description.trim());
+    body += `\n\n${t('feedbackReproducible', reproducible ? t('ui_yes') : t('ui_not_specified'))}`;
   } else if (type === 'feature') {
-    body = `## Besoin\n\n${description.trim()}\n\n## Proposition\n\n<!-- Décrivez la fonctionnalité souhaitée. -->\n\n## Contexte d’utilisation\n\n<!-- Dans quel cas cette fonctionnalité serait-elle utile ? -->`;
+    body = t('feedbackFeature', description.trim());
   } else {
-    body = `## Question\n\n${description.trim()}`;
+    body = t('feedbackQuestion', description.trim());
   }
 
-  if (includeTechnical && technicalInfo) body += `\n\n## Informations techniques\n\n${technicalInfo}`;
+  if (includeTechnical && technicalInfo) body += `\n\n${t('feedbackTechnical', technicalInfo)}`;
   return body;
 }
 

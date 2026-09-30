@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const locale = await JiraQuickSearchI18n.initI18n();
+  const { t, applyTranslations } = JiraQuickSearchI18n;
+  applyTranslations(document);
+  document.documentElement.lang = locale;
   const steps = [...document.querySelectorAll('[data-step]')];
   const dots = [...document.querySelectorAll('[data-step-dot]')];
   const stepLabel = document.getElementById('stepLabel');
@@ -10,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     jiraEmail: document.getElementById('onboardingJiraEmail'),
     jiraToken: document.getElementById('onboardingJiraToken')
   };
-  const labels = ['Bienvenue', 'Connexion Jira', 'Découverte rapide'];
+  const labels = [t('ui_welcome'), t('ui_jira_connection'), t('ui_quick_tour')];
   let currentStep = 1;
 
   const config = await chrome.storage.sync.get(JIRA_CONFIG_KEYS);
@@ -44,23 +48,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     const jiraUrl = normalizeJiraUrl(fields.jiraUrl.value);
     const jiraEmail = fields.jiraEmail.value.trim();
     const jiraToken = fields.jiraToken.value.trim();
-    if (!jiraUrl || !jiraEmail || !jiraToken) return showMessage('Veuillez remplir tous les champs.', 'error');
-    if (!isValidJiraUrl(jiraUrl)) return showMessage('L’URL doit être au format https://votre-site.atlassian.net.', 'error');
+    if (!jiraUrl || !jiraEmail || !jiraToken) return showMessage(t('ui_please_fill_in_all_fields'), 'error');
+    if (!isValidJiraUrl(jiraUrl)) return showMessage(t('ui_the_url_must_have_the_format_https_your_site_atlassian_'), 'error');
 
     button.disabled = true;
-    button.textContent = 'Connexion en cours…';
+    button.textContent = t('ui_connecting');
     message.classList.add('hidden');
     try {
       await jiraRequest({ jiraUrl, jiraEmail, jiraToken }, `/rest/api/${JIRA_API_VERSION}/myself`);
       await chrome.storage.sync.set({ jiraUrl, jiraEmail, jiraToken });
-      showMessage('Jira est connecté. Vous êtes prêt à commencer.', 'success');
+      showMessage(t('ui_jira_is_connected_you_re_ready_to_get_started'), 'success');
       window.setTimeout(() => { showStep(3); createConfetti(); }, 500);
     } catch (error) {
       await debugLog('erreur connexion onboarding dédié', { status: error.status, message: error.message });
-      showMessage(error.status === 401 || error.status === 403 ? 'L’authentification a échoué. Vérifiez votre e-mail et votre token.' : 'Impossible de se connecter à Jira. Vérifiez l’URL et réessayez.', 'error');
+      showMessage(error.status === 401 || error.status === 403 ? t('ui_authentication_failed_check_your_email_and_token') : t('ui_could_not_connect_to_jira_check_the_url_and_try_again'), 'error');
     } finally {
       button.disabled = false;
-      button.textContent = 'Tester et continuer';
+      button.textContent = t('ui_test_and_continue');
     }
   }
 

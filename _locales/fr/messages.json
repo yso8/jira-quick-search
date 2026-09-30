@@ -1,12 +1,1015 @@
 {
-  "appName": { "message": "Recherche rapide Jira" },
-  "appDescription": { "message": "Recherche rapide de tickets Jira Cloud et récapitulatif d’activité" },
-  "actionTitle": { "message": "Recherche rapide Jira" },
-  "openSearchCommand": { "message": "Ouvrir la recherche rapide Jira" },
-  "omniboxSuggestion": { "message": "Rechercher dans Jira : $QUERY$", "placeholders": { "query": { "content": "$1" } } },
-  "languageAuto": { "message": "Automatique" },
-  "languageEnglish": { "message": "Anglais" },
-  "languageFrench": { "message": "Français" },
-  "searchPlaceholder": { "message": "Rechercher des tickets Jira" },
-  "settings": { "message": "Paramètres" }
+  "appName": {
+    "message": "Recherche rapide Jira"
+  },
+  "appDescription": {
+    "message": "Recherche rapide de tickets Jira Cloud et récapitulatif d’activité"
+  },
+  "actionTitle": {
+    "message": "Recherche rapide Jira"
+  },
+  "openSearchCommand": {
+    "message": "Ouvrir la recherche rapide Jira"
+  },
+  "omniboxSuggestion": {
+    "message": "Rechercher dans Jira : $QUERY$",
+    "placeholders": {
+      "query": {
+        "content": "$1"
+      }
+    }
+  },
+  "languageLabel": {
+    "message": "Langue"
+  },
+  "languageAuto": {
+    "message": "Automatique (langue du navigateur)"
+  },
+  "languageEnglish": {
+    "message": "English"
+  },
+  "languageFrench": {
+    "message": "Français"
+  },
+  "searchPlaceholder": {
+    "message": "Rechercher des tickets Jira"
+  },
+  "settings": {
+    "message": "Paramètres"
+  },
+  "ui_welcome": {
+    "message": "Bienvenue"
+  },
+  "ui_jira_quick_search_welcome": {
+    "message": "Jira Quick Search — Bienvenue"
+  },
+  "ui_welcome_to_jira_quick_search": {
+    "message": "Bienvenue sur Jira Quick Search"
+  },
+  "ui_find_jira_issues_quickly_without_leaving_your_browser": {
+    "message": "Retrouvez vos tickets Jira rapidement, sans quitter votre navigateur."
+  },
+  "ui_get_started": {
+    "message": "Commencer"
+  },
+  "ui_skip_introduction": {
+    "message": "Passer l’introduction"
+  },
+  "ui_connect_your_jira_workspace": {
+    "message": "Connectez votre espace Jira"
+  },
+  "ui_use_your_atlassian_credentials_to_test_the_connection": {
+    "message": "Utilisez vos identifiants Atlassian pour tester la connexion."
+  },
+  "ui_jira_cloud_url": {
+    "message": "URL Jira Cloud"
+  },
+  "ui_atlassian_email": {
+    "message": "E-mail Atlassian"
+  },
+  "ui_atlassian_email_10": {
+    "message": "Email Atlassian"
+  },
+  "ui_api_token": {
+    "message": "Token API"
+  },
+  "ui_create_an_atlassian_api_token": {
+    "message": "Créer un token API Atlassian"
+  },
+  "ui_test_and_continue": {
+    "message": "Tester et continuer"
+  },
+  "ui_your_information_stays_stored_locally_in_the_extension": {
+    "message": "Vos informations restent stockées localement dans l’extension."
+  },
+  "ui_all_set": {
+    "message": "Tout est prêt"
+  },
+  "ui_jira_is_connected_you_re_ready_to_get_started": {
+    "message": "Jira est connecté. Vous êtes prêt à commencer."
+  },
+  "ui_find_your_issues_in_seconds": {
+    "message": "Recherchez vos tickets en quelques secondes"
+  },
+  "ui_use_ctrl_shift_j_to_open_search": {
+    "message": "Utilisez Ctrl + Shift + J pour ouvrir la recherche"
+  },
+  "ui_type_jira_in_the_address_bar_to_use_the_omnibox": {
+    "message": "Tapez “jira” dans la barre d’adresse pour utiliser l’omnibox"
+  },
+  "ui_start_searching": {
+    "message": "Commencer à rechercher"
+  },
+  "ui_jira_quick_search_connection": {
+    "message": "Jira-Quick-Search — Connexion"
+  },
+  "ui_privacy_and_local_data": {
+    "message": "Confidentialité et données locales"
+  },
+  "ui_your_jira_data_is_used_locally_by_the_extension_no_data": {
+    "message": "Vos données Jira restent utilisées localement par l’extension. Aucune donnée n’est envoyée à un serveur tiers."
+  },
+  "ui_jira_configuration_and_credentials": {
+    "message": "Configuration Jira et identifiants d’authentification"
+  },
+  "ui_diagnostic_log_preference": {
+    "message": "Préférence de logs de diagnostic"
+  },
+  "ui_recent_and_pinned_issues": {
+    "message": "Tickets récents et tickets épinglés"
+  },
+  "ui_saved_searches_and_activity_rules": {
+    "message": "Recherches sauvegardées et règles d’activité"
+  },
+  "ui_delete_all_local_data": {
+    "message": "Supprimer toutes les données locales"
+  },
+  "ui_help_and_feedback": {
+    "message": "Aide et feedback"
+  },
+  "ui_prepare_an_editable_github_draft_before_publishing_noth": {
+    "message": "Préparez un brouillon GitHub modifiable avant sa publication. Aucune donnée n’est envoyée automatiquement."
+  },
+  "ui_report_an_issue": {
+    "message": "Signaler un problème"
+  },
+  "ui_suggest_a_feature": {
+    "message": "Proposer une fonctionnalité"
+  },
+  "ui_feedback_type": {
+    "message": "Type de feedback"
+  },
+  "ui_select": {
+    "message": "Sélectionner"
+  },
+  "ui_bug": {
+    "message": "Bug"
+  },
+  "ui_feature": {
+    "message": "Fonctionnalité"
+  },
+  "ui_question": {
+    "message": "Question"
+  },
+  "ui_title": {
+    "message": "Titre"
+  },
+  "ui_description": {
+    "message": "Description"
+  },
+  "ui_the_issue_is_reproducible": {
+    "message": "Le problème est reproductible"
+  },
+  "ui_include_nonsensitive_technical_information": {
+    "message": "Inclure les informations techniques non sensibles"
+  },
+  "ui_your_jira_url_issues_identity_and_secrets_are_never_add": {
+    "message": "L’URL Jira, les tickets, votre identité et les secrets ne sont jamais ajoutés automatiquement."
+  },
+  "ui_cancel": {
+    "message": "Annuler"
+  },
+  "ui_prepare_github_draft": {
+    "message": "Préparer le brouillon GitHub"
+  },
+  "ui_diagnostics": {
+    "message": "Diagnostics"
+  },
+  "ui_test_access_to_your_jira_instance_and_issue_search": {
+    "message": "Testez l’accès à votre instance Jira et à la recherche de tickets."
+  },
+  "ui_test_connection": {
+    "message": "Tester la connexion"
+  },
+  "ui_no_diagnostic_run_yet": {
+    "message": "Aucun diagnostic exécuté."
+  },
+  "ui_copy_diagnostic_details": {
+    "message": "Copier les détails du diagnostic"
+  },
+  "ui_jira_connection": {
+    "message": "Connexion Jira"
+  },
+  "ui_configure_access_to_your_jira_instance": {
+    "message": "Configurez l’accès à votre instance Jira."
+  },
+  "ui_your_jira_root_url_without_a_trailing_slash": {
+    "message": "L'adresse racine de votre Jira, sans le slash à la fin."
+  },
+  "ui_generate_a_token": {
+    "message": "Générer un token"
+  },
+  "ui_info_alert": {
+    "message": "Information"
+  },
+  "ui_enable_diagnostic_logs": {
+    "message": "Activer les logs de diagnostic"
+  },
+  "ui_logs_stay_local_and_mask_sensitive_information": {
+    "message": "Les logs restent locaux et masquent les informations sensibles."
+  },
+  "ui_try_again": {
+    "message": "Réessayer"
+  },
+  "ui_connect": {
+    "message": "Se connecter"
+  },
+  "ui_save": {
+    "message": "Sauvegarder"
+  },
+  "ui_help_and_shortcuts": {
+    "message": "Aide et raccourcis"
+  },
+  "ui_url": {
+    "message": "URL :"
+  },
+  "ui_must_start_with": {
+    "message": "Doit impérativement commencer par"
+  },
+  "ui_email": {
+    "message": "Email :"
+  },
+  "ui_your_usual_sign_in_email": {
+    "message": "Votre identifiant de connexion habituel."
+  },
+  "ui_token": {
+    "message": "Token :"
+  },
+  "ui_for_security_reasons_jira_no_longer_accepts_passwords": {
+    "message": "Pour des raisons de sécurité, Jira n'accepte plus les mots de passe."
+  },
+  "ui_create_an_api_token_here": {
+    "message": "Créez un token API ici"
+  },
+  "ui_tip_configure_the_shortcut_in": {
+    "message": "Astuce : configurez le raccourci dans"
+  },
+  "ui_or_type_in_the_address_bar": {
+    "message": ", ou dans la barre d’adresse tapez"
+  },
+  "ui_then_press_space_or_tab_before_entering_your_search": {
+    "message": ", puis appuyez sur Espace ou Tab avant de saisir votre recherche."
+  },
+  "ui_paste_your_token_here": {
+    "message": "Collez votre token ici"
+  },
+  "ui_https_your_company_atlassian_net": {
+    "message": "https://votre-societe.atlassian.net"
+  },
+  "ui_first_last_company_com": {
+    "message": "nom.prenom@entreprise.com"
+  },
+  "ui_you_company_com": {
+    "message": "vous@entreprise.com"
+  },
+  "ui_paste_your_api_token": {
+    "message": "Collez votre token API"
+  },
+  "ui_search_for_an_issue_or_text": {
+    "message": "Rechercher un ticket ou du texte"
+  },
+  "ui_proj_123_or_october_invoice": {
+    "message": "PROJ-123 ou facture octobre"
+  },
+  "ui_enter_to_search_esc_to_close": {
+    "message": "Entrée pour rechercher · Échap pour fermer"
+  },
+  "ui_jira_search": {
+    "message": "Recherche Jira"
+  },
+  "ui_go": {
+    "message": "Aller"
+  },
+  "ui_search": {
+    "message": "Rechercher"
+  },
+  "ui_tasks": {
+    "message": "Tâches"
+  },
+  "ui_epics": {
+    "message": "Épopées"
+  },
+  "ui_loading_filters": {
+    "message": "Chargement des filtres…"
+  },
+  "ui_clear_filters": {
+    "message": "Effacer les filtres"
+  },
+  "ui_search_jira_issues": {
+    "message": "Recherchez un ticket Jira"
+  },
+  "ui_enter_keywords_above_to_start_searching": {
+    "message": "Tapez des mots-clés ci-dessus pour lancer la recherche."
+  },
+  "ui_searching_jira": {
+    "message": "Recherche en cours chez Jira..."
+  },
+  "ui_no_results_found": {
+    "message": "Aucun résultat trouvé"
+  },
+  "ui_try_other_keywords_or_check_your_filters": {
+    "message": "Essayez avec d'autres mots-clés ou vérifiez vos filtres."
+  },
+  "ui_error": {
+    "message": "Erreur :"
+  },
+  "ui_results_found": {
+    "message": "résultats trouvés"
+  },
+  "ui_copy_jql": {
+    "message": "Copier le JQL"
+  },
+  "ui_previous": {
+    "message": "Précédent"
+  },
+  "ui_next": {
+    "message": "Suivant"
+  },
+  "ui_open_selection": {
+    "message": "Ouvrir la sélection"
+  },
+  "ui_search_for_an_issue": {
+    "message": "Rechercher un ticket..."
+  },
+  "ui_jira_filters": {
+    "message": "Filtres Jira"
+  },
+  "ui_save_this_search": {
+    "message": "Sauvegarder cette recherche"
+  },
+  "ui_copy_generated_jql": {
+    "message": "Copier le JQL généré"
+  },
+  "ui_workspace_jira_quick_search": {
+    "message": "Espace de travail — Jira Quick Search"
+  },
+  "ui_workspace": {
+    "message": "Espace de travail"
+  },
+  "ui_quickly_find_your_important_issues_and_searches": {
+    "message": "Retrouvez rapidement vos tickets et recherches importantes."
+  },
+  "ui_new_search": {
+    "message": "Nouvelle recherche"
+  },
+  "ui_issues": {
+    "message": "Tickets"
+  },
+  "ui_pinned_issues": {
+    "message": "Tickets épinglés"
+  },
+  "ui_recent_issues": {
+    "message": "Tickets récents"
+  },
+  "ui_recently_viewed": {
+    "message": "Récemment consultés"
+  },
+  "ui_saved_searches": {
+    "message": "Recherches sauvegardées"
+  },
+  "ui_new": {
+    "message": "Nouvelle"
+  },
+  "ui_weekly_summary_jira": {
+    "message": "Récapitulatif Hebdomadaire - Jira"
+  },
+  "ui_person": {
+    "message": "Personne"
+  },
+  "ui_everyone": {
+    "message": "Toutes les personnes"
+  },
+  "ui_period": {
+    "message": "Période"
+  },
+  "ui_this_week": {
+    "message": "Semaine actuelle"
+  },
+  "ui_last_week": {
+    "message": "Semaine dernière"
+  },
+  "ui_last_2_weeks": {
+    "message": "2 dernières semaines"
+  },
+  "ui_this_month": {
+    "message": "Mois actuel"
+  },
+  "ui_custom_period": {
+    "message": "Période personnalisée"
+  },
+  "ui_from": {
+    "message": "Du"
+  },
+  "ui_to": {
+    "message": "Au"
+  },
+  "ui_generate_summary": {
+    "message": "Générer le récap"
+  },
+  "ui_activity_rules": {
+    "message": "Règles d’activité"
+  },
+  "ui_an_issue_counts_when_it_matches_the_selected_rules": {
+    "message": "Un ticket est traité lorsqu’il respecte les règles sélectionnées."
+  },
+  "ui_at_least_one_rule": {
+    "message": "Au moins une règle"
+  },
+  "ui_all_rules": {
+    "message": "Toutes les règles"
+  },
+  "ui_issue_updated": {
+    "message": "Ticket mis à jour"
+  },
+  "ui_comment_added": {
+    "message": "Commentaire ajouté"
+  },
+  "ui_status_changed": {
+    "message": "Statut modifié"
+  },
+  "ui_assignee_changed": {
+    "message": "Assignation modifiée"
+  },
+  "ui_priority_changed": {
+    "message": "Priorité modifiée"
+  },
+  "ui_summary_or_description_changed": {
+    "message": "Résumé ou description modifié"
+  },
+  "ui_export_csv": {
+    "message": "Exporter CSV"
+  },
+  "ui_copy_as_text": {
+    "message": "Copier en texte"
+  },
+  "ui_generate_your_summary": {
+    "message": "Générez votre récapitulatif"
+  },
+  "ui_select_a_period_and_click_generate_summary": {
+    "message": "Sélectionnez une période et cliquez sur \"Générer le récap\""
+  },
+  "ui_loading_data": {
+    "message": "Récupération des données..."
+  },
+  "ui_issue": {
+    "message": "Ticket"
+  },
+  "ui_summary": {
+    "message": "Résumé"
+  },
+  "ui_modified_by": {
+    "message": "Modifié par"
+  },
+  "ui_date": {
+    "message": "Date"
+  },
+  "ui_comments": {
+    "message": "Commentaires"
+  },
+  "ui_status": {
+    "message": "Statut"
+  },
+  "ui_change_timeline": {
+    "message": "Timeline des changements"
+  },
+  "ui_total_issues_modified": {
+    "message": "Total tickets modifiés"
+  },
+  "ui_included": {
+    "message": "Concernés"
+  },
+  "ui_created": {
+    "message": "Créés"
+  },
+  "ui_completed": {
+    "message": "Terminés"
+  },
+  "ui_in_progress": {
+    "message": "En cours"
+  },
+  "ui_breakdown_by_person": {
+    "message": "Répartition par personne"
+  },
+  "ui_issues_by_status": {
+    "message": "Tickets par statut"
+  },
+  "ui_summary_152": {
+    "message": "Récapitulatif"
+  },
+  "ui_settings": {
+    "message": "Paramètres"
+  },
+  "ui_main_navigation": {
+    "message": "Navigation principale"
+  },
+  "ui_jira_quick_search_jira_search": {
+    "message": "Jira Quick Search — Recherche Jira"
+  },
+  "ui_please_fill_in_all_fields": {
+    "message": "Veuillez remplir tous les champs."
+  },
+  "ui_the_url_must_have_the_format_https_your_site_atlassian_": {
+    "message": "L’URL doit être au format https://votre-site.atlassian.net."
+  },
+  "ui_connecting": {
+    "message": "Connexion en cours…"
+  },
+  "ui_connection_successful_your_search_is_ready": {
+    "message": "Connexion réussie. Votre recherche est prête."
+  },
+  "ui_jira_authentication_failed_check_your_token_or_generate": {
+    "message": "L’authentification Jira a échoué. Vérifiez votre token ou générez-en un nouveau."
+  },
+  "ui_could_not_connect_to_jira_check_the_url_or_your_network": {
+    "message": "Impossible de se connecter à Jira. Vérifiez l’URL ou votre connexion réseau."
+  },
+  "ui_authentication_failed_check_your_email_and_token": {
+    "message": "L’authentification a échoué. Vérifiez votre e-mail et votre token."
+  },
+  "ui_could_not_connect_to_jira_check_the_url_and_try_again": {
+    "message": "Impossible de se connecter à Jira. Vérifiez l’URL et réessayez."
+  },
+  "ui_quick_tour": {
+    "message": "Découverte rapide"
+  },
+  "ui_issue_not_found_check_the_jira_key": {
+    "message": "Ticket introuvable. Vérifiez la clé Jira."
+  },
+  "ui_jira_configuration_is_incomplete_open_the_extension_set": {
+    "message": "Configuration Jira incomplète. Ouvrez les options de l’extension."
+  },
+  "ui_jira_access_denied_check_your_email_token_and_permissio": {
+    "message": "Accès Jira refusé. Vérifiez votre email, votre token et vos permissions."
+  },
+  "ui_jira_is_temporarily_limiting_requests_try_again_shortly": {
+    "message": "Jira limite temporairement les requêtes. Réessayez dans quelques instants."
+  },
+  "ui_jira_is_temporarily_unavailable_try_again_shortly": {
+    "message": "Jira est momentanément indisponible. Réessayez dans quelques instants."
+  },
+  "ui_project": {
+    "message": "Espace"
+  },
+  "ui_assignee": {
+    "message": "Personne assignée"
+  },
+  "ui_type": {
+    "message": "Type"
+  },
+  "ui_status_173": {
+    "message": "État"
+  },
+  "ui_priority": {
+    "message": "Priorité"
+  },
+  "ui_jira_url_is_missing": {
+    "message": "URL Jira absente."
+  },
+  "ui_the_jira_url_must_use_https": {
+    "message": "L’URL Jira doit utiliser HTTPS."
+  },
+  "ui_the_url_must_point_to_a_jira_cloud_atlassian_net_instan": {
+    "message": "L’URL doit pointer vers une instance Jira Cloud atlassian.net."
+  },
+  "ui_the_jira_url_is_invalid": {
+    "message": "L’URL Jira n’est pas valide."
+  },
+  "ui_check_the_email_and_api_token": {
+    "message": "Vérifier l’email et le token API."
+  },
+  "ui_the_connection_works_but_the_extension_cannot_access_so": {
+    "message": "La connexion fonctionne, mais l’extension n’a pas accès à certaines données nécessaires."
+  },
+  "ui_check_your_jira_account_permissions": {
+    "message": "Vérifier les permissions du compte Jira."
+  },
+  "ui_the_expected_jira_api_is_unavailable_for_this_instance": {
+    "message": "L’API Jira attendue est indisponible pour cette instance."
+  },
+  "ui_check_the_url_and_jira_availability": {
+    "message": "Vérifier l’URL et la disponibilité de Jira."
+  },
+  "ui_could_not_reach_this_jira_instance_check_the_url_or_you": {
+    "message": "Impossible de joindre cette instance Jira. Vérifiez l’URL ou votre connexion réseau."
+  },
+  "ui_check_the_network_connection_and_try_again": {
+    "message": "Vérifier la connexion réseau et réessayer."
+  },
+  "ui_jira_returned_an_unexpected_response": {
+    "message": "La réponse de Jira est inattendue."
+  },
+  "ui_try_again_or_view_the_technical_details": {
+    "message": "Réessayer ou consulter les détails techniques."
+  },
+  "ui_authentication": {
+    "message": "Authentification"
+  },
+  "ui_the_token_or_email_is_missing": {
+    "message": "Le token ou l’adresse email est absent."
+  },
+  "ui_enter_your_jira_credentials": {
+    "message": "Renseigner les identifiants Jira."
+  },
+  "ui_jira_connection_191": {
+    "message": "Connexion à Jira"
+  },
+  "ui_the_instance_responded_successfully": {
+    "message": "L’instance répond correctement."
+  },
+  "ui_the_jira_credentials_are_valid": {
+    "message": "Les identifiants Jira sont valides."
+  },
+  "ui_issue_search": {
+    "message": "Recherche de tickets"
+  },
+  "ui_issue_search_is_available": {
+    "message": "La recherche de tickets est disponible."
+  },
+  "ui_permissions": {
+    "message": "Permissions"
+  },
+  "ui_select_a_feedback_type": {
+    "message": "Sélectionnez un type de feedback."
+  },
+  "ui_add_a_title_to_your_feedback": {
+    "message": "Ajoutez un titre à votre feedback."
+  },
+  "ui_briefly_describe_the_issue_before_continuing": {
+    "message": "Décrivez brièvement le problème avant de continuer."
+  },
+  "ui_unknown": {
+    "message": "inconnue"
+  },
+  "ui_unknown_201": {
+    "message": "inconnu"
+  },
+  "ui_undetermined": {
+    "message": "non déterminé"
+  },
+  "ui_not_run": {
+    "message": "non exécuté"
+  },
+  "ui_yes": {
+    "message": "Oui"
+  },
+  "ui_not_specified": {
+    "message": "Non précisé"
+  },
+  "ui_details_copied": {
+    "message": "Détails copiés"
+  },
+  "ui_delete_all_local_extension_data_this_cannot_be_undone": {
+    "message": "Supprimer toutes les données locales de l’extension ? Cette action est irréversible."
+  },
+  "ui_deleting": {
+    "message": "Suppression en cours…"
+  },
+  "ui_data_deleted_redirecting_to_settings": {
+    "message": "Données supprimées. Redirection vers l’accueil…"
+  },
+  "ui_could_not_delete_data_try_again": {
+    "message": "Impossible de supprimer les données. Réessayez."
+  },
+  "ui_running_diagnostic": {
+    "message": "Diagnostic en cours…"
+  },
+  "ui_checking_configuration_and_jira_access": {
+    "message": "Vérification de la configuration et de l’accès Jira…"
+  },
+  "ui_diagnostic": {
+    "message": "Diagnostic"
+  },
+  "ui_the_diagnostic_could_not_be_completed": {
+    "message": "Le diagnostic n’a pas pu être terminé."
+  },
+  "ui_try_again_215": {
+    "message": "Réessayer."
+  },
+  "ui_connection_valid_and_search_available": {
+    "message": "Connexion valide et recherche disponible."
+  },
+  "ui_connection_valid_with_limited_permissions": {
+    "message": "Connexion valide avec une limitation de permissions."
+  },
+  "ui_a_problem_needs_your_attention": {
+    "message": "Un problème nécessite votre attention."
+  },
+  "ui_your_github_draft_is_ready_review_it_before_publishing": {
+    "message": "Votre brouillon GitHub est prêt. Vérifiez son contenu avant de le publier."
+  },
+  "ui_could_not_open_github_check_your_network_connection_and": {
+    "message": "Impossible d’ouvrir GitHub. Vérifiez votre connexion réseau et réessayez."
+  },
+  "ui_undetermined_221": {
+    "message": "Non déterminé"
+  },
+  "ui_not_run_222": {
+    "message": "Non exécuté"
+  },
+  "ui_configuration_missing_configure_the_extension": {
+    "message": "⚠️ Configuration manquante. Veuillez configurer l'extension."
+  },
+  "ui_jql_copied": {
+    "message": "JQL copié"
+  },
+  "ui_saved": {
+    "message": "Sauvegardée"
+  },
+  "ui_name_this_search": {
+    "message": "Nom de cette recherche :"
+  },
+  "ui_my_search": {
+    "message": "Ma recherche"
+  },
+  "ui_no_values_available": {
+    "message": "Aucune valeur disponible"
+  },
+  "ui_unassigned": {
+    "message": "Non assigné"
+  },
+  "ui_unknown_project": {
+    "message": "Projet inconnu"
+  },
+  "ui_none": {
+    "message": "Aucune"
+  },
+  "ui_date_unavailable": {
+    "message": "Date indisponible"
+  },
+  "ui_status_unavailable": {
+    "message": "Statut indisponible"
+  },
+  "ui_summary_unavailable": {
+    "message": "Résumé indisponible"
+  },
+  "ui_query_unavailable": {
+    "message": "Requête indisponible"
+  },
+  "ui_modification_unavailable": {
+    "message": "Modification indisponible"
+  },
+  "ui_unavailable": {
+    "message": "Non disponible"
+  },
+  "ui_no_summary": {
+    "message": "Sans résumé"
+  },
+  "ui_unavailable_239": {
+    "message": "Indisponible"
+  },
+  "ui_no_pinned_issues": {
+    "message": "Aucun ticket épinglé"
+  },
+  "ui_pin_important_issues_from_search_results": {
+    "message": "Épinglez vos tickets importants depuis les résultats."
+  },
+  "ui_no_recent_issues": {
+    "message": "Aucun ticket récent"
+  },
+  "ui_open_an_issue_from_search_results_to_find_it_here": {
+    "message": "Ouvrez un ticket depuis les résultats pour le retrouver ici."
+  },
+  "ui_search_for_an_issue_244": {
+    "message": "Rechercher un ticket"
+  },
+  "ui_unpin": {
+    "message": "Désépingler"
+  },
+  "ui_remove_from_history": {
+    "message": "Retirer de l’historique"
+  },
+  "ui_open_in_jira": {
+    "message": "Ouvrir dans Jira"
+  },
+  "ui_copy_link": {
+    "message": "Copier le lien"
+  },
+  "ui_copy": {
+    "message": "Copier"
+  },
+  "ui_no_saved_searches": {
+    "message": "Aucune recherche sauvegardée"
+  },
+  "ui_run_a_search_and_save_it_to_find_it_here": {
+    "message": "Lancez une recherche et sauvegardez-la pour la retrouver ici."
+  },
+  "ui_run_again": {
+    "message": "Relancer"
+  },
+  "ui_delete": {
+    "message": "Supprimer"
+  },
+  "ui_select_a_valid_custom_period": {
+    "message": "Sélectionnez une période personnalisée valide."
+  },
+  "ui_no_issues_found_for_this_period": {
+    "message": "Aucun ticket trouvé pour cette période."
+  },
+  "ui_copy_key": {
+    "message": "Copier la clé"
+  },
+  "ui_copy_summary": {
+    "message": "Copier le résumé"
+  },
+  "ui_no_data_to_export": {
+    "message": "Aucune donnée à exporter"
+  },
+  "ui_csv_exported_successfully": {
+    "message": "CSV exporté avec succès !"
+  },
+  "ui_no_data_to_copy": {
+    "message": "Aucune donnée à copier"
+  },
+  "ui_markdown_summary_copied": {
+    "message": "Bilan Markdown copié !"
+  },
+  "ui_could_not_copy_the_summary": {
+    "message": "Erreur lors de la copie du bilan"
+  },
+  "ui_text_copied_to_clipboard": {
+    "message": "Texte copié dans le presse-papiers !"
+  },
+  "ui_could_not_copy_the_text": {
+    "message": "Erreur lors de la copie"
+  },
+  "lastDiagnostic": {
+    "message": "Dernier diagnostic : $1"
+  },
+  "diagnosticAction": {
+    "message": "Action : $1"
+  },
+  "configuredInstance": {
+    "message": "L’instance configurée est $1"
+  },
+  "resultsRange": {
+    "message": "$1–$2 sur $3"
+  },
+  "pageNumber": {
+    "message": "Page $1"
+  },
+  "allFilterValues": {
+    "message": "Tous les $1"
+  },
+  "workspaceSummary": {
+    "message": "$1 ticket(s) récent(s) · $2 ticket(s) épinglé(s) · $3 recherche(s) sauvegardée(s)"
+  },
+  "lastUsed": {
+    "message": "Dernière utilisation : $1"
+  },
+  "modifiedOn": {
+    "message": "Modifié le $1"
+  },
+  "createdOn": {
+    "message": "Créé le $1"
+  },
+  "updatedOn": {
+    "message": "Mis à jour le $1"
+  },
+  "assignedTo": {
+    "message": "Assigné à : $1"
+  },
+  "priorityValue": {
+    "message": "Priorité : $1"
+  },
+  "typeValue": {
+    "message": "Type : $1"
+  },
+  "errorDetails": {
+    "message": "Erreur : $1"
+  },
+  "filterLoadError": {
+    "message": "Impossible de charger les filtres Jira : $1"
+  },
+  "usersLoadError": {
+    "message": "Erreur lors du chargement des utilisateurs : $1"
+  },
+  "reportPeriod": {
+    "message": "Sur la période du $1 au $2,"
+  },
+  "reportFirst": {
+    "message": "$1 $2 ticket(s) correspondent $3."
+  },
+  "reportNoneCompleted": {
+    "message": "Aucun ticket n’est terminé."
+  },
+  "reportCompleted": {
+    "message": "$1 ticket(s) terminé(s)."
+  },
+  "reportActivityCriteria": {
+    "message": "aux critères d’activité sélectionnés"
+  },
+  "feedbackVersion": {
+    "message": "- Version de Jira Quick Search : $1"
+  },
+  "feedbackBrowser": {
+    "message": "- Navigateur : $1"
+  },
+  "feedbackSystem": {
+    "message": "- Système : $1"
+  },
+  "feedbackManifest": {
+    "message": "- Version du manifest : $1"
+  },
+  "feedbackInstance": {
+    "message": "- Type d’instance Jira : $1"
+  },
+  "feedbackDiagnostic": {
+    "message": "- État du diagnostic : $1"
+  },
+  "feedbackBug": {
+    "message": "## Description\n\n$1\n\n## Étapes pour reproduire\n\n1.\n2.\n3.\n\n## Résultat attendu\n\n<!-- Que deviez-vous obtenir ? -->\n\n## Résultat obtenu\n\n<!-- Que s’est-il réellement passé ? -->"
+  },
+  "feedbackReproducible": {
+    "message": "- Reproductible : $1"
+  },
+  "feedbackFeature": {
+    "message": "## Besoin\n\n$1\n\n## Proposition\n\n<!-- Décrivez la fonctionnalité souhaitée. -->\n\n## Contexte d’utilisation\n\n<!-- Dans quel cas cette fonctionnalité serait-elle utile ? -->"
+  },
+  "feedbackQuestion": {
+    "message": "## Question\n\n$1"
+  },
+  "feedbackTechnical": {
+    "message": "## Informations techniques\n\n$1"
+  },
+  "reportTitle": {
+    "message": "# Bilan d’activité Jira"
+  },
+  "reportNamedTitle": {
+    "message": "# Bilan Jira — $1"
+  },
+  "reportPeriodLine": {
+    "message": "Période : $1 – $2"
+  },
+  "reportOverview": {
+    "message": "## Synthèse"
+  },
+  "reportHighlights": {
+    "message": "## Points clés"
+  },
+  "reportBreakdown": {
+    "message": "## Répartition"
+  },
+  "reportIssues": {
+    "message": "## Tickets concernés"
+  },
+  "reportTimeline": {
+    "message": "## Chronologie"
+  },
+  "reportProject": {
+    "message": "Par projet"
+  },
+  "reportStatus": {
+    "message": "Par statut"
+  },
+  "reportType": {
+    "message": "Par type"
+  },
+  "reportInvolved": {
+    "message": "- $1 ticket(s) concerné(s)"
+  },
+  "reportCompletedLine": {
+    "message": "- $1 ticket(s) terminé(s)"
+  },
+  "reportInProgress": {
+    "message": "- $1 ticket(s) non terminé(s)"
+  },
+  "reportCreated": {
+    "message": "- $1 ticket(s) créé(s)"
+  },
+  "reportUpdated": {
+    "message": "- $1 ticket(s) mis à jour"
+  },
+  "reportStatusLine": {
+    "message": "Statut : $1"
+  },
+  "reportLastActivity": {
+    "message": "Dernière activité : $1"
+  },
+  "reportNoIssues": {
+    "message": "- Aucun ticket"
+  },
+  "reportFirstOne": {
+    "message": "$1 1 ticket correspond $2."
+  },
+  "reportFirstMany": {
+    "message": "$1 $2 tickets correspondent $3."
+  },
+  "reportCompletedOne": {
+    "message": "1 ticket est terminé."
+  },
+  "reportCompletedMany": {
+    "message": "$1 tickets sont terminés."
+  },
+  "reportAnd": {
+    "message": " et "
+  },
+  "pinIssue": {
+    "message": "Épingler ce ticket"
+  },
+  "unpinIssue": {
+    "message": "Désépingler ce ticket"
+  },
+  "configureExtension": {
+    "message": "Configurer l’extension"
+  }
 }

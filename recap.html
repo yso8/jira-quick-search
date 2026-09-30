@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Récapitulatif Hebdomadaire - Jira</title>
+  <title data-i18n="ui_weekly_summary_jira">Récapitulatif Hebdomadaire - Jira</title>
   <link href="vendor/tailwind.min.css" rel="stylesheet" />
   <link href="vendor/flowbite.min.css" rel="stylesheet" />
   <link href="src/components/navigation/navbar.css" rel="stylesheet" />
@@ -43,29 +43,29 @@
 
         <!-- Dropdown Personne -->
         <div>
-          <label for="userSelect" class="block mb-2 text-sm font-medium text-gray-900">Personne</label>
+          <label for="userSelect" class="block mb-2 text-sm font-medium text-gray-900" data-i18n="ui_person">Personne</label>
           <select id="userSelect"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-            <option value="">Toutes les personnes</option>
+            <option value="" data-i18n="ui_everyone">Toutes les personnes</option>
           </select>
         </div>
 
 <!-- Sélecteur de période -->
         <div>
-          <label for="dateRange" class="block mb-2 text-sm font-medium text-gray-900">Période</label>
+          <label for="dateRange" class="block mb-2 text-sm font-medium text-gray-900" data-i18n="ui_period">Période</label>
           <select id="dateRange"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-            <option value="this_week" selected>Semaine actuelle</option>
-            <option value="last_week">Semaine dernière</option>
-            <option value="last_2_weeks">2 dernières semaines</option>
-            <option value="this_month">Mois actuel</option>
-            <option value="custom">Période personnalisée</option>
+            <option value="this_week" selected data-i18n="ui_this_week">Semaine actuelle</option>
+            <option value="last_week" data-i18n="ui_last_week">Semaine dernière</option>
+            <option value="last_2_weeks" data-i18n="ui_last_2_weeks">2 dernières semaines</option>
+            <option value="this_month" data-i18n="ui_this_month">Mois actuel</option>
+            <option value="custom" data-i18n="ui_custom_period">Période personnalisée</option>
           </select>
         </div>
 
         <div id="customPeriod" class="hidden md:col-span-2 grid grid-cols-2 gap-3">
-          <div><label for="customStart" class="block mb-2 text-sm font-medium text-gray-900">Du</label><input id="customStart" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"></div>
-          <div><label for="customEnd" class="block mb-2 text-sm font-medium text-gray-900">Au</label><input id="customEnd" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"></div>
+          <div><label for="customStart" class="block mb-2 text-sm font-medium text-gray-900" data-i18n="ui_from">Du</label><input id="customStart" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"></div>
+          <div><label for="customEnd" class="block mb-2 text-sm font-medium text-gray-900" data-i18n="ui_to">Au</label><input id="customEnd" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"></div>
         </div>
 
         <!-- Bouton Générer -->
@@ -77,7 +77,7 @@
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
             </svg>
-            Générer le récap
+            <span data-i18n="ui_generate_summary">Générer le récap</span>
           </button>
         </div>
       </div>
@@ -85,21 +85,21 @@
       <div class="border-t border-gray-100 pt-4 mb-4">
         <div class="flex flex-wrap items-center justify-start gap-6 mb-3">
           <div>
-            <p class="text-sm font-medium text-gray-900">Règles d’activité</p>
-            <p class="text-xs text-gray-500">Un ticket est traité lorsqu’il respecte les règles sélectionnées.</p>
+            <p class="text-sm font-medium text-gray-900" data-i18n="ui_activity_rules">Règles d’activité</p>
+            <p class="text-xs text-gray-500" data-i18n="ui_an_issue_counts_when_it_matches_the_selected_rules">Un ticket est traité lorsqu’il respecte les règles sélectionnées.</p>
           </div>
           <select id="ruleMatchMode" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2">
-            <option value="any">Au moins une règle</option>
-            <option value="all">Toutes les règles</option>
+            <option value="any" data-i18n="ui_at_least_one_rule">Au moins une règle</option>
+            <option value="all" data-i18n="ui_all_rules">Toutes les règles</option>
           </select>
         </div>
         <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-700">
-          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="updated" checked> Ticket mis à jour</label>
-          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="commentAdded"> Commentaire ajouté</label>
-          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="statusChanged"> Statut modifié</label>
-          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="assigneeChanged"> Assignation modifiée</label>
-          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="priorityChanged"> Priorité modifiée</label>
-          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="summaryChanged"> Résumé ou description modifié</label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="updated" checked> <span data-i18n="ui_issue_updated">Ticket mis à jour</span></label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="commentAdded"> <span data-i18n="ui_comment_added">Commentaire ajouté</span></label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="statusChanged"> <span data-i18n="ui_status_changed">Statut modifié</span></label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="assigneeChanged"> <span data-i18n="ui_assignee_changed">Assignation modifiée</span></label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="priorityChanged"> <span data-i18n="ui_priority_changed">Priorité modifiée</span></label>
+          <label class="inline-flex items-center gap-2"><input type="checkbox" class="activity-rule rounded text-purple-600" data-rule="summaryChanged"> <span data-i18n="ui_summary_or_description_changed">Résumé ou description modifié</span></label>
         </div>
       </div>
 
@@ -112,7 +112,7 @@
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
           </svg>
-          Exporter CSV
+          <span data-i18n="ui_export_csv">Exporter CSV</span>
         </button>
         <button id="copyTextBtn" type="button"
           class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2 flex items-center gap-2">
@@ -121,7 +121,7 @@
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
           </svg>
-          Copier en texte
+          <span data-i18n="ui_copy_as_text">Copier en texte</span>
         </button>
       </div>
     </div>
@@ -135,8 +135,8 @@
             d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
         </svg>
       </div>
-      <h5 class="text-xl font-bold text-gray-700 mb-2">Générez votre récapitulatif</h5>
-      <p class="text-gray-500">Sélectionnez une période et cliquez sur "Générer le récap"</p>
+      <h5 class="text-xl font-bold text-gray-700 mb-2" data-i18n="ui_generate_your_summary">Générez votre récapitulatif</h5>
+      <p class="text-gray-500" data-i18n="ui_select_a_period_and_click_generate_summary">Sélectionnez une période et cliquez sur "Générer le récap"</p>
     </div>
 
     <!-- Chargement -->
@@ -150,7 +150,7 @@
           d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
           fill="currentFill" />
       </svg>
-      <p class="text-gray-500 mt-4 font-medium">Récupération des données...</p>
+      <p class="text-gray-500 mt-4 font-medium" data-i18n="ui_loading_data">Récupération des données...</p>
     </div>
 
     <!-- Message d'erreur -->
@@ -161,7 +161,7 @@
             d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
             clip-rule="evenodd" />
         </svg>
-        <span class="font-medium">Erreur :</span>
+        <span class="font-medium" data-i18n="ui_error">Erreur :</span>
         <span class="ml-1 message-content"></span>
       </div>
     </div>
@@ -173,12 +173,12 @@
           <table class="w-full text-sm text-left text-gray-500">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
-                <th scope="col" class="px-6 py-3">Ticket</th>
-                <th scope="col" class="px-6 py-3">Résumé</th>
-                <th scope="col" class="px-6 py-3">Modifié par</th>
-                <th scope="col" class="px-6 py-3">Date</th>
-                <th scope="col" class="px-6 py-3 text-center">Commentaires</th>
-                <th scope="col" class="px-6 py-3">Statut</th>
+                <th scope="col" class="px-6 py-3" data-i18n="ui_issue">Ticket</th>
+                <th scope="col" class="px-6 py-3" data-i18n="ui_summary">Résumé</th>
+                <th scope="col" class="px-6 py-3" data-i18n="ui_modified_by">Modifié par</th>
+                <th scope="col" class="px-6 py-3" data-i18n="ui_date">Date</th>
+                <th scope="col" class="px-6 py-3 text-center" data-i18n="ui_comments">Commentaires</th>
+                <th scope="col" class="px-6 py-3" data-i18n="ui_status">Statut</th>
               </tr>
             </thead>
             <tbody id="resultsTableBody">
@@ -191,7 +191,7 @@
       <div id="reportSummary" class="hidden mb-6 rounded-lg border border-purple-100 bg-purple-50 p-5 text-sm leading-6 text-purple-950" aria-live="polite"></div>
 
       <div id="reportTimeline" class="hidden mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900">Timeline des changements</h2>
+        <h2 class="mb-4 text-lg font-semibold text-gray-900" data-i18n="ui_change_timeline">Timeline des changements</h2>
         <div id="timelineItems" class="space-y-4"></div>
       </div>
 
@@ -201,7 +201,7 @@
         <!-- Total tickets -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div class="flex items-center justify-between mb-2">
-            <h3 class="text-sm font-medium text-gray-500">Total tickets modifiés</h3>
+            <h3 class="text-sm font-medium text-gray-500" data-i18n="ui_total_issues_modified">Total tickets modifiés</h3>
             <div class="p-2 bg-blue-100 rounded-lg text-blue-600">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
@@ -211,17 +211,17 @@
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3">
-            <div><p class="text-xs text-gray-500">Concernés</p><p class="text-2xl font-bold text-gray-900" id="totalTickets">0</p></div>
-            <div><p class="text-xs text-gray-500">Créés</p><p class="text-2xl font-bold text-gray-900" id="createdTickets">0</p></div>
-            <div><p class="text-xs text-gray-500">Terminés</p><p class="text-2xl font-bold text-green-700" id="completedTickets">0</p></div>
-            <div><p class="text-xs text-gray-500">En cours</p><p class="text-2xl font-bold text-blue-700" id="inProgressTickets">0</p></div>
+            <div><p class="text-xs text-gray-500" data-i18n="ui_included">Concernés</p><p class="text-2xl font-bold text-gray-900" id="totalTickets">0</p></div>
+            <div><p class="text-xs text-gray-500" data-i18n="ui_created">Créés</p><p class="text-2xl font-bold text-gray-900" id="createdTickets">0</p></div>
+            <div><p class="text-xs text-gray-500" data-i18n="ui_completed">Terminés</p><p class="text-2xl font-bold text-green-700" id="completedTickets">0</p></div>
+            <div><p class="text-xs text-gray-500" data-i18n="ui_in_progress">En cours</p><p class="text-2xl font-bold text-blue-700" id="inProgressTickets">0</p></div>
           </div>
         </div>
 
         <!-- Répartition par personne -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-medium text-gray-500">Répartition par personne</h3>
+            <h3 class="text-sm font-medium text-gray-500" data-i18n="ui_breakdown_by_person">Répartition par personne</h3>
             <div class="p-2 bg-green-100 rounded-lg text-green-600">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
@@ -238,7 +238,7 @@
         <!-- Tickets par statut -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-medium text-gray-500">Tickets par statut</h3>
+            <h3 class="text-sm font-medium text-gray-500" data-i18n="ui_issues_by_status">Tickets par statut</h3>
             <div class="p-2 bg-purple-100 rounded-lg text-purple-600">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">

@@ -1,4 +1,5 @@
 const TERMINAL_STATUS_WORDS = ['done', 'closed', 'resolved', 'terminé', 'terminée', 'fermé', 'fermée', 'résolu', 'résolue', 'cancelled', 'annulé', 'annulée'];
+var t = (...args) => JiraQuickSearchI18n.t(...args);
 
 function isTerminalStatus(status) {
   const normalized = String(status || '').toLowerCase();
@@ -28,17 +29,17 @@ function getBreakdowns(issues) {
   };
 }
 
-function generateSummary(report, start, end, activityLabel = 'aux critères d’activité sélectionnés') {
+function generateSummary(report, start, end, activityLabel = t('reportActivityCriteria')) {
   const total = report.involved?.length ?? report.all.length;
-  const period = `Sur la période du ${formatDate(start)} au ${formatDate(end)},`;
-  const first = `${period} ${total} ticket${plural(total)} correspondent ${activityLabel}.`;
+  const period = t('reportPeriod', [formatDate(start), formatDate(end)]);
+  const first = total === 1 ? t('reportFirstOne', [period, activityLabel]) : t('reportFirstMany', [period, total, activityLabel]);
   const statusCounts = countBy(report.involved || report.all, issue => issue.status);
   const significant = Object.entries(statusCounts).filter(([status]) => !isTerminalStatus(status)).sort((a, b) => b[1] - a[1]);
   const statusSentence = report.completed.length === 0
-    ? 'Aucun ticket n’est terminé.'
-    : `${report.completed.length} ticket${plural(report.completed.length)} ${report.completed.length === 1 ? 'est' : 'sont'} terminé${report.completed.length === 1 ? '' : 's'}.`;
+    ? t('reportNoneCompleted')
+    : report.completed.length === 1 ? t('reportCompletedOne') : t('reportCompletedMany', report.completed.length);
   const detail = significant.length
-    ? ` ${significant.map(([status, count]) => `${count} ${status.toLowerCase()}`).join(' et ')}.`
+    ? ` ${significant.map(([status, count]) => `${count} ${status.toLowerCase()}`).join(t('reportAnd'))}.`
     : '';
   return `${first} ${statusSentence}${detail}`;
 }
@@ -48,20 +49,20 @@ function sortTimeline(issues) {
 }
 
 function generateMarkdownReport(report, start, end, options = {}) {
-  const title = options.title ? `# Bilan Jira — ${options.title}` : '# Bilan d’activité Jira';
+  const title = options.title ? t('reportNamedTitle', options.title) : t('reportTitle');
   const summary = options.summary || generateSummary(report, start, end);
   const breakdowns = getBreakdowns(report.involved || report.all);
-  const lines = [title, '', `Période : ${formatDate(start)} – ${formatDate(end)}`, '', '## Synthèse', '', summary, '', '## Points clés', '',
-    `- ${report.involved?.length ?? report.all.length} ticket(s) concerné(s)`,
-    `- ${report.completed.length} ticket(s) terminé(s)`,
-    `- ${report.inProgress.length} ticket(s) non terminé(s)`,
-    `- ${report.created.length} ticket(s) créé(s)`,
-    `- ${report.updated.length} ticket(s) mis à jour`, '', '## Répartition'];
-  appendBreakdown(lines, 'Par projet', breakdowns.project);
-  appendBreakdown(lines, 'Par statut', breakdowns.status);
-  appendBreakdown(lines, 'Par type', breakdowns.type);
-  lines.push('', '## Tickets concernés', '', ...formatLinkedIssues(report.involved || report.all, options.baseUrl));
-  lines.push('', '## Timeline', '', ...sortTimeline(report.involved || report.all).map(issue => `- ${formatActivityDate(issue)} — ${issue.key} — ${issue.summary || 'Sans résumé'} (${issue.status || 'Statut indisponible'})`));
+  const lines = [title, '', t('reportPeriodLine', [formatDate(start), formatDate(end)]), '', t('reportOverview'), '', summary, '', t('reportHighlights'), '',
+    t('reportInvolved', report.involved?.length ?? report.all.length),
+    t('reportCompletedLine', report.completed.length),
+    t('reportInProgress', report.inProgress.length),
+    t('reportCreated', report.created.length),
+    t('reportUpdated', report.updated.length), '', t('reportBreakdown')];
+  appendBreakdown(lines, t('reportProject'), breakdowns.project);
+  appendBreakdown(lines, t('reportStatus'), breakdowns.status);
+  appendBreakdown(lines, t('reportType'), breakdowns.type);
+  lines.push('', t('reportIssues'), '', ...formatLinkedIssues(report.involved || report.all, options.baseUrl));
+  lines.push('', t('reportTimeline'), '', ...sortTimeline(report.involved || report.all).map(issue => `- ${formatActivityDate(issue)} — ${issue.key} — ${issue.summary || t('ui_no_summary')} (${issue.status || t('ui_status_unavailable')})`));
   return lines.join('\n');
 }
 
@@ -74,8 +75,8 @@ function appendBreakdown(lines, title, breakdown) {
 function formatLinkedIssues(issues, baseUrl = '') {
   return issues.length ? issues.map(issue => {
     const key = baseUrl ? `[${issue.key}](${baseUrl}/browse/${issue.key})` : issue.key;
-    return `- ${key} — ${issue.summary || 'Sans résumé'}\n  - Statut : ${issue.status || 'Indisponible'}\n  - Dernière activité : ${formatActivityDate(issue)}`;
-  }) : ['- Aucun ticket'];
+    return `- ${key} — ${issue.summary || t('ui_no_summary')}\n  ${t('reportStatusLine', issue.status || t('ui_unavailable_239'))}\n  ${t('reportLastActivity', formatActivityDate(issue))}`;
+  }) : [t('reportNoIssues')];
 }
 
 function countBy(issues, selector) {
@@ -92,8 +93,8 @@ function isInPeriod(value, start, end) {
 }
 
 function activityTime(issue) { return new Date(issue.updated || issue.created || 0).valueOf(); }
-function formatActivityDate(issue) { return issue.updated || issue.created ? new Date(issue.updated || issue.created).toLocaleString('fr-FR') : 'Date indisponible'; }
-function formatDate(date) { return new Date(date).toLocaleDateString('fr-FR'); }
+function formatActivityDate(issue) { return issue.updated || issue.created ? new Date(issue.updated || issue.created).toLocaleString(JiraQuickSearchI18n.getDateLocale()) : t('ui_date_unavailable'); }
+function formatDate(date) { return new Date(date).toLocaleDateString(JiraQuickSearchI18n.getDateLocale()); }
 function plural(value) { return value === 1 ? '' : 's'; }
 
 if (typeof module !== 'undefined') {

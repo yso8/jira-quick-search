@@ -1,10 +1,11 @@
 const JIRA_API_VERSION = '3';
 const JIRA_CONFIG_KEYS = ['jiraUrl', 'jiraEmail', 'jiraToken'];
+var t = (...args) => JiraQuickSearchI18n.t(...args);
 
 async function loadJiraConfig() {
   const config = await chrome.storage.sync.get(JIRA_CONFIG_KEYS);
   if (!config.jiraUrl || !config.jiraEmail || !config.jiraToken) {
-    throw new Error('Configuration Jira incomplète. Ouvrez les options de l’extension.');
+    throw new Error(t('ui_jira_configuration_is_incomplete_open_the_extension_set'));
   }
   return {
     jiraUrl: normalizeJiraUrl(config.jiraUrl),
@@ -53,10 +54,10 @@ async function jiraRequest(config, path, options = {}) {
   await debugLog('réponse Jira', { method, path, status: response.status });
   if (!response.ok) {
     const message = response.status === 401 || response.status === 403
-      ? 'Accès Jira refusé. Vérifiez votre email, votre token et vos permissions.'
+      ? t('ui_jira_access_denied_check_your_email_token_and_permissio')
       : response.status === 429
-        ? 'Jira limite temporairement les requêtes. Réessayez dans quelques instants.'
-        : 'Jira est momentanément indisponible. Réessayez dans quelques instants.';
+        ? t('ui_jira_is_temporarily_limiting_requests_try_again_shortly')
+        : t('ui_jira_is_temporarily_unavailable_try_again_shortly');
     throw Object.assign(new Error(message), { status: response.status });
   }
   return response;
@@ -90,11 +91,11 @@ async function fetchFilterMetadata(config) {
   const fields = metadata.fields;
 
   const filters = [
-    { id: 'project', name: 'Espace', jqlField: 'project', options: (projects.values || projects).map(project => ({ value: project.key, label: project.name })) },
-    { id: 'assignee', name: 'Personne assignée', jqlField: 'assignee', options: users.filter(user => user.active && user.accountType === 'atlassian').sort((a, b) => a.displayName.localeCompare(b.displayName, 'fr')).map(user => ({ value: user.accountId, label: user.displayName })) },
-    { id: 'issuetype', name: 'Type', jqlField: 'issuetype', options: issueTypes.map(type => ({ value: type.name, label: type.name })) },
-    { id: 'status', name: 'État', jqlField: 'status', options: statuses.map(status => ({ value: status.name, label: status.name })) },
-    { id: 'priority', name: 'Priorité', jqlField: 'priority', options: priorities.map(priority => ({ value: priority.name, label: priority.name })) }
+    { id: 'project', name: t('ui_project'), jqlField: 'project', options: (projects.values || projects).map(project => ({ value: project.key, label: project.name })) },
+    { id: 'assignee', name: t('ui_assignee'), jqlField: 'assignee', options: users.filter(user => user.active && user.accountType === 'atlassian').sort((a, b) => a.displayName.localeCompare(b.displayName, JiraQuickSearchI18n.getDateLocale())).map(user => ({ value: user.accountId, label: user.displayName })) },
+    { id: 'issuetype', name: t('ui_type'), jqlField: 'issuetype', options: issueTypes.map(type => ({ value: type.name, label: type.name })) },
+    { id: 'status', name: t('ui_status_173'), jqlField: 'status', options: statuses.map(status => ({ value: status.name, label: status.name })) },
+    { id: 'priority', name: t('ui_priority'), jqlField: 'priority', options: priorities.map(priority => ({ value: priority.name, label: priority.name })) }
   ];
 
   const customFields = await loadCustomSelectFilters(config, fields);
