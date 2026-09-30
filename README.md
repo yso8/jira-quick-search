@@ -24,6 +24,9 @@ Jira Quick Search est une extension Chrome dédiée à Jira Cloud. Elle centrali
 la recherche de tickets, les filtres utiles et quelques outils de suivi dans une
 interface locale, accessible directement depuis le navigateur.
 
+L’interface est disponible en deux langues : English et Français. La langue suit
+celle du navigateur par défaut et peut être choisie dans les paramètres.
+
 L’objectif est simple : retrouver un ticket, ouvrir les bons résultats et
 consulter son activité sans multiplier les manipulations dans Jira.
 
