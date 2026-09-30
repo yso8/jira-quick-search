@@ -51,12 +51,6 @@ consulter son activité sans multiplier les manipulations dans Jira.
 
 ## Aperçu
 
-### Recherche Jira
-
-<p align="center">
-  <img src="images/search_page_screenshot.png" alt="Page Recherche Jira" width="900">
-</p>
-
 ### Workspace
 
 <p align="center">
