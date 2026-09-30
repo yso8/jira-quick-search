@@ -35,6 +35,13 @@ function Resolve-RepositoryPath([string] $Root, [string] $RelativePath) {
   return [System.IO.Path]::GetFullPath((Join-Path $Root $RelativePath))
 }
 
+function Resolve-LocalReference([string] $RelativeFile, [string] $Reference, [bool] $DocumentRelative) {
+  if ($DocumentRelative -or $Reference.StartsWith('/')) { return $Reference.TrimStart('/') }
+  $directory = Split-Path $RelativeFile -Parent
+  if ($directory) { return Join-Path $directory $Reference }
+  return $Reference
+}
+
 function Add-StagedFile([string] $RelativePath, [string] $Root, [string] $Staging) {
   if ([string]::IsNullOrWhiteSpace($RelativePath)) { return }
   $normalized = $RelativePath.Replace('/', '\').TrimStart('\')
@@ -48,22 +55,22 @@ function Add-StagedFile([string] $RelativePath, [string] $Root, [string] $Stagin
 }
 
 function Get-LocalReferences([string] $RelativePath, [string] $Content) {
-  $references = New-Object System.Collections.Generic.List[string]
+  $references = New-Object System.Collections.Generic.List[object]
   $patterns = @(
-    '(?i)<(?:script|link)\b[^>]+(?:src|href)\s*=\s*["'']([^"'']+)["'']',
-    '(?i)<img\b[^>]+\bsrc\s*=\s*["'']([^"'']+)["'']',
-    '(?im)^\s*importScripts\s*\(\s*["'']([^"'']+)["'']',
-    '(?im)^\s*import\s+["'']([^"'']+)["'']'
+    @{ Regex = '(?i)<(?:script|link)\b[^>]+(?:src|href)\s*=\s*["'']([^"'']+)["'']'; DocumentRelative = $true },
+    @{ Regex = '(?i)<img\b[^>]+\bsrc\s*=\s*["'']([^"'']+)["'']'; DocumentRelative = $true },
+    @{ Regex = '(?im)^\s*importScripts\s*\(\s*["'']([^"'']+)["'']'; DocumentRelative = $false },
+    @{ Regex = '(?im)^\s*import\s+["'']([^"'']+)["'']'; DocumentRelative = $false }
   )
   foreach ($pattern in $patterns) {
-    foreach ($match in [regex]::Matches($Content, $pattern)) {
+    foreach ($match in [regex]::Matches($Content, $pattern.Regex)) {
       $reference = $match.Groups[1].Value
       if ($reference -and $reference -notmatch '^(?:https?:|data:|#|javascript:|mailto:|chrome:)') {
-        $references.Add($reference)
+        $references.Add([pscustomobject]@{ Path = $reference; DocumentRelative = $pattern.DocumentRelative })
       }
     }
   }
-  return $references | Select-Object -Unique
+  return $references
 }
 
 function Assert-NoSensitiveContent([string] $Path) {
@@ -126,14 +133,12 @@ try {
   foreach ($file in $htmlFiles) {
     Add-StagedFile $file.Name $root $staging
     foreach ($reference in Get-LocalReferences $file.Name (Get-Content -LiteralPath $file.FullName -Raw)) {
-      $fileDirectory = Split-Path $file.Name -Parent
-      $resolved = if ($reference.StartsWith('/')) { $reference.TrimStart('/') } elseif ($fileDirectory) { Join-Path $fileDirectory $reference } else { $reference }
-      Add-StagedFile $resolved $root $staging
+      Add-StagedFile (Resolve-LocalReference $file.Name $reference.Path $reference.DocumentRelative) $root $staging
     }
   }
 
   foreach ($reference in Get-LocalReferences 'background.js' (Get-Content -LiteralPath (Join-Path $root 'background.js') -Raw)) {
-    Add-StagedFile $reference $root $staging
+    Add-StagedFile (Resolve-LocalReference 'background.js' $reference.Path $reference.DocumentRelative) $root $staging
   }
 
   $processedReferences = New-Object System.Collections.Generic.HashSet[string]
@@ -145,13 +150,7 @@ try {
       $processedReferences.Add($file.FullName) | Out-Null
       $relativeFile = $file.FullName.Substring($staging.Length).TrimStart('\', '/')
       foreach ($reference in Get-LocalReferences $relativeFile (Get-Content -LiteralPath $file.FullName -Raw)) {
-        $rootCandidate = Join-Path $root $reference.TrimStart('/')
-        if (Test-Path -LiteralPath $rootCandidate -PathType Leaf) {
-          Add-StagedFile $reference.TrimStart('/') $root $staging
-        } else {
-          $relativeCandidate = Join-Path (Split-Path $relativeFile -Parent) $reference
-          Add-StagedFile $relativeCandidate $root $staging
-        }
+        Add-StagedFile (Resolve-LocalReference $relativeFile $reference.Path $reference.DocumentRelative) $root $staging
       }
     }
   } while (@(Get-ChildItem -LiteralPath $staging -File -Include '*.html', '*.js' -Recurse | Where-Object { -not $processedReferences.Contains($_.FullName) }).Count -gt 0)
@@ -166,9 +165,8 @@ try {
   foreach ($file in $referenceFiles) {
     $relativeFile = $file.FullName.Substring($staging.Length).TrimStart('\', '/')
     foreach ($reference in Get-LocalReferences $relativeFile (Get-Content -LiteralPath $file.FullName -Raw)) {
-      $rootCandidate = if ($reference.StartsWith('/')) { Join-Path $staging $reference.TrimStart('/') } else { Join-Path $staging $reference }
-      $candidate = if (Test-Path -LiteralPath $rootCandidate -PathType Leaf) { $rootCandidate } else { Join-Path (Split-Path $file.FullName -Parent) $reference }
-      if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) { throw "Référence locale absente du staging : $reference (dans $relativeFile)" }
+      $candidate = Join-Path $staging (Resolve-LocalReference $relativeFile $reference.Path $reference.DocumentRelative)
+      if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) { throw "Référence locale absente du staging : $($reference.Path) (dans $relativeFile)" }
     }
   }
 
