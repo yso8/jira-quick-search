@@ -14,7 +14,7 @@ try {
   Add-Type -AssemblyName System.IO.Compression.FileSystem
   $archive = [System.IO.Compression.ZipFile]::OpenRead($zipPath)
   try {
-    $names = @($archive.Entries | ForEach-Object FullName)
+    $names = @($archive.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
     if ('manifest.json' -notin $names) { throw "manifest.json n’est pas à la racine du ZIP." }
     if ('src/services/i18n/i18n.js' -notin $names) { throw 'Le service i18n est absent du ZIP.' }
     foreach ($htmlFile in Get-ChildItem -LiteralPath $root -File -Filter '*.html') {
@@ -55,7 +55,8 @@ try {
   $fixtureZip = Join-Path $outputDirectory 'fixture-dist/jira-quick-search-v1.0.0.zip'
   $fixtureArchive = [System.IO.Compression.ZipFile]::OpenRead($fixtureZip)
   try {
-    if ('src/pages/search/package-relative-fixture.js' -notin @($fixtureArchive.Entries | ForEach-Object FullName)) {
+    $fixtureNames = @($fixtureArchive.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
+    if ('src/pages/search/package-relative-fixture.js' -notin $fixtureNames) {
       throw 'La dépendance relative au script est absente du ZIP.'
     }
   } finally {
