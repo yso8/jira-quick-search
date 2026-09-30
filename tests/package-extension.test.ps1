@@ -2,13 +2,14 @@ $ErrorActionPreference = 'Stop'
 
 $root = Split-Path -Parent $PSScriptRoot
 $scriptPath = Join-Path $root 'scripts\package-extension.ps1'
+$manifest = Get-Content -Raw (Join-Path $root 'manifest.json') | ConvertFrom-Json
 $outputDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ('jira-quick-search-package-test-' + [guid]::NewGuid())
 $fixtureRoot = Join-Path $outputDirectory 'fixture'
 
 try {
   & $scriptPath -RepositoryRoot $root -OutputDirectory $outputDirectory
 
-  $zipPath = Join-Path $outputDirectory 'jira-quick-search-v1.0.0.zip'
+  $zipPath = Join-Path $outputDirectory ('jira-quick-search-v{0}.zip' -f $manifest.version)
   if (-not (Test-Path $zipPath)) { throw 'Le ZIP attendu est absent.' }
 
   Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -52,7 +53,7 @@ try {
   Set-Content -LiteralPath (Join-Path $fixtureRoot 'package-relative-fixture.js') -Value '// root file with the same name'
   Add-Content -LiteralPath (Join-Path $fixtureRoot 'src/pages/search/search.js') -Value "`nimportScripts('package-relative-fixture.js')"
   & $scriptPath -RepositoryRoot $fixtureRoot -OutputDirectory (Join-Path $outputDirectory 'fixture-dist') | Out-Null
-  $fixtureZip = Join-Path $outputDirectory 'fixture-dist/jira-quick-search-v1.0.0.zip'
+  $fixtureZip = Join-Path $outputDirectory ('fixture-dist/jira-quick-search-v{0}.zip' -f $manifest.version)
   $fixtureArchive = [System.IO.Compression.ZipFile]::OpenRead($fixtureZip)
   try {
     $fixtureNames = @($fixtureArchive.Entries | ForEach-Object { $_.FullName.Replace('\', '/') })
