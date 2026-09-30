@@ -31,7 +31,7 @@
   function findMessage(key) {
     for (const locale of [activeLanguage, 'en']) {
       const entry = catalogs[locale] && catalogs[locale][key];
-      if (entry !== undefined) return entry;
+      if (entry != null) return entry;
     }
     return undefined;
   }
@@ -59,6 +59,15 @@
     return activeLanguage === 'fr' ? 'fr-FR' : 'en-US';
   }
 
+  async function loadCatalog(locale) {
+    try {
+      const response = await root.fetch(root.chrome.runtime.getURL(`_locales/${locale}/messages.json`));
+      return response.ok ? await response.json() : null;
+    } catch {
+      return null;
+    }
+  }
+
   async function initI18n(options = {}) {
     let preference = options.preference;
     if (preference === undefined) preference = await getLanguagePreference();
@@ -68,12 +77,9 @@
       catalogs.en = options.catalogs.en || null;
       catalogs.fr = options.catalogs.fr || null;
     } else {
-      const response = await root.fetch(root.chrome.runtime.getURL(`_locales/${activeLanguage}/messages.json`));
-      if (!response.ok) throw new Error(`Impossible de charger le catalogue ${activeLanguage}.`);
-      catalogs[activeLanguage] = await response.json();
+      catalogs[activeLanguage] = await loadCatalog(activeLanguage);
       if (activeLanguage !== 'en' && !catalogs.en) {
-        const fallback = await root.fetch(root.chrome.runtime.getURL('_locales/en/messages.json'));
-        if (fallback.ok) catalogs.en = await fallback.json();
+        catalogs.en = await loadCatalog('en');
       }
     }
     return activeLanguage;

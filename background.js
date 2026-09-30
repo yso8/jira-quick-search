@@ -39,6 +39,10 @@ chrome.commands.onCommand.addListener(command => {
   if (command === 'open_search') openQuickSearchPopup();
 });
 
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'sync' && changes.language) translationsReady = null;
+});
+
 async function suggestOmniboxResults(text, suggest) {
   const value = text.trim();
   if (!value) {

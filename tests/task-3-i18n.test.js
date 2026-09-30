@@ -94,7 +94,7 @@ async function main() {
     ['workspace', /<div\b[^>]*id="recentHeading"[^>]*data-i18n-aria-label="([\w]+)"[^>]*>/, 'i18nAriaLabel', 'aria-label', 'Recent issues', 'Tickets récents']
   ];
   global.JiraQuickSearchI18n = i18n;
-  const { validateDiagnosticUrl } = require('../src/services/diagnostics/diagnostic-utils.js');
+  const { validateDiagnosticUrl, runConnectionDiagnostics } = require('../src/services/diagnostics/diagnostic-utils.js');
   const { validateFeedback } = require('../src/utils/feedback/feedback-utils.js');
   const jiraIssue = { key: 'PROJ-42', summary: 'Client-provided summary', status: 'In Review', project: 'Client project', updated: '2026-09-18T10:00:00Z' };
   const report = { all: [jiraIssue], involved: [jiraIssue], completed: [], inProgress: [jiraIssue], created: [], updated: [jiraIssue] };
@@ -110,6 +110,8 @@ async function main() {
       assert.equal(attributes[attributeName], index === 1 ? english : french);
     }
     assert.equal(validateDiagnosticUrl('').message, index === 1 ? 'Jira URL is missing.' : 'URL Jira absente.');
+    const diagnostic = await runConnectionDiagnostics({ jiraUrl: '' }, { request: async () => { throw new Error('must not request Jira'); } });
+    assert.equal(diagnostic.checks[0].label, index === 1 ? 'Jira URL' : 'URL Jira');
     assert.equal(validateFeedback({}).message, index === 1 ? 'Select a feedback type.' : 'Sélectionnez un type de feedback.');
     assert.equal(i18n.getDateLocale(), language === 'fr' ? 'fr-FR' : 'en-US');
     const markdown = generateMarkdownReport(report, new Date('2026-09-16'), new Date('2026-09-22'));

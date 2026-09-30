@@ -97,7 +97,34 @@ function fakeElement(dataset = {}) {
     assert.equal(child.attributes.title, 'Rechercher');
     assert.equal(child.attributes['aria-label'], 'Champ de recherche');
 
-    console.log('i18n: 24 assertions passed');
+    for (const [failure, frenchResponse] of [
+      ['rejected fetch', async () => { throw new Error('network unavailable'); }],
+      ['HTTP failure', async () => ({ ok: false, status: 404 })],
+      ['invalid JSON', async () => ({ ok: true, json: async () => { throw new SyntaxError('invalid JSON'); } })]
+    ]) {
+      const attempts = [];
+      global.fetch = async url => {
+        attempts.push(url);
+        return url.includes('/fr/') ? frenchResponse() : { ok: true, json: async () => enCatalog };
+      };
+      i18n = freshI18n();
+      assert.equal(await i18n.initI18n({ preference: 'fr', uiLanguage: 'en-US' }), 'fr', `${failure} must not reject page initialization`);
+      assert.deepEqual(attempts, [
+        'chrome-extension://unit/_locales/fr/messages.json',
+        'chrome-extension://unit/_locales/en/messages.json'
+      ], `${failure} must fall back to English`);
+      assert.equal(i18n.t('label'), 'English', `${failure} must use the English catalog`);
+    }
+
+    global.fetch = async () => { throw new Error('all catalogs unavailable'); };
+    i18n = freshI18n();
+    assert.equal(await i18n.initI18n({ preference: 'fr', uiLanguage: 'en-US' }), 'fr');
+    assert.equal(i18n.t('label'), 'label', 'missing catalogs fall back to keys');
+    const fallbackElement = fakeElement({ i18n: 'label' });
+    i18n.applyTranslations({ querySelectorAll: () => [fallbackElement] });
+    assert.equal(fallbackElement.textContent, 'label', 'page translations remain safe without catalogs');
+
+    console.log('i18n: locale selection, catalog failures, and translation fallbacks passed');
   } finally {
     restoreGlobals();
   }

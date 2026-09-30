@@ -38,6 +38,7 @@ assert.match(optionsSource, /if \(!window\.confirm\(/);
   });
   assert.equal(calls, 2);
   assert.equal(result.overall, 'success');
+  assert.equal(result.checks.find(check => check.id === 'url').label, 'URL Jira');
   assert.equal(result.checks.find(check => check.id === 'search').status, 'success');
 
   const missingToken = await runConnectionDiagnostics({ jiraUrl: 'https://example.atlassian.net', jiraEmail: 'user@example.com' }, { request: async () => { throw new Error('must not call Jira'); } });

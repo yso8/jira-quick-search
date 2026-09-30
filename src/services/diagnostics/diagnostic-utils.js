@@ -32,7 +32,7 @@ async function runConnectionDiagnostics(config, dependencies = {}) {
   const request = dependencies.request || jiraRequest;
   const checks = [];
   const urlCheck = validateDiagnosticUrl(config?.jiraUrl);
-  checks.push({ id: 'url', label: 'URL Jira', ...urlCheck });
+  checks.push({ id: 'url', label: t('ui_jira_url_label'), ...urlCheck });
   if (urlCheck.status === 'error') return { overall: 'error', checks };
   if (!config?.jiraEmail || !config?.jiraToken) {
     checks.push({ id: 'authentication', label: t('ui_authentication'), status: 'error', message: t('ui_the_token_or_email_is_missing'), action: t('ui_enter_your_jira_credentials') });

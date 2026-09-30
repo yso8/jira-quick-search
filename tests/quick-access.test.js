@@ -27,6 +27,7 @@ assert.match(searchHtml, /id="resultCount"[^>]*aria-live="polite"/);
 
 async function verifyOmnibox(language, expectedDescription) {
   const listeners = {};
+  let preference = language;
   const context = {
     chrome: {
       commands: { onCommand: { addListener(listener) { listeners.command = listener; } } },
@@ -34,7 +35,11 @@ async function verifyOmnibox(language, expectedDescription) {
         onInputChanged: { addListener(listener) { listeners.changed = listener; } },
         onInputEntered: { addListener(listener) { listeners.entered = listener; } }
       },
-      storage: { local: { get: async () => { throw new Error('language must use sync storage'); } }, sync: { get: async () => ({ language }) } },
+      storage: {
+        onChanged: { addListener(listener) { listeners.storageChanged = listener; } },
+        local: { get: async () => { throw new Error('language must use sync storage'); } },
+        sync: { get: async () => ({ language: preference }) }
+      },
       i18n: { getUILanguage: () => 'en-US' },
       runtime: { getURL: page => page, onInstalled: { addListener() {} } },
       tabs: { create() {} }
@@ -52,16 +57,28 @@ async function verifyOmnibox(language, expectedDescription) {
   assert.equal(typeof listeners.command, 'function');
   assert.equal(typeof listeners.changed, 'function');
   assert.equal(typeof listeners.entered, 'function');
+  assert.equal(typeof listeners.storageChanged, 'function', 'storage listener must be registered synchronously');
   const suggestions = input => new Promise(resolve => listeners.changed(input, value => resolve(JSON.parse(JSON.stringify(value)))));
   assert.deepEqual(await suggestions(''), []);
   assert.deepEqual(await suggestions('   '), []);
   assert.deepEqual(await suggestions('incident'), [{ content: 'incident', description: expectedDescription }]);
+  return {
+    suggestions,
+    changeLanguage(language) {
+      const oldValue = preference;
+      preference = language;
+      listeners.storageChanged({ language: { oldValue, newValue: language } }, 'sync');
+    }
+  };
 }
 
-Promise.all([
-  verifyOmnibox('fr', 'Rechercher dans Jira : incident'),
-  verifyOmnibox('en', 'Search Jira: incident')
-]).then(() => console.log('quick-access: omnibox registration and localization passed')).catch(error => {
+(async () => {
+  await verifyOmnibox('fr', 'Rechercher dans Jira : incident');
+  const worker = await verifyOmnibox('en', 'Search Jira: incident');
+  worker.changeLanguage('fr');
+  assert.deepEqual(await worker.suggestions('incident'), [{ content: 'incident', description: 'Rechercher dans Jira : incident' }]);
+  console.log('quick-access: omnibox registration and localization passed');
+})().catch(error => {
   console.error(error);
   process.exitCode = 1;
 });

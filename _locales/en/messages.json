@@ -565,6 +565,9 @@
   "ui_jira_url_is_missing": {
     "message": "Jira URL is missing."
   },
+  "ui_jira_url_label": {
+    "message": "Jira URL"
+  },
   "ui_the_jira_url_must_use_https": {
     "message": "The Jira URL must use HTTPS."
   },
