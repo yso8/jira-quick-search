@@ -21,6 +21,10 @@ for (const language of ['en', 'fr']) {
     assert.ok(catalog[key]?.message, `${language} catalog lacks ${key}`);
   }
 }
+const englishCatalog = JSON.parse(fs.readFileSync('_locales/en/messages.json', 'utf8'));
+const frenchCatalog = JSON.parse(fs.readFileSync('_locales/fr/messages.json', 'utf8'));
+assert.equal(englishCatalog.appName.message, 'Jira Quick Search');
+assert.equal(frenchCatalog.appName.message, 'Jira Quick Search');
 
 for (const page of ['onboarding', 'options', 'popup', 'search', 'workspace', 'recap']) {
   const html = fs.readFileSync(`${page}.html`, 'utf8');

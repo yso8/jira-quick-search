@@ -1,6 +1,6 @@
 {
   "appName": {
-    "message": "Recherche rapide Jira"
+    "message": "Jira Quick Search"
   },
   "appDescription": {
     "message": "Recherche rapide de tickets Jira Cloud et récapitulatif d’activité"
